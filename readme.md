@@ -11,6 +11,5 @@ Aiki will run on a several of platforms eventually. But for now it is only teste
 It will probably work without and trouble on OS X.
 <br /> <br />
 
-<h2> Contribution <h2>
-Check out the issue tracker (or send me an e-mail, sometimes I am lazy with updating it)
-
+<h2> Contribution </h2>
+Check out the issue tracker (or send me an e-mail, sometimes I am lazy with updating it) <br /><br />
