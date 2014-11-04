@@ -1,0 +1,5 @@
+func printSquareRoot(var root) {
+	print(root * root);
+}
+
+printSquareRoot(3);
