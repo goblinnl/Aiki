@@ -6,7 +6,7 @@ grounds in other terms of real world application, it was just a fun project.<br 
 Aiki aimed to be integrated easily with C++. The syntax is similar to that from Java. Unlike the language Java the Aiki is developed with ease of use from the command line while also utilizing precompiled binaries.
 
 <br /> <br />
-<h2>Portability <h2>
+<h2>Portability </h2>
 Aiki will run on a several of platforms eventually. But for now it is only tested on Windows & Linux. <br />
 It will probably work without and trouble on OS X.
 <br /> <br />
