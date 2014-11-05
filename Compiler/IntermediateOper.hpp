@@ -1,7 +1,6 @@
 #ifndef INTERMEDIATEOPERATION_H
 #define INTERMEDIATEOPERATION_H
 
-
 // Internal
 #include "../OperationCode.hpp"
 

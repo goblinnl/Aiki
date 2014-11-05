@@ -1,7 +1,10 @@
 #ifndef STATEMENT_H
 #define STATEMENT_H
 
+// External
 #include <stdlib.h>
+
+// Internal
 #include "../codes.hpp"
 #include "fragment.hpp"
 

@@ -1,9 +1,11 @@
 #ifndef EXPRESSION_H
 #define EXPRESSION_H
 
+// Internal
 #include "fragment.hpp"
 #include "Function.hpp"
 
+// External
 #include <map>
 
 class FunctionCall;

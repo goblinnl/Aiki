@@ -1,7 +1,7 @@
 #ifndef ENVIRONMENT_H
 #define ENVIRONMENT_H
 
-// Interanl
+// Internal
 #include "Variable.hpp"
 #include "../scope.hpp"
 #include "../stack.hpp"
@@ -13,7 +13,7 @@
 #include <string>
 #include <exception>
 
-# define LOGFILE(A) false // No Logs, because to much info :( sad panda
+# define LOGFILE(A) false // No Log files.
 
 class Environment {
 	public:

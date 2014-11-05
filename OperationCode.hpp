@@ -5,12 +5,11 @@
 * Defines a wrapper for modifying byte codes at run-time
 */
 
-
 // Internal
 #include "Codes.hpp"
 #include "stack.hpp"
 
-// Internal
+// External
 #include <stdlib.h>
 #include <stdio.h>
 #include <list>
