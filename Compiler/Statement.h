@@ -5,8 +5,8 @@
 #include <stdlib.h>
 
 // Internal
-#include "../codes.hpp"
-#include "fragment.hpp"
+#include "../codes.h"
+#include "fragment.h"
 
 class Expression;
 class Tokens;
@@ -26,6 +26,10 @@ class IfStatement : public Statement {
 		void provideIntermediates(OperationCode *aOpcode, Parser *aParser);
 
 	private:
+		bool alloc;
+		Token *assignee;
+		Token *operators;
+		Expression *expression;
 };
 
 class AssignStatement : public Statement {

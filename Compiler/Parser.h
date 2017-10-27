@@ -2,10 +2,10 @@
 #define PARSER_H
 
 // Internal
-#include "tokens.hpp"
-#include "statement.hpp"
-#include "../OperationCode.hpp"
-#include "../scope.hpp"
+#include "tokens.h"
+#include "statement.h"
+#include "../OperationCode.h"
+#include "../scope.h"
 
 class Statement;
 class FunctionDefinition;

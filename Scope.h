@@ -2,9 +2,9 @@
 #define SCOPETYPE_H
 
 // Interal
-#include "./Parser/Variable.hpp"
-#include "./codes.hpp"
-#include "./stack.hpp"
+#include "./Parser/Variable.h"
+#include "./codes.h"
+#include "./stack.h"
 
 // External
 #include <map>

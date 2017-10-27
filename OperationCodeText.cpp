@@ -1,6 +1,6 @@
 // Internal
-#include "OperationCodeText.hpp"
-#include "OperationCode.hpp"
+#include "OperationCodeText.h"
+#include "OperationCode.h"
 
 // External
 #include <sstream>
@@ -70,7 +70,7 @@ int OperationCodeText::parametersCount(byte aCode) {
 		case OP_DATA_END:
 			return 0;
 
-			/* Operations with 1 parameter */
+		/* Operations with 1 parameter */
 		case OP_PUSH:
 		case OP_PUSH_DATA:
 		case OP_CALL:
@@ -98,7 +98,7 @@ int OperationCodeText::parametersCount(byte aCode) {
 		case OP_JLE:
 			return 1;
 
-			/* Operations with 2 parameters*/
+		/* Operations with 2 parameters*/
 		case OP_MOV:
 		case OP_MOVI:
 		case OP_MOVF:
@@ -118,7 +118,7 @@ int OperationCodeText::parametersCount(byte aCode) {
 		case OP_JLE_F:
 			return 2;
 
-			/* TODO: */
+		/* TODO: */
 		case OP_DATA_STRING:
 			return -1;
 	}
@@ -145,7 +145,7 @@ string OperationCodeText::getLieteral(byte code) {
 		case OP_PUSH_SCOPE:		return "PUSH_SCOPE";
 		case OP_POP_SCOPE:		return "POP_SCOPE";
 
-			/* Arithmetics */
+		/* Arithmetics */
 		case OP_ADD:			return "ADD";
 		case OP_SUB:			return "SUB";
 		case OP_DIV:			return "DIV";
@@ -162,7 +162,7 @@ string OperationCodeText::getLieteral(byte code) {
 		case OP_MUL_F:			return "MUL_F";
 		case OP_DIV_F:			return "DIV_F";
 
-			/* Comparisons */
+		/* Comparisons */
 		case OP_JMP:			return "JMP";
 		case OP_JE:				return "JE";
 		case OP_JNE:			return "JNE";
@@ -182,7 +182,7 @@ string OperationCodeText::getLieteral(byte code) {
 		case OP_JL_F:			return "JL_F";
 		case OP_JLE_F:			return "JLE_F";
 
-			/* Data definitions */
+		/* Data definitions */
 		case OP_DATA_BEGIN:		return "DATA_BEGIN";
 		case OP_DATA_END:		return "DATA_END";
 		case OP_DATA_FUNC:		return "DATA_FUNC";

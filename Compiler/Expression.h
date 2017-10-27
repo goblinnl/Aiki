@@ -2,8 +2,8 @@
 #define EXPRESSION_H
 
 // Internal
-#include "fragment.hpp"
-#include "Function.hpp"
+#include "fragment.h"
+#include "Function.h"
 
 // External
 #include <map>

@@ -2,8 +2,8 @@
 #define FUNCTION_H
 
 // Internal
-#include "Fragment.hpp"
-#include "tokens.hpp"
+#include "Fragment.h"
+#include "tokens.h"
 
 // External
 #include <stdlib.h>

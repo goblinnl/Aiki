@@ -6,7 +6,7 @@
 */
 
 // Internal
-#include "Codes.hpp"
+#include "Codes.h"
 
 // External
 #include <string>

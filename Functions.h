@@ -2,10 +2,10 @@
 #define FUNCTIONS_H
 
 // Internal
-#include "./Parser/Variable.hpp"
-#include "./Compiler/Parser.hpp"
+#include "./Parser/Variable.h"
+#include "./Compiler/Parser.h"
 
-/***** Funbctions.hpp *****
+/***** Funbctions.h *****
 * Contains the maping between opcode-functions and  libc/stdlibc++/custom functions.
 * All Scrap-callable C-functions must have a Var* 
 * return value, and zero or more Var* parameters.

@@ -5,7 +5,7 @@
 #include <stdlib.h>
 
 // Internal
-#include "Exception.hpp"
+#include "Exception.h"
 
 using namespace std;
 

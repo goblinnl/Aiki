@@ -42,53 +42,56 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Codes.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Exception.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Functions.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="OperationCode.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="OperationCodeText.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Scope.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Stack.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="compiler\Expression.hpp">
-      <Filter>Header Files\Compiler</Filter>
-    </ClInclude>
-    <ClInclude Include="Compiler\Fragment.hpp">
-      <Filter>Header Files\Compiler</Filter>
-    </ClInclude>
-    <ClInclude Include="Compiler\Function.hpp">
-      <Filter>Header Files\Compiler</Filter>
-    </ClInclude>
-    <ClInclude Include="Compiler\IntermediateOper.hpp">
-      <Filter>Header Files\Compiler</Filter>
-    </ClInclude>
-    <ClInclude Include="Compiler\Parser.hpp">
-      <Filter>Header Files\Compiler</Filter>
-    </ClInclude>
-    <ClInclude Include="Compiler\Statement.hpp">
-      <Filter>Header Files\Compiler</Filter>
-    </ClInclude>
-    <ClInclude Include="Compiler\Tokens.hpp">
-      <Filter>Header Files\Compiler</Filter>
-    </ClInclude>
     <ClInclude Include="Parser\Environment.hpp">
       <Filter>Header Files\Parser</Filter>
     </ClInclude>
     <ClInclude Include="Parser\Variable.hpp">
       <Filter>Header Files\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="Mixer.h">
+      <Filter>Header Files\Mixer</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Functions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OperationCode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OperationCodeText.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Scope.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Stack.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="compiler\Expression.h">
+      <Filter>Header Files\Compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="Compiler\Fragment.h">
+      <Filter>Header Files\Compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="Compiler\Function.h">
+      <Filter>Header Files\Compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="Compiler\IntermediateOper.h">
+      <Filter>Header Files\Compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="Compiler\Parser.h">
+      <Filter>Header Files\Compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="Compiler\Statement.h">
+      <Filter>Header Files\Compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="Compiler\Tokens.h">
+      <Filter>Header Files\Compiler</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -113,9 +116,18 @@
     <Filter Include="Other">
       <UniqueIdentifier>{ec8f4745-6448-4374-ab6f-32e80343bd0c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Mixer">
+      <UniqueIdentifier>{cec17a3a-ccf6-42e9-8941-086dfe48bba3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Mixer">
+      <UniqueIdentifier>{f661fe86-125d-4c81-a354-a7293ca29b76}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="Docs\Example Script\Basic.fj">
+      <Filter>Other</Filter>
+    </None>
+    <None Include="Test.fj">
       <Filter>Other</Filter>
     </None>
   </ItemGroup>

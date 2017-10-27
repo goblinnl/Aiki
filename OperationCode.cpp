@@ -1,6 +1,6 @@
-#include "OperationCode.hpp"
-#include "Exception.hpp"
-#include "./Compiler/IntermediateOper.hpp"
+#include "OperationCode.h"
+#include "Exception.h"
+#include "./Compiler/IntermediateOper.h"
 
 OperationCode::OperationCode() {
 	bigEnd = isBigEnd();	

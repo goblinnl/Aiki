@@ -93,25 +93,27 @@
     <ClCompile Include="Functions.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Codes.hpp" />
-    <ClInclude Include="compiler\Expression.hpp" />
-    <ClInclude Include="Compiler\Fragment.hpp" />
-    <ClInclude Include="Compiler\Function.hpp" />
-    <ClInclude Include="Compiler\IntermediateOper.hpp" />
-    <ClInclude Include="Compiler\Parser.hpp" />
-    <ClInclude Include="Compiler\Statement.hpp" />
-    <ClInclude Include="Compiler\Tokens.hpp" />
-    <ClInclude Include="OperationCode.hpp" />
-    <ClInclude Include="OperationCodeText.hpp" />
+    <ClInclude Include="Codes.h" />
+    <ClInclude Include="compiler\Expression.h" />
+    <ClInclude Include="Compiler\Fragment.h" />
+    <ClInclude Include="Compiler\Function.h" />
+    <ClInclude Include="Compiler\IntermediateOper.h" />
+    <ClInclude Include="Compiler\Parser.h" />
+    <ClInclude Include="Compiler\Statement.h" />
+    <ClInclude Include="Compiler\Tokens.h" />
+    <ClInclude Include="Mixer.h" />
+    <ClInclude Include="OperationCode.h" />
+    <ClInclude Include="OperationCodeText.h" />
     <ClInclude Include="Parser\Environment.hpp" />
     <ClInclude Include="Parser\Variable.hpp" />
-    <ClInclude Include="Scope.hpp" />
-    <ClInclude Include="Exception.hpp" />
-    <ClInclude Include="Stack.hpp" />
-    <ClInclude Include="Functions.hpp" />
+    <ClInclude Include="Scope.h" />
+    <ClInclude Include="Exception.h" />
+    <ClInclude Include="Stack.h" />
+    <ClInclude Include="Functions.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Docs\Example Script\Basic.fj" />
+    <None Include="Test.fj" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

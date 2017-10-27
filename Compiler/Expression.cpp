@@ -1,8 +1,8 @@
-#include "Expression.hpp"
-#include "Function.hpp"
-#include "IntermediateOper.hpp"
-#include "../stack.hpp"
-#include "../Exception.hpp"
+#include "Expression.h"
+#include "Function.h"
+#include "IntermediateOper.h"
+#include "../stack.h"
+#include "../Exception.h"
 
 
 

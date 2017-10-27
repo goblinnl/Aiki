@@ -1,10 +1,10 @@
-#include "Function.hpp"
-#include "Expression.hpp"
-#include "IntermediateOper.hpp"
-#include "parser.hpp"
+#include "Function.h"
+#include "Expression.h"
+#include "IntermediateOper.h"
+#include "parser.h"
 
-#include "../stack.hpp"
-#include "../Exception.hpp"
+#include "../stack.h"
+#include "../Exception.h"
 
 #include <sstream>
 

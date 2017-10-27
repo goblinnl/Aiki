@@ -1,8 +1,8 @@
-#include "Parser.hpp"
-#include "Expression.hpp"
-#include "Function.hpp"
-#include "IntermediateOper.hpp"
-#include "../Functions.hpp"
+#include "Parser.h"
+#include "Expression.h"
+#include "Function.h"
+#include "IntermediateOper.h"
+#include "../Functions.h"
 
 uint Parser::functionID = 0;
 uint Parser::stdFunctionID = 0;

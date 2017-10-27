@@ -1,8 +1,8 @@
 
 // Internal
-#include "Tokens.hpp"
-#include "../Exception.hpp"
-#include "../Parser/Variable.hpp"
+#include "Tokens.h"
+#include "../Exception.h"
+#include "../Parser/Variable.h"
 
 // External
 #include <fstream>

@@ -1,5 +1,5 @@
-#include "Functions.hpp"
-#include "./Compiler/Function.hpp"
+#include "Functions.h"
+#include "./Compiler/Function.h"
 #include <stdarg.h>
 
 namespace AikiStd {

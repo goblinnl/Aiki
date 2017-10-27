@@ -1,5 +1,5 @@
 // Internal
-#include "Variable.hpp"
+#include "Variable.h"
 
 // External
 #include <cstring>

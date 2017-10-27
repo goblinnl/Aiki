@@ -6,8 +6,8 @@
 */
 
 // Internal
-#include "Codes.hpp"
-#include "stack.hpp"
+#include "Codes.h"
+#include "stack.h"
 
 // External
 #include <stdlib.h>

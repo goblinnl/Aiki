@@ -6,7 +6,7 @@
 #include <string>
 
 // Internal
-#include "../Codes.hpp"
+#include "../Codes.h"
 
 class OperationCode;
 class Parser;

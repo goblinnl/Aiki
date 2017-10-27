@@ -2,7 +2,7 @@
 #define INTERMEDIATEOPERATION_H
 
 // Internal
-#include "../OperationCode.hpp"
+#include "../OperationCode.h"
 
 // External
 #include <vector>

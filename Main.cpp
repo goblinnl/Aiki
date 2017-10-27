@@ -5,10 +5,10 @@
 #include <tchar.h>
 
 // Internal
-#include "Parser/Environment.hpp"
-#include "OperationCode.hpp"
-#include "compiler/parser.hpp"
-#include "OperationCodeText.hpp"
+#include "Parser/Environment.h"
+#include "OperationCode.h"
+#include "compiler/parser.h"
+#include "OperationCodeText.h"
 
 
 int main(int argc, const char *argv[])

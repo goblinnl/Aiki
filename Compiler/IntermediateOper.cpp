@@ -1,4 +1,4 @@
-#include "IntermediateOper.hpp"
+#include "IntermediateOper.h"
 #include <cstring>
 
 ByteOperation::ByteOperation(byte aVal) {

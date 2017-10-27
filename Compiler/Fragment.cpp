@@ -1,9 +1,9 @@
-#include "Fragment.hpp"
-#include "IntermediateOper.hpp"
-#include "tokens.hpp"
-#include "parser.hpp"
+#include "Fragment.h"
+#include "IntermediateOper.h"
+#include "tokens.h"
+#include "parser.h"
 
-#include "../OperationCode.hpp"
+#include "../OperationCode.h"
 
 string Fragment::gettingString() {
 	return "";

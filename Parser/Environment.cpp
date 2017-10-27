@@ -1,8 +1,8 @@
 // Internal
-#include "Environment.hpp"
-#include "../Exception.hpp"
-#include "../Functions.hpp"
-#include "../Compiler/Function.hpp"
+#include "Environment.h"
+#include "../Exception.h"
+#include "../Functions.h"
+#include "../Compiler/Function.h"
 
 // External 
 #include <stdlib.h>

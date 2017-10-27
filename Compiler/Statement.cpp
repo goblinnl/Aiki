@@ -1,11 +1,11 @@
-#include "Statement.hpp"
-#include "IntermediateOper.hpp"
-#include "Expression.hpp"
-#include "tokens.hpp"
-#include "parser.hpp"
+#include "Statement.h"
+#include "IntermediateOper.h"
+#include "Expression.h"
+#include "tokens.h"
+#include "parser.h"
 
-#include "../stack.hpp"
-#include "../Exception.hpp"
+#include "../stack.h"
+#include "../Exception.h"
 
 
 Statement::Statement() {
@@ -39,8 +39,24 @@ Statement* Statement::createStatement(Tokens *aTokens, Parser *aParser) {
 }
 
 void IfStatement::parseFragment(Tokens *aTokens, Parser *aParser) {
+	operators = NULL;
+	expression = NULL;
+	assignee = NULL;
+
 	delete aTokens->popExpected(Token::RESERVED);
 	delete aTokens->popExpected(Token::PARANTH_BEG);
+
+	// Check of allocation
+	//if(aTokens->checkNext()->token == "if") {
+	//	alloc = true;
+	//	delete aTokens->popExpected(Token::RESERVED);
+
+		//assignee = aTokens->popExpected(Token::
+	//}
+
+	// Parse the expression
+	//expression = new Expression();
+	//expression->parseFragment(aTokens, aParser);
 
 	throw NotImplementedException("If statements are not implemented");
 }

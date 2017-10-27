@@ -2,11 +2,11 @@
 #define ENVIRONMENT_H
 
 // Internal
-#include "Variable.hpp"
-#include "../scope.hpp"
-#include "../stack.hpp"
-#include "../codes.hpp"
-#include "../OperationCode.hpp"
+#include "Variable.h"
+#include "../scope.h"
+#include "../stack.h"
+#include "../codes.h"
+#include "../OperationCode.h"
 
 // External
 #include <map>
