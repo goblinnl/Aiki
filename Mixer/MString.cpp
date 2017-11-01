@@ -233,7 +233,7 @@ MString MString::Format(const char* rFormat, ...)
 	va_start(list, rFormat);
 
 	int lenght;
-	while((lenght = vsnprintf(buffer, size, rFormat, list)) == -1 || size <= lenght) {
+	while((lenght = snprintf(buffer, size, rFormat, list)) == -1 || size <= lenght) {
 		delete[] buffer;
 
 		size += size;
@@ -257,12 +257,12 @@ void MString::SetFormat(const char* rFormat, ...)
 	va_list list;
 	va_start(list, rFormat);
 
-	int lenght = vsnprintf(buffer, size, rFormat, list);
+	int lenght = snprintf(buffer, size, rFormat, list);
 	if(size <= lenght) {
 		delete[] buffer;
 
 		buffer = new char[lenght + 1];
-		lenght = vsnprintf(buffer, size, rFormat, list);
+		lenght = snprintf(buffer, size, rFormat, list);
 	}
 
 	va_end(list);
@@ -277,12 +277,12 @@ void MString::AppendFormat(const char* rFormat, ...)
 	va_list list;
 	va_start(list, rFormat);
 
-	int lenght = vsnprintf(buffer, size, rFormat, list);
+	int lenght = snprintf(buffer, size, rFormat, list);
 	if(size <= lenght) {
 		delete[] buffer;
 
 		buffer = new char[lenght + 1];
-		lenght = vsnprintf(buffer, size, rFormat, list);
+		lenght = snprintf(buffer, size, rFormat, list);
 	}
 
 	va_end(list);
