@@ -54,6 +54,8 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile />
+      <DisableSpecificWarnings>
+      </DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -86,6 +88,7 @@
     <ClCompile Include="Compiler\Statement.cpp" />
     <ClCompile Include="Compiler\Tokens.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Mixer\MString.cpp" />
     <ClCompile Include="OperationCode.cpp" />
     <ClCompile Include="OperationCodeText.cpp" />
     <ClCompile Include="Parser\Environment.cpp" />
@@ -102,6 +105,11 @@
     <ClInclude Include="Compiler\Statement.h" />
     <ClInclude Include="Compiler\Tokens.h" />
     <ClInclude Include="Mixer.h" />
+    <ClInclude Include="Mixer\MArray.h" />
+    <ClInclude Include="Mixer\MCommon.h" />
+    <ClInclude Include="Mixer\Mixer.h" />
+    <ClInclude Include="Mixer\MMath.h" />
+    <ClInclude Include="Mixer\MString.h" />
     <ClInclude Include="OperationCode.h" />
     <ClInclude Include="OperationCodeText.h" />
     <ClInclude Include="Parser\Environment.hpp" />

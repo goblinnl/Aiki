@@ -9,9 +9,8 @@
 
 using namespace std;
 
-template<typename T>
+template<typename T> class Stack {
 
-class Stack {
 private:
 	struct Node {
 		Node() {

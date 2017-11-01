@@ -40,6 +40,9 @@
     <ClCompile Include="Parser\Variable.cpp">
       <Filter>Source Files\Parser</Filter>
     </ClCompile>
+    <ClCompile Include="Mixer\MString.cpp">
+      <Filter>Source Files\Mixer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Parser\Environment.hpp">
@@ -92,6 +95,21 @@
     </ClInclude>
     <ClInclude Include="Compiler\Tokens.h">
       <Filter>Header Files\Compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="Mixer\MArray.h">
+      <Filter>Header Files\Mixer</Filter>
+    </ClInclude>
+    <ClInclude Include="Mixer\MCommon.h">
+      <Filter>Header Files\Mixer</Filter>
+    </ClInclude>
+    <ClInclude Include="Mixer\Mixer.h">
+      <Filter>Header Files\Mixer</Filter>
+    </ClInclude>
+    <ClInclude Include="Mixer\MMath.h">
+      <Filter>Header Files\Mixer</Filter>
+    </ClInclude>
+    <ClInclude Include="Mixer\MString.h">
+      <Filter>Header Files\Mixer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
