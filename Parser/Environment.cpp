@@ -10,15 +10,15 @@
 #include <stdio.h>
 
 Environment::Environment(OperationCode *aOpcode) {
-	const vector<byte> opVec = aOpcode->getBytecode();
+	const vector<byte> opVec = aOpcode->GetBytecode();
 
 	operationcodes = new byte[opVec.size()];
-	copy(opVec.begin(), opVec.end(), operationcodes);
+	copy(opVec.begin(), opVec.end(), stdext::checked_array_iterator<byte *>(operationcodes, opVec.size()));
 
 	operationPointer = 0;
 	dataDefinition = false;
 
-	scope.addItem(VAR_RETURN, new Variable(VAR_RETURN));
+	scope.AddItem(VAR_RETURN, new Variable(VAR_RETURN));
 }
 
 Environment::~Environment() {
@@ -27,37 +27,37 @@ Environment::~Environment() {
 
 int Environment::Execute() {
 	while (operationcodes[operationPointer] != OP_EXIT) {
-		operations();
+		Operations();
 	}
 
 	operationPointer++;
-	int exitId = getOperationCodeUint();
+	int exitId = GetOperationCodeUint();
 
 	if (exitId & (VAR_GLOBAL | VAR_LOCAL)) {
-		Variable *var = getVariableByID(exitId);
-		exitId = var->getInteger();
+		Variable *var = GetVariableByID(exitId);
+		exitId = var->GetInteger();
 	}
 
 	printf("Program terminated with status %i\n", exitId);
 	return exitId;
 }
 
-void Environment::operations() {
+void Environment::Operations() {
 	byte op = operationcodes[operationPointer++];
 
 	if (op >= 0xF0) {
 		switch (op) {
 			case OP_DATA_BEGIN:
-				operationDataBegin();	
+				OperationDataBegin();	
 				break;
 			case OP_DATA_STRING: 
-				operationDataString();
+				OperationDataString();
 				break;
 			case OP_DATA_FUNC:
-				operationDataFunction();
+				OperationDataFunction();
 				break;
 			case OP_DATA_END:
-				operationDataEnd();
+				OperationDataEnd();
 				break;
 		}
 	} else {
@@ -68,99 +68,99 @@ void Environment::operations() {
 		if (op <= 0x1F) {
 			switch (op) {
 				case OP_PUSH:
-					operationPush();
+					OperationPush();
 					break;
 
 				case OP_PUSH_DATA:
-					operationPushData();
+					OperationPushData();
 					break;
 
 				case OP_POP:
-					operationPop();
+					OperationPop();
 					break;
 
 				case OP_CALL:
-					operationCall();
+					OperationCall();
 					break;
 
 				case OP_RET:
-					operationRet();
+					OperationRet();
 					break;
 
 				case OP_ALLOC:
-					operationAlloc();
+					OperationAlloc();
 					break;
 
 				case OP_POPMOV:
-					operationPopMove();
+					OperationPopMove();
 					break;
 
 				case OP_MOV: 
-					operationMove();
+					OperationMove();
 					break;
 
 				case OP_MOVI: 
-					operationMoveInt();
+					OperationMoveInt();
 					break;
 
 				case OP_MOVF:
-					operationMoveFloat();
+					OperationMoveFloat();
 					break;
 
 				case OP_MOVS: 
-					operationMoveString();
+					OperationMoveString();
 					break;
 
 				case OP_ADD: 
-					operationAdd();
+					OperationAdd();
 					break;
 
 				case OP_SUB: 
-					operationSub();
+					OperationSub();
 					break;
 
 				case OP_MUL: 
-					operationMultiply();
+					OperationMultiply();
 					break;
 
 				case OP_DIV:
-					operationDivide();
+					OperationDivide();
 					break;
 
 				case OP_MOD: 
-					opModulate();
+					OpModulate();
 					break;
 
 				case OP_ADD_I:	
-					operationAddInt();		
+					OperationAddInt();		
 					break;
 
 				case OP_SUB_I:		
-					operationSubInt();		
+					OperationSubInt();		
 					break;
 
 				case OP_MUL_I:		
-					operationMultiplyInt();		
+					OperationMultiplyInt();		
 					break;
 
 				case OP_DIV_I:	
-					operationDivdeInt();		
+					OperationDivdeInt();		
 					break;
 
 				case OP_MOD_I:		
-					operationModulesInt();		
+					OperationModulesInt();		
 					break;
 
 				case OP_ADD_F:		
-					operationAddFloat();	
+					OperationAddFloat();	
 					break;
 
 				case OP_SUB_F:	
-					operationSubdivisionFloat();	
+					OperationSubdivisionFloat();	
 					break;
 
 				case OP_MUL_F:	
-					subdivisionMultiplyFloat();	
+					SubdivisionMultiplyFloat();	
 					break;
 
 				case OP_DIV_F:	
@@ -168,119 +168,119 @@ void Environment::operations() {
 					break;
 
 				case OP_PUSH_SCOPE:
-					operationPushScope();
+					OperationPushScope();
 					break;
 
 				case OP_POP_SCOPE:	
-					operationPopScope();
+					OperationPopScope();
 					break;
 			}
 
 		} else if (op <= 0x2F) {
 			switch (op) {
 				case OP_JMP:		
-					operationJump();
+					OperationJump();
 					break;
 
 				case OP_JE:		
-					operationJe();		
+					OperationJe();		
 					break;
 
 				case OP_JNE:	
-					operationJne();		
+					OperationJne();		
 					break;
 
 				case OP_JG:		
-					operationJg();	
+					OperationJg();	
 					break;
 
 				case OP_JGE:	
-					operationJge();	
+					OperationJge();	
 					break;
 
 				case OP_JL:		
-					operationJl();		
+					OperationJl();		
 					break;
 
 				case OP_JLE:	
-					operationJle();	
+					OperationJle();	
 					break;
 
 				case OP_JE_I:
-					opJeInt();	
+					OpJeInt();	
 					break;
 
 				case OP_JNE_I:
-					operationJneInt();
+					OperationJneInt();
 					break;
 
 				case OP_JG_I:	
-					operationJgInt();
+					OperationJgInt();
 					break;
 
 				case OP_JGE_I:	
-					operationJgeInt();	
+					OperationJgeInt();	
 					break;
 
 				case OP_JL_I:	
-					operationPJlInt();	
+					OperationPJlInt();	
 					break;
 
 				case OP_JLE_I:	
-					operationPJleInt();	
+					OperationPJleInt();	
 					break;
 
 				case OP_JE_F:	
-					operationPJeF();	
+					OperationPJeF();	
 					break;
 
 				case OP_JNE_F:	
-					operationpJneFloat();
+					OperationpJneFloat();
 					break;
 
 				case OP_JG_F:	
-					operationPJgFloat();
+					OperationPJgFloat();
 					break;
 
 				case OP_JGE_F:	
-					operationpJgeFloat();
+					OperationpJgeFloat();
 					break;
 
 				case OP_JL_F:	
-					operationPJlFloat();	
+					OperationPJlFloat();	
 					break;
 
 				case OP_JLE_F:	
-					operationPJleFloat();
+					OperationPJleFloat();
 					break;
 			}
 		} 
 	}
 }
 
-Variable* Environment::getVariableByID(uint aID) {
+Variable* Environment::GetVariableByID(uint aID) {
 	Variable *ret = NULL;
 
 	if (aID & VAR_GLOBAL) {
-		ret = scope.getVar(aID);
+		ret = scope.GetVar(aID);
 	} else if (aID & VAR_LOCAL) {
 		if (sizeScope.Size()) {
-			ret = sizeScope.peek()->getVar(aID);
+			ret = sizeScope.Peek()->GetVar(aID);
 		}
 	}
 
 	return ret;
 }
 
-void Environment::popStackingVariable(Variable *&aVar) {
+void Environment::PopStackingVariable(Variable *&aVar) {
 	uint varID = 0;
 
-	varID = stackPointer.pop();
-	aVar = getVariableByID(varID);
+	varID = stackPointer.Pop();
+	aVar = GetVariableByID(varID);
 }
 
 
-int Environment::getOperationCodeInteger() {
+int Environment::GetOperationCodeInteger() {
 	byte *bytePtr = &((byte*)operationcodes)[operationPointer];
 
 	operationPointer += 4;
@@ -288,7 +288,7 @@ int Environment::getOperationCodeInteger() {
 	return *(int*)bytePtr;
 }
 
-uint Environment::getOperationCodeUint() {
+uint Environment::GetOperationCodeUint() {
 	byte *bytePtr = &((byte*)operationcodes)[operationPointer];
 
 	operationPointer += 4;
@@ -296,7 +296,7 @@ uint Environment::getOperationCodeUint() {
 	return *(uint*)bytePtr;
 }
 
-float Environment::getOperationCodeFloat() {
+float Environment::GetOperationCodeFloat() {
 	byte *bytePtr = &((byte*)operationcodes)[operationPointer];
 
 	operationPointer += 4;
@@ -304,106 +304,106 @@ float Environment::getOperationCodeFloat() {
 	return *(float*)bytePtr;
 }
 
-Variable* Environment::getOperationCodeVariable() {
-	uint id = getOperationCodeUint();
-	return getVariableByID(id);
+Variable* Environment::GetOperationCodeVariable() {
+	uint id = GetOperationCodeUint();
+	return GetVariableByID(id);
 }
 
 
-Scope* Environment::getCurrentScope() {
+Scope* Environment::GetCurrentScope() {
 	if (!sizeScope.Size()) {
 		return &scope;
 	} 
 		
-	return sizeScope.peek();
+	return sizeScope.Peek();
 }
 
 
-void Environment::operationPush() {
-	uint varId = getOperationCodeUint();
-	stackPointer.push(varId);
+void Environment::OperationPush() {
+	uint varId = GetOperationCodeUint();
+	stackPointer.Push(varId);
 
 	LOGFILE(("Pushing var %x\n", varId));
 }
 
-void Environment::operationPushData() {
+void Environment::OperationPushData() {
 	// Needs to be done Someday
 }
 
-void Environment::operationPop() {
-	stackPointer.pop();
+void Environment::OperationPop() {
+	stackPointer.Pop();
 }
 
-void Environment::operationCall() {
-	uint funcID = getOperationCodeUint();
+void Environment::OperationCall() {
+	uint funcID = GetOperationCodeUint();
 
 	if (funcID & FUNC_STD) {
-		operationCallStd(funcID);
+		OperationCallStd(funcID);
 	} else {
 		uint funcPos = functions[funcID];
 
-		stack.push(operationPointer);
+		stack.Push(operationPointer);
 		operationPointer = funcPos;
 
 		Scope *localScope = new Scope();
-		sizeScope.push(localScope);
+		sizeScope.Push(localScope);
 	}
 
 	LOGFILE(("Calling %x\n", funcID));
 }
 
-void Environment::operationCallStd(uint aFuncID) {
-	int pCount = AikiStd::getParameterCount(aFuncID);
+void Environment::OperationCallStd(uint aFuncID) {
+	int pCount = AikiStd::GetParameterCount(aFuncID);
 
 	Variable **params = new Variable*[pCount];
 	for (int i=0; i < pCount; i++) {
-		popStackingVariable(params[i]);
+		PopStackingVariable(params[i]);
 	}
 
-	Variable *retVal = AikiStd::callStdFunc(aFuncID, pCount, params);
+	Variable *retVal = AikiStd::CallStdFunc(aFuncID, pCount, params);
 
 	if (retVal) {
-		*getVariableByID(VAR_RETURN) = *retVal;
+		*GetVariableByID(VAR_RETURN) = *retVal;
 	} else {
-		getVariableByID(VAR_RETURN)->undefine();
+		GetVariableByID(VAR_RETURN)->Undefine();
 	}
 
 	delete[] params;
 }
 
-void Environment::operationRet() {
+void Environment::OperationRet() {
 	Scope *localScope = NULL;
 	int retID = 0;
 
-	retID = getOperationCodeUint();
+	retID = GetOperationCodeUint();
 	Variable *retSrc = NULL;
-	if ((retSrc = getVariableByID(retID))) {
-		Variable *retDst = getVariableByID(VAR_RETURN);
+	if ((retSrc = GetVariableByID(retID))) {
+		Variable *retDst = GetVariableByID(VAR_RETURN);
 		*retDst = *retSrc;
-		stackPointer.push(VAR_RETURN);
+		stackPointer.Push(VAR_RETURN);
 	} else {
-		stackPointer.push(0);
+		stackPointer.Push(0);
 	}
 
-	localScope = sizeScope.pop();
+	localScope = sizeScope.Pop();
 	delete localScope;
 
-	operationPointer = stack.pop();
+	operationPointer = stack.Pop();
 
 	LOGFILE(("Returning to %u\n", operationPointer));
 }
 
-void Environment::operationAlloc() {
-	uint varID = getOperationCodeUint();
+void Environment::OperationAlloc() {
+	uint varID = GetOperationCodeUint();
 
 	if (varID & VAR_GLOBAL) {
-		if (!scope.itemExists(varID)) {
-			scope.addItem(varID, new Variable(varID));
+		if (!scope.ItemExists(varID)) {
+			scope.AddItem(varID, new Variable(varID));
 		}
 	} else {
 		if (sizeScope.Size()) {
-			if (!sizeScope.peek()->itemExists(varID)) {
-				sizeScope.peek()->addItem(varID, new Variable(varID));
+			if (!sizeScope.Peek()->ItemExists(varID)) {
+				sizeScope.Peek()->AddItem(varID, new Variable(varID));
 			}
 		}
 	}
@@ -411,307 +411,307 @@ void Environment::operationAlloc() {
 	LOGFILE(("Allocating %x\n", varID));
 }
 
-void Environment::operationPopMove() {
+void Environment::OperationPopMove() {
 	Variable *source = NULL;
 	Variable *dest = NULL;
 
-	popStackingVariable(source);
+	PopStackingVariable(source);
 
-	dest = getOperationCodeVariable();
+	dest = GetOperationCodeVariable();
 
 	if (source != NULL) {
 		*dest = *source;
 	} else {
-		dest->undefine();
+		dest->Undefine();
 	}
 }
 
-void Environment::operationMove() {
+void Environment::OperationMove() {
 	Variable *source = NULL;
 	Variable *dest = NULL;
 
-	dest = getOperationCodeVariable();
-	source = getOperationCodeVariable();
+	dest = GetOperationCodeVariable();
+	source = GetOperationCodeVariable();
 
 	*dest = *source;
 }
 
-void Environment::operationMoveInt() {
+void Environment::OperationMoveInt() {
 	Variable *dest = NULL;
 	int literal = 0;
 
-	dest = getOperationCodeVariable();
-	literal = getOperationCodeInteger();
+	dest = GetOperationCodeVariable();
+	literal = GetOperationCodeInteger();
 	
-	dest->set(literal);
+	dest->Set(literal);
 
-	LOGFILE(("Var %x = %i\n", dest->getID(), literal));
+	LOGFILE(("Var %x = %i\n", dest->GetID(), literal));
 }
 
-void Environment::operationMoveFloat() {
+void Environment::OperationMoveFloat() {
 	Variable *dest = NULL;
 	float literal = 0;
 
-	dest = getOperationCodeVariable();
-	literal = getOperationCodeFloat();
+	dest = GetOperationCodeVariable();
+	literal = GetOperationCodeFloat();
 
-	dest->set(literal);
+	dest->Set(literal);
 
-	LOGFILE(("Var %x = %f\n", dest->getID(), literal));
+	LOGFILE(("Var %x = %f\n", dest->GetID(), literal));
 }
 
-void Environment::operationMoveString() {
+void Environment::OperationMoveString() {
 	// Needs to be done someday :)
 }
 
-void Environment::operationAdd() {
-	arithmeticStack(&Variable::operator+=);
+void Environment::OperationAdd() {
+	ArithmeticStack(&Variable::operator+=);
 }
 
-void Environment::operationSub() {
-	arithmeticStack(&Variable::operator-=);
+void Environment::OperationSub() {
+	ArithmeticStack(&Variable::operator-=);
 }
 
-void Environment::operationMultiply() {
-	arithmeticStack(&Variable::operator*=);
+void Environment::OperationMultiply() {
+	ArithmeticStack(&Variable::operator*=);
 }
 
-void Environment::operationDivide() {
-	arithmeticStack(&Variable::operator/=);
+void Environment::OperationDivide() {
+	ArithmeticStack(&Variable::operator/=);
 }
 
-void Environment::opModulate() {
-	arithmeticStack(&Variable::operator%=);
+void Environment::OpModulate() {
+	ArithmeticStack(&Variable::operator%=);
 }
 
-void Environment::arithmeticStack(void(Variable::*aOper)(const Variable&)) {
+void Environment::ArithmeticStack(void(Variable::*aOper)(const Variable&)) {
 	Variable *left = NULL;
 	Variable *right = NULL;
 
-	popStackingVariable(right);
-	popStackingVariable(left);
+	PopStackingVariable(right);
+	PopStackingVariable(left);
 
 	(*left.*aOper)(*right);
-	stackPointer.push(left->getID());
+	stackPointer.Push(left->GetID());
 }
 
-void Environment::operationAddInt() {
-	arithmeticInt(&Variable::operator+=);
+void Environment::OperationAddInt() {
+	ArithmeticInt(&Variable::operator+=);
 }
 
-void Environment::operationSubInt() {
-	arithmeticInt(&Variable::operator-=);
+void Environment::OperationSubInt() {
+	ArithmeticInt(&Variable::operator-=);
 }
 
-void Environment::operationMultiplyInt() {
-	arithmeticInt(&Variable::operator*=);
+void Environment::OperationMultiplyInt() {
+	ArithmeticInt(&Variable::operator*=);
 }
 
-void Environment::operationDivdeInt() {
-	arithmeticInt(&Variable::operator/=);
+void Environment::OperationDivdeInt() {
+	ArithmeticInt(&Variable::operator/=);
 }
 
-void Environment::operationModulesInt() {
-	arithmeticInt(&Variable::operator%=);
+void Environment::OperationModulesInt() {
+	ArithmeticInt(&Variable::operator%=);
 }
 
-void Environment::arithmeticInt(void(Variable::*aOper)(const int&)) {
+void Environment::ArithmeticInt(void(Variable::*aOper)(const int&)) {
 	Variable *var = NULL;
 	int literal = 0;
 
-	popStackingVariable(var);
-	literal = getOperationCodeInteger();
+	PopStackingVariable(var);
+	literal = GetOperationCodeInteger();
 
 	(*var.*aOper)(literal);
-	stackPointer.push(var->getID());
+	stackPointer.Push(var->GetID());
 }
 
-void Environment::operationAddFloat() {
-	arithmeticFloat(&Variable::operator+=);
+void Environment::OperationAddFloat() {
+	ArithmeticFloat(&Variable::operator+=);
 }
 
-void Environment::operationSubdivisionFloat() {
-	arithmeticFloat(&Variable::operator-=);
+void Environment::OperationSubdivisionFloat() {
+	ArithmeticFloat(&Variable::operator-=);
 }
 
-void Environment::subdivisionMultiplyFloat() {
-	arithmeticFloat(&Variable::operator*=);
+void Environment::SubdivisionMultiplyFloat() {
+	ArithmeticFloat(&Variable::operator*=);
 }
 
 void Environment::OperationDivdeFloat() {
-	arithmeticFloat(&Variable::operator/=);
+	ArithmeticFloat(&Variable::operator/=);
 }
 
-void Environment::arithmeticFloat(void(Variable::*aOper)(const float&)) {
+void Environment::ArithmeticFloat(void(Variable::*aOper)(const float&)) {
 	Variable *var = NULL;
 	float literal = 0.f;
 
-	popStackingVariable(var);
-	literal = getOperationCodeFloat();
+	PopStackingVariable(var);
+	literal = GetOperationCodeFloat();
 
 	(*var.*aOper)(literal);
-	stackPointer.push(var->getID());
+	stackPointer.Push(var->GetID());
 }
 
-void Environment::operationPushScope() {
-	Scope *scope = getCurrentScope();
-	scope->pushNestedScope();
+void Environment::OperationPushScope() {
+	Scope *scope = GetCurrentScope();
+	scope->PushNestedScope();
 }
 
-void Environment::operationPopScope() {
-	Scope *scope = getCurrentScope();
-	scope->popNestedScope();
+void Environment::OperationPopScope() {
+	Scope *scope = GetCurrentScope();
+	scope->PopNestedScope();
 }
 
-void Environment::operationJump() {
-	int dest = getOperationCodeUint();
+void Environment::OperationJump() {
+	int dest = GetOperationCodeUint();
 	operationPointer = dest;
 
 	LOGFILE(("Jumping to %i\n", dest));
 }
 
-void Environment::operationJe() {
+void Environment::OperationJe() {
 	LOGFILE(("Comparing ==\n"));
-	compareJumpStack(&Variable::operator==);
+	CompareJumpStack(&Variable::operator==);
 }
 
-void Environment::operationJne() {
+void Environment::OperationJne() {
 	LOGFILE(("Comparing !=\n"));
-	compareJumpStack(&Variable::operator!=);
+	CompareJumpStack(&Variable::operator!=);
 }
 
-void Environment::operationJg() {
+void Environment::OperationJg() {
 	LOGFILE(("Comparing >\n"));
-	compareJumpStack(&Variable::operator>);
+	CompareJumpStack(&Variable::operator>);
 }
 
-void Environment::operationJge() {
+void Environment::OperationJge() {
 	LOGFILE(("Comparing >=\n"));
-	compareJumpStack(&Variable::operator>=);
+	CompareJumpStack(&Variable::operator>=);
 }
 
-void Environment::operationJl() {
+void Environment::OperationJl() {
 	LOGFILE(("Comparing <\n"));
-	compareJumpStack(&Variable::operator<);
+	CompareJumpStack(&Variable::operator<);
 }
 
-void Environment::operationJle() {
+void Environment::OperationJle() {
 	LOGFILE(("Comparing <=\n"));
-	compareJumpStack(&Variable::operator<=);
+	CompareJumpStack(&Variable::operator<=);
 }
 
-void Environment::compareJumpStack(bool(Variable::*aCmp)(const Variable&)const) {
+void Environment::CompareJumpStack(bool(Variable::*aCmp)(const Variable&)const) {
 	Variable *left = NULL;
 	Variable *right = NULL;
 
-	popStackingVariable(right);
-	popStackingVariable(left);
+	PopStackingVariable(right);
+	PopStackingVariable(left);
 
 	if ((left->*aCmp)(*right)) {
-		operationJump();
+		OperationJump();
 	} else {
 		operationPointer += 4;
 	}
 }
 
-void Environment::opJeInt() {
-	compareJumpInt(&Variable::operator==);
+void Environment::OpJeInt() {
+	CompareJumpInt(&Variable::operator==);
 }
 
-void Environment::operationJneInt() {
-	compareJumpInt(&Variable::operator!=);
+void Environment::OperationJneInt() {
+	CompareJumpInt(&Variable::operator!=);
 }
 
-void Environment::operationJgInt() {
-	compareJumpInt(&Variable::operator>);
+void Environment::OperationJgInt() {
+	CompareJumpInt(&Variable::operator>);
 }
 
-void Environment::operationJgeInt() {
-	compareJumpInt(&Variable::operator>=);
+void Environment::OperationJgeInt() {
+	CompareJumpInt(&Variable::operator>=);
 }
 
-void Environment::operationPJlInt() {
-	compareJumpInt(&Variable::operator<);
+void Environment::OperationPJlInt() {
+	CompareJumpInt(&Variable::operator<);
 }
 
-void Environment::operationPJleInt() {
-	compareJumpInt(&Variable::operator<=);
+void Environment::OperationPJleInt() {
+	CompareJumpInt(&Variable::operator<=);
 }
 
-void Environment::compareJumpInt(bool(Variable::*aCmp)(const int&)const) {
+void Environment::CompareJumpInt(bool(Variable::*aCmp)(const int&)const) {
 	Variable *var = NULL;
 	int literal = 0;
 
-	popStackingVariable(var);
-	literal = getOperationCodeInteger();
+	PopStackingVariable(var);
+	literal = GetOperationCodeInteger();
 
 	if ((*var.*aCmp)(literal)) {
-		operationJump();
+		OperationJump();
 	} else {
 		operationPointer += 4;
 	}
 }
 
-void Environment::operationPJeF() {
-	compareJumpInt(&Variable::operator==);
+void Environment::OperationPJeF() {
+	CompareJumpInt(&Variable::operator==);
 }
 
-void Environment::operationpJneFloat() {
-	compareJumpInt(&Variable::operator!=);
+void Environment::OperationpJneFloat() {
+	CompareJumpInt(&Variable::operator!=);
 }
 
-void Environment::operationPJgFloat() {
-	compareJumpInt(&Variable::operator>);
+void Environment::OperationPJgFloat() {
+	CompareJumpInt(&Variable::operator>);
 }
 
-void Environment::operationpJgeFloat() {
-	compareJumpInt(&Variable::operator>=);
+void Environment::OperationpJgeFloat() {
+	CompareJumpInt(&Variable::operator>=);
 }
 
-void Environment::operationPJlFloat() {
-	compareJumpInt(&Variable::operator<);
+void Environment::OperationPJlFloat() {
+	CompareJumpInt(&Variable::operator<);
 }
 
-void Environment::operationPJleFloat() {
-	compareJumpInt(&Variable::operator<=);
+void Environment::OperationPJleFloat() {
+	CompareJumpInt(&Variable::operator<=);
 }
 
-void Environment::compareJumpFloat(bool(Variable::*aCmp)(const float&)const) {
+void Environment::CompareJumpFloat(bool(Variable::*aCmp)(const float&)const) {
 	Variable *var = NULL;
 	float literal = 0.f;
 
-	popStackingVariable(var);
-	literal = getOperationCodeFloat();
+	PopStackingVariable(var);
+	literal = GetOperationCodeFloat();
 
 	if ((*var.*aCmp)(literal)) {
-		operationJump();
+		OperationJump();
 	} else {
 		operationPointer += 4;
 	}
 }
 
-void Environment::operationDataBegin() {
+void Environment::OperationDataBegin() {
 	if (dataDefinition) {
 		throw InvalidOpException("Already defining data");
 	}
 	dataDefinition = true;
 }
 
-void Environment::operationDataString() {
+void Environment::OperationDataString() {
 	// Needs to be done someday
 }
 
-void Environment::operationDataFunction() {
+void Environment::OperationDataFunction() {
 	int funcId = 0;
 	int funcPos = 0;
 
-	funcId = getOperationCodeUint();
-	funcPos = getOperationCodeUint();
+	funcId = GetOperationCodeUint();
+	funcPos = GetOperationCodeUint();
 
 	functions[funcId] = funcPos;
 }
 
-void Environment::operationDataEnd() {
+void Environment::OperationDataEnd() {
 	if (!dataDefinition) {
 		throw InvalidOpException("Was not defining data");
 	}
