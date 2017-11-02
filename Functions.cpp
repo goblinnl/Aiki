@@ -13,7 +13,7 @@ namespace AikiStd {
 	void registerFunction(Parser *parser, void *func, string name, int paramCount) {
 		FunctionSignature funcSign(name, paramCount);
 
-		uint id = parser->registerStdFunction(funcSign);
+		uint id = parser->RegisterStdFunction(funcSign);
 
 		StdFunc f;
 		f.params = paramCount;
@@ -21,8 +21,8 @@ namespace AikiStd {
 		stdFuncMap[id] = f;
 	}
 
-	void registerFunctions(Parser *parser) {
-		registerFunction(parser, (void*)&print,	"print",	1);
+	void RegisterFunctions(Parser *parser) {
+		registerFunction(parser, (void*)&Print,	"print",	1);
 	}
 	
 	Variable* scrapStdCall(void *func, int pCount, Variable **params) {
@@ -66,17 +66,17 @@ namespace AikiStd {
 		return retVal;
 	}
 
-	int getParameterCount(uint funcId) {
+	int GetParameterCount(uint funcId) {
 		return stdFuncMap[funcId].params;
 	}
 
-	Variable* callStdFunc(uint id, int argCount, Variable **params) {
+	Variable* CallStdFunc(uint id, int argCount, Variable **params) {
 		StdFunc f = stdFuncMap[id];
 		return scrapStdCall(f.func, f.params, params);
 	}
 	
-	Variable* print(Variable *var) {
-		printf("%i\n", var->getInteger());
+	Variable* Print(Variable *var) {
+		printf("%i\n", var->GetInteger());
 		return NULL;
 	}
 }

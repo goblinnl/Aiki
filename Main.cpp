@@ -20,14 +20,14 @@ int main(int argc, const char *argv[])
 		string file = argv[1];
 		Parser parser(file, true);
 		
-		if (parser.parseFile()) {
+		if (parser.ParseFile()) {
 			try {
-				if (parser.compileTokens()) {
+				if (parser.CompileTokens()) {
 					try {
 						OperationCodeText tostr;
-						tostr.parse(parser.getOpcodes());
+						tostr.Parse(parser.GetOpcodes());
 						
-						Environment env(parser.getOpcodes());
+						Environment env(parser.GetOpcodes());
 						env.Execute();
 					} catch (exception &e) {
 						printf("Runtime error:\n%s\n", e.what());

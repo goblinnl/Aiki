@@ -23,9 +23,9 @@ Parser::~Parser() {
 }
 
 
-bool Parser::parseFile() {
+bool Parser::ParseFile() {
 	try {
-		tokens->generateTokens(inputFile);
+		tokens->GenerateTokens(inputFile);
 	} catch (exception e) {
 		printf("Failed to parse file '%s':\n", inputFile.c_str());
 		printf("%s\n", e.what());
@@ -35,11 +35,11 @@ bool Parser::parseFile() {
 	return true;
 }
 
-bool Parser::compileTokens() {
-	AikiStd::registerFunctions(this);
+bool Parser::CompileTokens() {
+	AikiStd::RegisterFunctions(this);
 
 	try {
-		if (!buildFragments()) {
+		if (!BuildFragments()) {
 			return false;
 		}
 	} catch (exception e) {
@@ -49,7 +49,7 @@ bool Parser::compileTokens() {
 	}
 
 	try {
-		if (!buildIntermediates()) {
+		if (!BuildIntermediates()) {
 			return false;
 		}
 	} catch (exception e) {
@@ -59,7 +59,7 @@ bool Parser::compileTokens() {
 	}
 
 	try {
-		if (!buildBytecode()) {
+		if (!BuildBytecode()) {
 			return false;
 		}
 	} catch (exception e) {
@@ -71,48 +71,48 @@ bool Parser::compileTokens() {
 	return true;
 }
 
-OperationCode* Parser::getOpcodes() {
+OperationCode* Parser::GetOpcodes() {
 	return interMedOperCode;
 }
 
 
-void Parser::pushScope() {
-	stackScope.push(new CompileScope);
+void Parser::PushScope() {
+	stackScope.Push(new CompileScope);
 }
 
-void Parser::popScope() {
-	delete stackScope.pop();
+void Parser::PopScope() {
+	delete stackScope.Pop();
 }
 
-bool Parser::isInLocalScope() {
+bool Parser::IsInLocalScope() {
 	return stackScope.Size() > 0;
 }
 
 
-void Parser::pushNestedScope() {
+void Parser::PushNestedScope() {
 	if (stackScope.Size()) {
-		stackScope.peek()->pushNestedScope();
+		stackScope.Peek()->PushNestedScope();
 	} else {
-		compileScope.pushNestedScope();
+		compileScope.PushNestedScope();
 	}
 }
 
-void Parser::popNestedScope() {
+void Parser::PopNestedScope() {
 	if (stackScope.Size()) {
-		stackScope.peek()->popNestedScope();
+		stackScope.Peek()->PopNestedScope();
 	} else {
-		compileScope.popNestedScope();
+		compileScope.PopNestedScope();
 	}
 }
 
 
-uint Parser::registerVariable(string aName) {
+uint Parser::RegisterVariable(string aName) {
 	CompileScope *scope = NULL;
 	uint id = 0;
 
 	if (stackScope.Size()) {
-		scope = stackScope.peek();
-		id = VAR_LOCAL | (stackScope.peek()->getVarCounter());
+		scope = stackScope.Peek();
+		id = VAR_LOCAL | (stackScope.Peek()->GetVarCounter());
 	} else {
 		scope = &compileScope;
 		id = VAR_GLOBAL | (++VariableID);
@@ -121,11 +121,11 @@ uint Parser::registerVariable(string aName) {
 	string *n = new string;
 	*n = aName;
 
-	scope->addItem(id, n);
+	scope->AddItem(id, n);
 	return id;
 }
 
-uint Parser::getVariableID(string aName) {
+uint Parser::GetVariableID(string aName) {
 	if (!aName.length()) {
 		throw runtime_error("No Variable ID");
 	}
@@ -133,13 +133,13 @@ uint Parser::getVariableID(string aName) {
 	uint id = 0;
 
 	if (stackScope.Size()) {
-		id = stackScope.peek()->getItemID(&aName);
+		id = stackScope.Peek()->GetItemID(&aName);
 		if (id) { 
 			return id;
 		}
 	}
 
-	id = compileScope.getItemID(&aName);
+	id = compileScope.GetItemID(&aName);
 	
 	if (id == 0) {
 		throw VarNotDefinedException("Variable is not defined in the current scope: " + aName);
@@ -150,39 +150,39 @@ uint Parser::getVariableID(string aName) {
 
 
 
-uint Parser::registerFunction(FunctionSignature aFuncSign) {
+uint Parser::RegisterFunction(FunctionSignature aFuncSign) {
 	list<FunctionSignature>::iterator it;
 	for (it = functionSignatureList.begin(); it != functionSignatureList.end(); it++) {
-		if (it->getName() == aFuncSign.getName()) {
-			throw FuncAlreadyDefinedException("Function " + aFuncSign.getName() + " is already defined");
+		if (it->GetName() == aFuncSign.GetName()) {
+			throw FuncAlreadyDefinedException("Function " + aFuncSign.GetName() + " is already defined");
 		}
 	}
 
-	aFuncSign.setID(++functionID);
+	aFuncSign.SetID(++functionID);
 	functionSignatureList.push_back(aFuncSign);
 
 	return functionID;
 }
 
-uint Parser::registerStdFunction(FunctionSignature aFuncSign) {
+uint Parser::RegisterStdFunction(FunctionSignature aFuncSign) {
 	list<FunctionSignature>::iterator it;
 	for (it = functionSignatureList.begin(); it != functionSignatureList.end(); it++) {
-		if (it->getName() == aFuncSign.getName()) {
-			throw FuncAlreadyDefinedException("Function " + aFuncSign.getName() + " is already defined");
+		if (it->GetName() == aFuncSign.GetName()) {
+			throw FuncAlreadyDefinedException("Function " + aFuncSign.GetName() + " is already defined");
 		}
 	}
 
-	aFuncSign.setID(++stdFunctionID | FUNC_STD);
+	aFuncSign.SetID(++stdFunctionID | FUNC_STD);
 	functionSignatureList.push_back(aFuncSign);
 
-	return aFuncSign.getID();
+	return aFuncSign.GetID();
 }
 
-uint Parser::getFunctionID(string aName) {
+uint Parser::GetFunctionID(string aName) {
 	list<FunctionSignature>::iterator it;
 	for (it = functionSignatureList.begin(); it != functionSignatureList.end(); it++) {
-		if (it->getName() == aName) {
-			return it->getID();
+		if (it->GetName() == aName) {
+			return it->GetID();
 		}
 	}
 
@@ -190,10 +190,10 @@ uint Parser::getFunctionID(string aName) {
 	return 0;
 }
 
-FunctionSignature Parser::getFunctionSignature(string aFuncName) {
+FunctionSignature Parser::GetFunctionSignature(string aFuncName) {
 	list<FunctionSignature>::iterator it;
 	for (it = functionSignatureList.begin(); it != functionSignatureList.end(); it++) {
-		if (it->getName() == aFuncName) {
+		if (it->GetName() == aFuncName) {
 			return *it;
 		}
 	}
@@ -201,10 +201,10 @@ FunctionSignature Parser::getFunctionSignature(string aFuncName) {
 	throw  FuncNotDefinedException("Function " + aFuncName + " not defined");
 }
 
-FunctionSignature Parser::getFunctionSignature(uint aFuncID) {
+FunctionSignature Parser::GetFunctionSignature(uint aFuncID) {
 	list<FunctionSignature>::iterator it;
 	for (it = functionSignatureList.begin(); it != functionSignatureList.end(); it++) {
-		if (it->getID() == aFuncID) {
+		if (it->GetID() == aFuncID) {
 			return *it;
 		}
 	}
@@ -217,30 +217,30 @@ FunctionSignature Parser::getFunctionSignature(uint aFuncID) {
 }
 
 
-bool Parser::buildFragments() {
-	pushFragmentTail(fragmentList.end());
-	addHeader();
+bool Parser::BuildFragments() {
+	PushFragmentTail(fragmentList.end());
+	AddHeader();
 	fragmentFunctionDef = fragmentList.insert(fragmentList.end(), NULL);
 
 	int stackDepth = 0;
 	bool inFunction = false;
 
-	while (tokens->isMore()) {
-		Token *next = tokens->checkNext();
+	while (tokens->IsMore()) {
+		Token *next = tokens->CheckNext();
 
-		Statement *statement = Statement::createStatement(tokens, this);
+		Statement *statement = Statement::CreateStatement(tokens, this);
 		if (statement) {
-			addFragment(statement);
-		} else if (FunctionDefinition::isFunctionDefinition(tokens)) {
+			AddFragment(statement);
+		} else if (FunctionDefinition::IsFunctionDefinition(tokens)) {
 			FunctionDefinition *fdef = new FunctionDefinition();
-			fdef->parseFragment(tokens, this);
+			fdef->ParseFragment(tokens, this);
 
 
-			pushFragmentTail(fragmentFunctionDef);
-			addFragment(fdef);
-			addFunctionData(fdef);
+			PushFragmentTail(fragmentFunctionDef);
+			AddFragment(fdef);
+			AddFunctionData(fdef);
 
-			delete tokens->popExpected(Token::BRACKET_BEG);
+			delete tokens->PopExpected(Token::BRACKET_BEG);
 
 			if (inFunction) {
 				throw SyntaxErrorException("BuildExcpetion");
@@ -248,30 +248,30 @@ bool Parser::buildFragments() {
 
 			stackDepth++;
 			inFunction = true;
-			pushScope();
+			PushScope();
 
 		} else if (next->aType == Token::BRACKET_BEG) {
 			stackDepth++;
-			pushNestedScope();
-			delete tokens->popNext();
+			PushNestedScope();
+			delete tokens->PopNext();
 		} else if (next->aType == Token::BRACKET_END) {
 			if (--stackDepth == 0) {
 				if (inFunction) {
-					popScope();
+					PopScope();
 					inFunction = false;
 
 					FunctionTail *tail = new FunctionTail();
-					addFragment(tail);
-					popFragmentTail();
+					AddFragment(tail);
+					PopFragmentTail();
 
-					tail->getPositionReference()->addInquirer(headerStart);
+					tail->GetPositionReference()->AddInquirer(headerStart);
 				} else {
 					throw InvalidTokenException("Unexpected }");
 				}
 			} else {
-				popNestedScope();
+				PopNestedScope();
 			}
-			delete tokens->popNext();
+			delete tokens->PopNext();
 		} else {
 			throw InvalidTokenException("Unexpected '" + next->token + "'!");
 		}
@@ -280,68 +280,68 @@ bool Parser::buildFragments() {
 	return true;
 }
 
-bool Parser::buildIntermediates() {
+bool Parser::BuildIntermediates() {
 	list<Fragment*>::iterator it;
 	for (it = fragmentList.begin(); it != fragmentList.end(); it++) {
 		if (!*it) continue;
-		(*it)->provideIntermediates(interMedOperCode, this);
+		(*it)->ProvideIntermediates(interMedOperCode, this);
 	}
 
 	// Add a final exit-statement
 	uint zero = 0;
-	interMedOperCode->addInterop(new ByteOperation(OP_EXIT));
-	interMedOperCode->addInterop(new DwordOperation(&zero));
+	interMedOperCode->AddInterop(new ByteOperation(OP_EXIT));
+	interMedOperCode->AddInterop(new DwordOperation(&zero));
 
 	return true;
 }
 
-bool Parser::buildBytecode() {
-	return interMedOperCode->buildBytecodeFromIntermediates();
+bool Parser::BuildBytecode() {
+	return interMedOperCode->BuildBytecodeFromIntermediates();
 }
 
 
-void Parser::addFragment(Fragment *aFragment) {
-	fragmentList.insert(fragmentTailStack.peek(), aFragment);
+void Parser::AddFragment(Fragment *aFragment) {
+	fragmentList.insert(fragmentTailStack.Peek(), aFragment);
 }
 
-void Parser::pushFragmentTail(FragmentIter aIter) {
-	fragmentTailStack.push(aIter);
+void Parser::PushFragmentTail(FragmentIter aIter) {
+	fragmentTailStack.Push(aIter);
 }
 
-void Parser::popFragmentTail() {
-	fragmentTailStack.pop();
+void Parser::PopFragmentTail() {
+	fragmentTailStack.Pop();
 }
 
 
-void Parser::addHeader() {
-	if (interMedOperCode->length() != 0) {
+void Parser::AddHeader() {
+	if (interMedOperCode->Length() != 0) {
 		throw InternalErrorException();
 	}
 	
-	interMedOperCode->addInterop(new ByteOperation(OP_DATA_BEGIN));
-	headerEnd = interMedOperCode->addInterop(new ByteOperation(OP_DATA_END));
+	interMedOperCode->AddInterop(new ByteOperation(OP_DATA_BEGIN));
+	headerEnd = interMedOperCode->AddInterop(new ByteOperation(OP_DATA_END));
 	headerStart = new PositionInquirer();
 
-	interMedOperCode->addInterop(new ByteOperation(OP_JMP));
-	interMedOperCode->addInterop(headerStart);
+	interMedOperCode->AddInterop(new ByteOperation(OP_JMP));
+	interMedOperCode->AddInterop(headerStart);
 
 	PositionReference *posRef = new PositionReference();
-	posRef->addInquirer(headerStart);
-	interMedOperCode->addInterop(posRef);
+	posRef->AddInquirer(headerStart);
+	interMedOperCode->AddInterop(posRef);
 }	
 
-void Parser::addFunctionData(FunctionDefinition *aFuncDef) {
-	interMedOperCode->pushTail(headerEnd);
+void Parser::AddFunctionData(FunctionDefinition *aFuncDef) {
+	interMedOperCode->PushTail(headerEnd);
 
-	uint funcId = aFuncDef->getID();
+	uint funcId = aFuncDef->GetID();
 
-	interMedOperCode->addInterop(new ByteOperation(OP_DATA_FUNC));
-	interMedOperCode->addInterop(new DwordOperation(&funcId));
+	interMedOperCode->AddInterop(new ByteOperation(OP_DATA_FUNC));
+	interMedOperCode->AddInterop(new DwordOperation(&funcId));
 
 	// Request the final position for later
 	PositionInquirer *posInq = new PositionInquirer();
-	aFuncDef->getPositionReference()->addInquirer(posInq);
-	interMedOperCode->addInterop(posInq);
+	aFuncDef->GetPositionReference()->AddInquirer(posInq);
+	interMedOperCode->AddInterop(posInq);
 
-	interMedOperCode->popTail();
+	interMedOperCode->PopTail();
 }

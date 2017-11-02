@@ -5,20 +5,20 @@
 
 #include "../OperationCode.h"
 
-string Fragment::gettingString() {
+string Fragment::GettingString() {
 	return "";
 }
 
 
-uint Fragment::setVariable(Parser *aParser, string aName) {
-	return aParser->registerVariable(aName);
+uint Fragment::SetVariable(Parser *aParser, string aName) {
+	return aParser->RegisterVariable(aName);
 }
 
-uint Fragment::getVariableID(Parser *aParser, string aName) {
-	return aParser->getVariableID(aName);
+uint Fragment::GetVariableID(Parser *aParser, string aName) {
+	return aParser->GetVariableID(aName);
 }
 
-void Fragment::allocateVariable(OperationCode *opcode, uint aVarID) {
-	opcode->addInterop(new ByteOperation(OP_ALLOC));
-	opcode->addInterop(new DwordOperation(&aVarID));
+void Fragment::AllocateVariable(OperationCode *opcode, uint aVarID) {
+	opcode->AddInterop(new ByteOperation(OP_ALLOC));
+	opcode->AddInterop(new DwordOperation(&aVarID));
 }

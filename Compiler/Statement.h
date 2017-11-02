@@ -17,13 +17,13 @@ class Statement : public Fragment {
 		Statement();
 
 	public:
-		static Statement* createStatement(Tokens *aTokens, Parser *aParser);
+		static Statement* CreateStatement(Tokens *aTokens, Parser *aParser);
 };
 
 class IfStatement : public Statement {
 	public:
-		void parseFragment(Tokens *aTokens, Parser *aParser);
-		void provideIntermediates(OperationCode *aOpcode, Parser *aParser);
+		void ParseFragment(Tokens *aTokens, Parser *aParser);
+		void ProvideIntermediates(OperationCode *aOpcode, Parser *aParser);
 
 	private:
 		bool alloc;
@@ -34,8 +34,8 @@ class IfStatement : public Statement {
 
 class AssignStatement : public Statement {
 public:
-	void parseFragment(Tokens *aTokens, Parser *aParser);
-	void provideIntermediates(OperationCode *aOpcode, Parser *aParser);
+	void ParseFragment(Tokens *aTokens, Parser *aParser);
+	void ProvideIntermediates(OperationCode *aOpcode, Parser *aParser);
 
 private:
 	bool alloc;
@@ -43,13 +43,13 @@ private:
 	Token *operators;
 	Expression *expression;
 
-	void handleOperator(OperationCode *aOpcode, uint varID);
+	void HandleOperator(OperationCode *aOpcode, uint varID);
 };
 
 class ReturnStatement : public Statement {
 	public:
-		void parseFragment(Tokens *aTokens, Parser *aParser);
-		void provideIntermediates(OperationCode *aOpcode, Parser *aParser);
+		void ParseFragment(Tokens *aTokens, Parser *aParser);
+		void ProvideIntermediates(OperationCode *aOpcode, Parser *aParser);
 
 	private:
 		Expression *expression;

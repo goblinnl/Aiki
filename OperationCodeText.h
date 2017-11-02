@@ -17,19 +17,19 @@ class OperationCode;
 
 class OperationCodeText {
 public:
-	void parse(OperationCode *aOperationCode);
+	void Parse(OperationCode *aOperationCode);
 
 private:
 	vector<byte> operationCodes;
 
-	int	parametersCount(byte aCode);
-	string	getLieteral(byte aCode);
-	string	getParameter(byte aCtx, int aOpcodeIdx, int aParamIdx);
+	int	ParametersCount(byte aCode);
+	string	GetLieteral(byte aCode);
+	string	GetParameter(byte aCtx, int aOpcodeIdx, int aParamIdx);
 
-	void* getDword(int aOpcodeIdx);
-	string getUint(int aOpcodeIdx);
-	string getInteger(int aOpcodeIdx);
-	string getFloat(int aOpcodeIdx);
+	void* GetDword(int aOpcodeIdx);
+	string GetUint(int aOpcodeIdx);
+	string GetInteger(int aOpcodeIdx);
+	string GetFloat(int aOpcodeIdx);
 };
 
 #endif // OPERATIONCODETEXT_H

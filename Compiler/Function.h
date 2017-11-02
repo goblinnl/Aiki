@@ -13,29 +13,31 @@ class Expression;
 class PositionReference;
 
 class FunctionCall : public Fragment {
+
 public:
 	FunctionCall(Token *aFuncToken);
-	void parseFragment(Tokens * aTokens, Parser *aParser);
-	void provideIntermediates(OperationCode *aOpcode, Parser *aParser);
-	std::string			getString();
+	void ParseFragment(Tokens * aTokens, Parser *aParser);
+	void ProvideIntermediates(OperationCode *aOpcode, Parser *aParser);
+	std::string	GetString();
 
 protected:
 	Token::Type		delimter;
 	Token			*functionToken;
 	std::list<Expression*>	parameters;
-	void handleParameters(OperationCode *aOpcode, Parser *aParser);
+	void HandleParameters(OperationCode *aOpcode, Parser *aParser);
 };
 
 class FunctionDefinition : public Fragment {
+
 public:
-	static bool	isFunctionDefinition(Tokens *aTokens);
+	static bool	IsFunctionDefinition(Tokens *aTokens);
 	FunctionDefinition();
-	PositionReference* getPositionReference();
+	PositionReference* GetPositionReference();
 
-	void parseFragment(Tokens *aTokens, Parser *aParser);
-	void provideIntermediates(OperationCode *aOpcode, Parser *aParser);
+	void ParseFragment(Tokens *aTokens, Parser *aParser);
+	void ProvideIntermediates(OperationCode *aOpcode, Parser *aParser);
 
-	uint getID();
+	uint GetID();
 
 protected:
 	std::list<Token*> parameter;
@@ -45,24 +47,26 @@ protected:
 
 
 class FunctionTail : public Fragment {
+
 public:
 	FunctionTail();
-	void parseFragment(Tokens *aTokens, Parser *aParser);
-	void provideIntermediates(OperationCode *aOpcode, Parser *aParser);
-	PositionReference*	getPositionReference();
+	void ParseFragment(Tokens *aTokens, Parser *aParser);
+	void ProvideIntermediates(OperationCode *aOpcode, Parser *aParser);
+	PositionReference*	GetPositionReference();
 
 private:
 	PositionReference *posRef;
 };
 
 class FunctionSignature {
+
 public:
 	FunctionSignature(std::string aName, int aParams);
-	std::string getName();
-	int getParameterCount();
+	std::string GetName();
+	int GetParameterCount();
 
-	uint getID();
-	void setID(uint aID);
+	uint GetID();
+	void SetID(uint aID);
 
 private:
 	std::string signatureName;

@@ -10,14 +10,14 @@
 
 class IntermediateOperation {
 	public:
-		virtual void provideBytecode(OperationCode * aOpcode) = 0;
+		virtual void ProvideBytecode(OperationCode * aOpcode) = 0;
 };
 
 
 class ByteOperation : public IntermediateOperation {
 	public:
 		ByteOperation(byte aVal);
-		virtual void provideBytecode(OperationCode *aOpcode);
+		virtual void ProvideBytecode(OperationCode *aOpcode);
 	protected:
 		byte bytes;
 };
@@ -27,7 +27,7 @@ class DwordOperation : public IntermediateOperation {
 	public:
 		DwordOperation(void *aDword);
 		~DwordOperation();
-		virtual void provideBytecode(OperationCode *aOpcode);
+		virtual void ProvideBytecode(OperationCode *aOpcode);
 	protected:
 		void *dword;
 };
@@ -36,8 +36,8 @@ class DwordOperation : public IntermediateOperation {
 class PositionInquirer : public DwordOperation {
 	public:
 		PositionInquirer() : DwordOperation(NULL) {}
-		virtual void	provideBytecode(OperationCode *aOpcode);
-		void			insertPosition(OperationCode *aOpcode, uint aFinalValue);
+		virtual void	ProvideBytecode(OperationCode *aOpcode);
+		void			InsertPosition(OperationCode *aOpcode, uint aFinalValue);
 
 	private:
 		int				replaceIndex;
@@ -45,8 +45,8 @@ class PositionInquirer : public DwordOperation {
 
 class PositionReference : public IntermediateOperation {
 public:
-	void			provideBytecode(OperationCode *aOpcode);	
-	void			addInquirer(PositionInquirer *aInquirer);
+	void			ProvideBytecode(OperationCode *aOpcode);	
+	void			AddInquirer(PositionInquirer *aInquirer);
 
 protected:
 	vector<PositionInquirer*> inquirers;

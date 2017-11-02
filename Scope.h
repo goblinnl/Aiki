@@ -27,13 +27,13 @@ class ScopeType {
 			}
 
 			while (joined.Size() > 0) {
-				delete joined.pop();
+				delete joined.Pop();
 			}
 		}
 
-		uint getItemID(T aValue) {
+		uint GetItemID(T aValue) {
 			for (int i=joined.Size()-1; i>=0; i--) {
-				uint id = joined.peek(i)->getItemID(aValue);
+				uint id = joined.Peek(i)->GetItemID(aValue);
 				if (id != 0) {
 					return id;
 				}
@@ -49,9 +49,9 @@ class ScopeType {
 			return 0;
 		}
 
-		bool itemExists(uint aID) {
+		bool ItemExists(uint aID) {
 			for (int i=joined.Size()-1; i>=0; i--) {
-				if (joined.peek(i)->itemExists(aID)) {
+				if (joined.Peek(i)->ItemExists(aID)) {
 					return true;
 				}
 			}
@@ -63,25 +63,25 @@ class ScopeType {
 			return false;
 		}
 
-		void addItem(uint id, T t) {
+		void AddItem(uint id, T t) {
 			varCounter++;
 
 			if (joined.Size()) {
-				ScopeType<T> *nested = joined.peek();
-				nested->addItem(id, t);
+				ScopeType<T> *nested = joined.Peek();
+				nested->AddItem(id, t);
 				return;
 			}
 
 			vars[id] = t;
 		}
 
-		uint getVarCounter() {
+		uint GetVarCounter() {
 			return varCounter;
 		}
 
-		T getVar(uint aID) {
+		T GetVar(uint aID) {
 			for (int i=joined.Size()-1; i>=0; i--) {
-				T t = joined.peek(i)->getVar(aID);
+				T t = joined.Peek(i)->GetVar(aID);
 				if (t) {
 					return t;
 				}
@@ -95,17 +95,17 @@ class ScopeType {
 		}
 
 
-		int nestCount() {
+		int NestCount() {
 			return joined.Size();
 		}
 
-		void pushNestedScope() {
+		void PushNestedScope() {
 			ScopeType<T> *nested = new ScopeType<T>();
-			joined.push(nested);
+			joined.Push(nested);
 		}
 
-		void popNestedScope() {
-			delete joined.pop();
+		void PopNestedScope() {
+			delete joined.Pop();
 		}
 
 	protected:
@@ -122,7 +122,7 @@ class ScopeType {
 typedef ScopeType<Variable*> Scope;
 
 /*	CompileScope
-* Scope used for scope checking during compiliation
+* Scope used for scope checking during compilation
 * IDs are mapped to variable names rather than actual variables
 */
 typedef ScopeType<string*> CompileScope;

@@ -19,24 +19,24 @@ class Parser {
 		Parser(string aFile, bool aMainFile);
 		~Parser();
 
-		bool parseFile();
-		bool compileTokens();
-		OperationCode*	getOpcodes();
-		void pushScope();
-		void popScope();
-		bool isInLocalScope();
+		bool ParseFile();
+		bool CompileTokens();
+		OperationCode*	GetOpcodes();
+		void PushScope();
+		void PopScope();
+		bool IsInLocalScope();
 
-		void pushNestedScope();
-		void popNestedScope();
+		void PushNestedScope();
+		void PopNestedScope();
 
-		uint registerVariable(string aName);
-		uint getVariableID(string aName);
+		uint RegisterVariable(string aName);
+		uint GetVariableID(string aName);
 
-		uint registerFunction(FunctionSignature aFuncSign);
-		uint registerStdFunction(FunctionSignature aFuncSign);
-		uint getFunctionID(string aName);
-		FunctionSignature getFunctionSignature(string aFunctionName);
-		FunctionSignature getFunctionSignature(uint aFunctionID);
+		uint RegisterFunction(FunctionSignature aFuncSign);
+		uint RegisterStdFunction(FunctionSignature aFuncSign);
+		uint GetFunctionID(string aName);
+		FunctionSignature GetFunctionSignature(string aFunctionName);
+		FunctionSignature GetFunctionSignature(uint aFunctionID);
 
 	private:
 		static uint	functionID;
@@ -53,14 +53,14 @@ class Parser {
 		list<Fragment*> fragmentList;
 		list<FunctionSignature> functionSignatureList;
 
-		bool buildFragments();
-		bool buildIntermediates();
-		bool buildBytecode();
-		void addFragment(Fragment *aFragment);
-		void pushFragmentTail(FragmentIter aTail);
-		void popFragmentTail();
-		void addHeader();
-		void addFunctionData(FunctionDefinition *aFuncDef);
+		bool BuildFragments();
+		bool BuildIntermediates();
+		bool BuildBytecode();
+		void AddFragment(Fragment *aFragment);
+		void PushFragmentTail(FragmentIter aTail);
+		void PopFragmentTail();
+		void AddHeader();
+		void AddFunctionData(FunctionDefinition *aFuncDef);
 
 		Stack<FragmentIter> fragmentTailStack;
 		FragmentIter fragmentFunctionDef;

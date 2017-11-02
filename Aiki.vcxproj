@@ -104,7 +104,6 @@
     <ClInclude Include="Compiler\Parser.h" />
     <ClInclude Include="Compiler\Statement.h" />
     <ClInclude Include="Compiler\Tokens.h" />
-    <ClInclude Include="Mixer.h" />
     <ClInclude Include="Mixer\MArray.h" />
     <ClInclude Include="Mixer\MCommon.h" />
     <ClInclude Include="Mixer\Mixer.h" />
@@ -112,7 +111,7 @@
     <ClInclude Include="Mixer\MString.h" />
     <ClInclude Include="OperationCode.h" />
     <ClInclude Include="OperationCodeText.h" />
-    <ClInclude Include="Parser\Environment.hpp" />
+    <ClInclude Include="Parser\Environment.h" />
     <ClInclude Include="Parser\Variable.hpp" />
     <ClInclude Include="Scope.h" />
     <ClInclude Include="Exception.h" />

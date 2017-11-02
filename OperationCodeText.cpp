@@ -7,8 +7,8 @@
 #include <iomanip>
 #include <iostream>
 
-void OperationCodeText::parse(OperationCode *aOperationCode) {
-	operationCodes = aOperationCode->getBytecode();
+void OperationCodeText::Parse(OperationCode *aOperationCode) {
+	operationCodes = aOperationCode->GetBytecode();
 
 	for ( int i = 0; i < (int)operationCodes.size(); i++ ) {
 		if (i && i % 8 == 0) {
@@ -30,10 +30,10 @@ void OperationCodeText::parse(OperationCode *aOperationCode) {
 		ss << "]\t";
 
 		byte code = operationCodes[idx];
-		ss << getLieteral(code);
+		ss << GetLieteral(code);
 		ss << "\t\t";
 
-		int params = parametersCount(code);
+		int params = ParametersCount(code);
 		idx++;
 
 		for (int i=0; i<params; i++) {
@@ -41,7 +41,7 @@ void OperationCodeText::parse(OperationCode *aOperationCode) {
 				ss << ", ";
 			}
 
-			ss << getParameter(code, idx, i);
+			ss << GetParameter(code, idx, i);
 			idx += 4;
 		}
 
@@ -53,7 +53,7 @@ void OperationCodeText::parse(OperationCode *aOperationCode) {
 }
 
 
-int OperationCodeText::parametersCount(byte aCode) {
+int OperationCodeText::ParametersCount(byte aCode) {
 	switch (aCode) {
 		/* Operations with 0 parameters */
 		case OP_POP:
@@ -126,7 +126,7 @@ int OperationCodeText::parametersCount(byte aCode) {
 	return 0;
 }
 
-string OperationCodeText::getLieteral(byte code) {
+string OperationCodeText::GetLieteral(byte code) {
 	switch (code) {
 		/* Basics */
 		case OP_PUSH:			return "PUSH";
@@ -194,7 +194,7 @@ string OperationCodeText::getLieteral(byte code) {
 	return (string)s;
 }
 
-string OperationCodeText::getParameter(byte ctx, int bytecodeIdx, int paramIdx) {
+string OperationCodeText::GetParameter(byte ctx, int bytecodeIdx, int paramIdx) {
 	switch (ctx) {
 		/* Operations with 1 parameter */
 		case OP_PUSH:
@@ -211,44 +211,44 @@ string OperationCodeText::getParameter(byte ctx, int bytecodeIdx, int paramIdx) 
 		case OP_JG:
 		case OP_JL:
 		case OP_JLE:
-			return getUint(bytecodeIdx);
+			return GetUint(bytecodeIdx);
 
 		case OP_ADD_I:
 		case OP_SUB_I:
 		case OP_MUL_I:
 		case OP_DIV_I:
 		case OP_MOD_I:
-			return getInteger(bytecodeIdx);
+			return GetInteger(bytecodeIdx);
 
 		case OP_ADD_F:
 		case OP_SUB_F:
 		case OP_MUL_F:
 		case OP_DIV_F:
-			return getFloat(bytecodeIdx);
+			return GetFloat(bytecodeIdx);
 
 			/* Operations with 2 parameters*/
 		case OP_MOV:
-			return getUint(bytecodeIdx);
+			return GetUint(bytecodeIdx);
 
 		case OP_MOVI:
 			if (!paramIdx) {
-				return getUint(bytecodeIdx);
+				return GetUint(bytecodeIdx);
 			} else {
-				return getInteger(bytecodeIdx);
+				return GetInteger(bytecodeIdx);
 			}
 
 		case OP_MOVF:
 			if (!paramIdx) {
-				return getUint(bytecodeIdx);
+				return GetUint(bytecodeIdx);
 			} else {
-				return getFloat(bytecodeIdx);
+				return GetFloat(bytecodeIdx);
 			}
 
 		case OP_MOVS:
-			return getUint(bytecodeIdx);
+			return GetUint(bytecodeIdx);
 
 		case OP_DATA_FUNC:
-			return getUint(bytecodeIdx);
+			return GetUint(bytecodeIdx);
 
 
 		case OP_JE_I:
@@ -256,16 +256,16 @@ string OperationCodeText::getParameter(byte ctx, int bytecodeIdx, int paramIdx) 
 		case OP_JG_I:
 		case OP_JL_I:
 		case OP_JLE_I:
-			if (!paramIdx)  return getInteger(bytecodeIdx);
-			return getUint(bytecodeIdx);
+			if (!paramIdx)  return GetInteger(bytecodeIdx);
+			return GetUint(bytecodeIdx);
 
 		case OP_JE_F:
 		case OP_JNE_F:
 		case OP_JG_F:
 		case OP_JL_F:
 		case OP_JLE_F:
-			if (!paramIdx)  return getFloat(bytecodeIdx);
-			return getUint(bytecodeIdx);
+			if (!paramIdx)  return GetFloat(bytecodeIdx);
+			return GetUint(bytecodeIdx);
 
 
 		/* TODO: */
@@ -277,13 +277,13 @@ string OperationCodeText::getParameter(byte ctx, int bytecodeIdx, int paramIdx) 
 }
 
 
-void* OperationCodeText::getDword(int opcodeIdx) {
+void* OperationCodeText::GetDword(int opcodeIdx) {
 	void *dword = malloc(4);
 
 	return dword;
 }
 
-string OperationCodeText::getUint(int opcodeIdx) {
+string OperationCodeText::GetUint(int opcodeIdx) {
 	stringstream ss;
 
 	uint val = *(uint*)(&operationCodes[opcodeIdx]);
@@ -304,7 +304,7 @@ string OperationCodeText::getUint(int opcodeIdx) {
 	return ss.str();
 }
 
-string OperationCodeText::getInteger(int opcodeIdx) {
+string OperationCodeText::GetInteger(int opcodeIdx) {
 	stringstream ss;
 
 	int val = *(int*)(&operationCodes[opcodeIdx]);
@@ -313,7 +313,7 @@ string OperationCodeText::getInteger(int opcodeIdx) {
 	return ss.str();
 }
 
-string OperationCodeText::getFloat(int opcodeIdx) {
+string OperationCodeText::GetFloat(int opcodeIdx) {
 	stringstream ss;
 
 	float val = *(float*)(&operationCodes[opcodeIdx]);

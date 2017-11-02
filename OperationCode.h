@@ -22,21 +22,21 @@ typedef list<IntermediateOperation*>::iterator InteropIter;
 class OperationCode {
 public:
 	OperationCode();
-	bool				isBigEnd();
-	const vector<byte>	getBytecode();
-	int					length();
-	InteropIter			addInterop(IntermediateOperation *interop);
-	void				pushTail(InteropIter it);
-	void				popTail();
-	bool				buildBytecodeFromIntermediates();
+	bool				IsBigEnd();
+	const vector<byte>	GetBytecode();
+	int					Length();
+	InteropIter			AddInterop(IntermediateOperation *interop);
+	void				PushTail(InteropIter it);
+	void				PopTail();
+	bool				BuildBytecodeFromIntermediates();
 
-	OperationCode* addByte(byte val);
-	OperationCode* addDword(void *dword);
-	OperationCode* addInt(int val);
-	OperationCode* addUint(uint val);
+	OperationCode* AddByte(byte val);
+	OperationCode* AddDword(void *dword);
+	OperationCode* AddInt(int val);
+	OperationCode* AddUint(uint val);
 
-	void replaceByte(int index, byte val);
-	void replaceUint(int index, uint val);
+	void ReplaceByte(int index, byte val);
+	void ReplaceUint(int index, uint val);
 
 private:
 	std::list<IntermediateOperation*> interops;

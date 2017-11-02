@@ -145,5 +145,4 @@ private:
 		mItems = pMemory;
 	}
 };
-
-#endif
+#endif // MIXER_ARRAY_H

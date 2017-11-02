@@ -60,4 +60,4 @@ int c99_snprintf(char *rOutBuf, size_t rSize, const char *rFormat, ...)
 }
 #endif
 
-#endif
+#endif // MIXER_COMMON_H

@@ -18,7 +18,7 @@ Expression::~Expression() {
 	}
 }
 
-string Expression::gettingString() {
+string Expression::GettingString() {
 	string ret;
 
 	list<ExpressionTerm*>::iterator it;
@@ -26,7 +26,7 @@ string Expression::gettingString() {
 		if ((*it)->token != NULL) {
 			ret += (*it)->token->token + " ";
 		} else {
-			ret += (*it)->func->getString();
+			ret += (*it)->func->GetString();
 		}
 	}
 
@@ -34,81 +34,81 @@ string Expression::gettingString() {
 }
 
 
-void Expression::parseFragment(Tokens *tokens, Parser *parser) {
+void Expression::ParseFragment(Tokens *tokens, Parser *parser) {
 	postfix.clear();
 
-	buildPostfix(tokens, parser);
+	BuildPostfix(tokens, parser);
 
 	if (!canBeNull && !postfix.size()) {
 		throw InvalidTokenException("Expected expression");
 	}
 }
 
-void Expression::buildPostfix(Tokens *tokens, Parser *parser) {
+void Expression::BuildPostfix(Tokens *tokens, Parser *parser) {
 	Stack<Token*> stack;
 
 	int paranthCnt = 0;
-	const Token *next = tokens->checkNext();
-	while (tokens->isMore() && next->aType != Token::SEMICOLON && next->aType != Token::COMMA) {
+	const Token *next = tokens->CheckNext();
+	while (tokens->IsMore() && next->aType != Token::SEMICOLON && next->aType != Token::COMMA) {
 
 			if (next->aType == Token::VARIABLE_INT || next->aType == Token::VARIABLE_FLOAT) {
-				postfix.push_back(new ExpressionTerm(tokens->popNext()));
+				postfix.push_back(new ExpressionTerm(tokens->PopNext()));
 			} else if (next->aType == Token::VARIABLE_FUNCTION) {
-				Token *token = tokens->popNext();
+				Token *token = tokens->PopNext();
 
 				// Function call
-				if (tokens->checkNext()->aType == Token::PARANTH_BEG) {
+				if (tokens->CheckNext()->aType == Token::PARANTH_BEG) {
 					FunctionCall *func = new FunctionCall(token);
-					func->parseFragment(tokens, parser);
+					func->ParseFragment(tokens, parser);
 					postfix.push_back(new ExpressionTerm(func));
 				} else {
 					postfix.push_back(new ExpressionTerm(token));
 				}
 			} else if (next->aType & Token::OPERATOR) {
-				Token *token = tokens->popNext();
+				Token *token = tokens->PopNext();
 
-				while (stack.Size() && stack.peek()->aType != Token::PARANTH_BEG) {
-					if (operatorPrecedence(stack.peek()) > operatorPrecedence(token)) {
-						postfix.push_back(new ExpressionTerm(stack.pop()));
+				while (stack.Size() && stack.Peek()->aType != Token::PARANTH_BEG) {
+					if (OperatorPrecedence(stack.Peek()) > OperatorPrecedence(token)) {
+						postfix.push_back(new ExpressionTerm(stack.Pop()));
 					} else {
 						break;
 					}
 				}
 
-				stack.push(token);
+				stack.Push(token);
 			} else if (next->aType == Token::PARANTH_BEG) {
 				paranthCnt++;
-				stack.push(tokens->popNext());
+				stack.Push(tokens->PopNext());
 			} else if (next->aType == Token::PARANTH_END) {
 				paranthCnt--;
 				if (paranthCnt < 0) break;
 
-				while (stack.Size() && stack.peek()->aType != Token::PARANTH_BEG) {
-					postfix.push_back(new ExpressionTerm(stack.pop()));
+				while (stack.Size() && stack.Peek()->aType != Token::PARANTH_BEG) {
+					postfix.push_back(new ExpressionTerm(stack.Pop()));
 				}
 
 				// Pop the "("
-				stack.pop();
+				stack.Pop();
 
 				// Pop the ")"
-				tokens->popNext();
+				tokens->PopNext();
 			} else {
 				throw InvalidTokenException("Unexpected token: " + next->token);
 			}
 
-			next = tokens->checkNext();
+			next = tokens->CheckNext();
 	}
 
 	while (stack.Size()) {
-		postfix.push_back(new ExpressionTerm(stack.pop()));
+		postfix.push_back(new ExpressionTerm(stack.Pop()));
 	}
 
 	if (!isParam) {
-		delete tokens->popExpected(Token::SEMICOLON);
+		delete tokens->PopExpected(Token::SEMICOLON);
 	}
 }
 
-int Expression::operatorPrecedence(Token *token) {
+int Expression::OperatorPrecedence(Token *token) {
 	if ((token->aType & Token::OPERATOR) == 0) {
 		return -1;
 	}
@@ -133,21 +133,21 @@ int Expression::operatorPrecedence(Token *token) {
 }
 
 
-void Expression::provideIntermediates(OperationCode *opcode, Parser *parser) {
-	allocateVariables(opcode, parser);
-	handleFunctionCalls(opcode, parser);
+void Expression::ProvideIntermediates(OperationCode *opcode, Parser *parser) {
+	AllocateVariables(opcode, parser);
+	HandleFunctionCalls(opcode, parser);
 
 	if (expressionVars.size()) {
-		buildBytecodePostfix(opcode, parser);
+		BuildBytecodePostfix(opcode, parser);
 	}
 }
 
 
-void Expression::allocateVariables(OperationCode *opcode, Parser* parser) {
+void Expression::AllocateVariables(OperationCode *opcode, Parser* parser) {
 	for (list<ExpressionTerm*>::iterator it=postfix.begin(); it!=postfix.end(); it++) {
 			Token *token = (*it)->token;
 			if (token && (token->aType & Token::OPERATOR) == 0) {
-				expressionVars[*it] = setVariable(parser, "");
+				expressionVars[*it] = SetVariable(parser, "");
 			}
 	}
 
@@ -156,16 +156,16 @@ void Expression::allocateVariables(OperationCode *opcode, Parser* parser) {
 
 			Token *token = it->first->token;
 
-			allocateVariable(opcode, it->second);
+			AllocateVariable(opcode, it->second);
 
 			if (token->aType == Token::VARIABLE_FUNCTION) {
 				// Copy the original variable into our new one
-				opcode->addInterop(new ByteOperation(OP_MOV));
+				opcode->AddInterop(new ByteOperation(OP_MOV));
 
-				uint src = getVariableID(parser, token->token);
+				uint src = GetVariableID(parser, token->token);
 
-				opcode->addInterop(new DwordOperation(&it->second));
-				opcode->addInterop(new DwordOperation(&src));
+				opcode->AddInterop(new DwordOperation(&it->second));
+				opcode->AddInterop(new DwordOperation(&src));
 			} else {
 				// The value to be copied is a numerical value.
 				byte operation = 0;
@@ -181,27 +181,27 @@ void Expression::allocateVariables(OperationCode *opcode, Parser* parser) {
 					throw InvalidTokenException("Invalid token expression of type");
 				}
 
-				opcode->addInterop(new ByteOperation(operation));
-				opcode->addInterop(new DwordOperation(&it->second));
-				opcode->addInterop(new DwordOperation(dword));
+				opcode->AddInterop(new ByteOperation(operation));
+				opcode->AddInterop(new DwordOperation(&it->second));
+				opcode->AddInterop(new DwordOperation(dword));
 
 				free(dword);
 			}
 	}
 }
 
-void Expression::handleFunctionCalls(OperationCode *opcode, Parser *parser) {
+void Expression::HandleFunctionCalls(OperationCode *opcode, Parser *parser) {
 	for (list<ExpressionTerm*>::iterator it=postfix.begin(); it!=postfix.end(); it++) {
 			FunctionCall *fcall = (*it)->func;
 			if (fcall) {
-				fcall->provideIntermediates(opcode, parser);
+				fcall->ProvideIntermediates(opcode, parser);
 
 				if (postfix.size() > 1) {
-					uint id = setVariable(parser, "");
+					uint id = SetVariable(parser, "");
 
-					allocateVariable(opcode, id);
-					opcode->addInterop(new ByteOperation(OP_POPMOV));
-					opcode->addInterop(new DwordOperation(&id));
+					AllocateVariable(opcode, id);
+					opcode->AddInterop(new ByteOperation(OP_POPMOV));
+					opcode->AddInterop(new DwordOperation(&id));
 
 					expressionVars[*it] = id;
 				}
@@ -209,21 +209,21 @@ void Expression::handleFunctionCalls(OperationCode *opcode, Parser *parser) {
 	}
 }
 
-void Expression::buildBytecodePostfix(OperationCode *opcode, Parser *parser) {
+void Expression::BuildBytecodePostfix(OperationCode *opcode, Parser *parser) {
 	for (list<ExpressionTerm*>::iterator it = postfix.begin(); it != postfix.end(); it++) {
 			ExpressionTerm *term = *it;
 
 			if (expressionVars.count(term) != 0) {
-				opcode->addInterop(new ByteOperation(OP_PUSH));
-				opcode->addInterop(new DwordOperation(&expressionVars[term]));
+				opcode->AddInterop(new ByteOperation(OP_PUSH));
+				opcode->AddInterop(new DwordOperation(&expressionVars[term]));
 			} else {
-				addOperator(opcode, term->token);
+				AddOperator(opcode, term->token);
 			}
 	}
 }
 
 
-void Expression::addOperator(OperationCode *opcode, Token *token) {
+void Expression::AddOperator(OperationCode *opcode, Token *token) {
 	if (!token) {
 		throw NullPointerException("Token cannot be nil");
 	}
@@ -249,5 +249,5 @@ void Expression::addOperator(OperationCode *opcode, Token *token) {
 		throw NotImplementedException("Operator is not implemented: " + s);
 	}
 
-	opcode->addInterop(new ByteOperation(oper));
+	opcode->AddInterop(new ByteOperation(oper));
 }

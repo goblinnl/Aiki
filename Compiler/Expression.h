@@ -14,10 +14,10 @@ class Expression : public Fragment {
 public:
 	Expression(bool isFunctionParam=false, bool canBeNull=true);
 	~Expression();
-	std::string	gettingString();
+	std::string	GettingString();
 
-	void parseFragment(Tokens *aTokens, Parser *aParser);
-	void provideIntermediates(OperationCode *aOpcode, Parser *aParser);
+	void ParseFragment(Tokens *aTokens, Parser *aParser);
+	void ProvideIntermediates(OperationCode *aOpcode, Parser *aParser);
 
 private:
 	struct ExpressionTerm {
@@ -41,14 +41,14 @@ private:
 
 	std::map<ExpressionTerm*,uint> expressionVars;
 
-	void buildPostfix(Tokens *tokens, Parser *parser);
-	int	operatorPrecedence(Token *token);
+	void BuildPostfix(Tokens *tokens, Parser *parser);
+	int	OperatorPrecedence(Token *token);
 
-	void allocateVariables(OperationCode *opcode, Parser *parser);
-	void handleFunctionCalls(OperationCode *opcode, Parser *parser);
-	void buildBytecodePostfix(OperationCode *opcode, Parser *parser);
+	void AllocateVariables(OperationCode *opcode, Parser *parser);
+	void HandleFunctionCalls(OperationCode *opcode, Parser *parser);
+	void BuildBytecodePostfix(OperationCode *opcode, Parser *parser);
 
-	void addOperator(OperationCode *opcode, Token *token);
+	void AddOperator(OperationCode *opcode, Token *token);
 };
 
 #endif // EXPRESSION_H

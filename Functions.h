@@ -15,13 +15,13 @@
 *****/
 
 namespace AikiStd {
-	void registerFunctions(Parser *aParser);
+	void RegisterFunctions(Parser *aParser);
 
-	int	getParameterCount(uint aFuncID);
+	int	GetParameterCount(uint aFuncID);
 
-	Variable* callStdFunc(uint ID, int aArgCount, Variable **aVariable);
-	Variable* testFunction(Variable *aVariable1, Variable *aVariable2);
-	Variable* print(Variable *aVariable);
+	Variable* CallStdFunc(uint ID, int aArgCount, Variable **aVariable);
+	Variable* TestFunction(Variable *aVariable1, Variable *aVariable2);
+	Variable* Print(Variable *aVariable);
 };
 
 #endif // FUNCTIONS_H

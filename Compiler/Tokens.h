@@ -28,7 +28,7 @@ struct Token {
 		COMMA = 0x00020000,		
 	};
 
-	static std::string getStringValue(Token::Type aType);
+	static std::string GetStringValue(Token::Type aType);
 	Token() { aType = INVALID; }
 	Token(std::string aToken, Type t = INVALID) {
 		token = aToken;
@@ -44,32 +44,32 @@ typedef std::list<Token*>::iterator TokenIterertor;
 class Tokens {
 	public:
 		Tokens();
-		void generateTokens(std::string aFile);
-		void setPointer(TokenIterertor aFront);	
-		Token* popIfExists(Token::Type aType);
-		Token* popExpected(Token::Type aType);
-		Token* popNext();
-		Token* checkNext();
-		TokenIterertor getFirstIterator();
-		TokenIterertor getPointer();
-		bool isMore();
+		void GenerateTokens(std::string aFile);
+		void SetPointer(TokenIterertor aFront);	
+		Token* PopIfExists(Token::Type aType);
+		Token* PopExpected(Token::Type aType);
+		Token* PopNext();
+		Token* CheckNext();
+		TokenIterertor GetFirstIterator();
+		TokenIterertor GetPointer();
+		bool IsMore();
 	
 
 	private:
 		std::list<Token*> tokens;
 		TokenIterertor pointer;
-		bool getToken(std::ifstream &aFile);
-		bool getOperator(std::ifstream &aFile);
-		bool getSpecialChar(std::ifstream &aFile);
-		bool getWord(std::ifstream &aFile);
-		bool peekOperator(std::ifstream &aFile, char aContext=0);	
-		bool reservedWord(std::string aWord);
-		bool isValidName(std::string aName);
-		bool blockNextChar(std::ifstream &aFile, bool aNumerical);
-		bool reachedEnd(std::ifstream &aFile);
-		void seekNextToken(std::ifstream &aFile);
-		void skipLine(std::ifstream &aFile);	
-		void determineOperator(Token* aToken);
+		bool GetToken(std::ifstream &aFile);
+		bool GetOperator(std::ifstream &aFile);
+		bool GetSpecialChar(std::ifstream &aFile);
+		bool GetWord(std::ifstream &aFile);
+		bool PeekOperator(std::ifstream &aFile, char aContext=0);	
+		bool ReservedWord(std::string aWord);
+		bool IsValidName(std::string aName);
+		bool BlockNextChar(std::ifstream &aFile, bool aNumerical);
+		bool ReachedEnd(std::ifstream &aFile);
+		void SeekNextToken(std::ifstream &aFile);
+		void SkipLine(std::ifstream &aFile);	
+		void DetermineOperator(Token* aToken);
 };
 
 #endif // TOKENS_H

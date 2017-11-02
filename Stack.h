@@ -40,7 +40,7 @@ public:
 		}
 	}
 
-	void push(T val) {
+	void Push(T val) {
 		if (++size >= maxSize) {
 			throw StackOverflowException();
 		}
@@ -60,7 +60,7 @@ public:
 		}
 	}
 
-	T pop() {
+	T Pop() {
 		if (--size < 0) {
 			throw StackUnderflowException();
 		}
@@ -74,7 +74,7 @@ public:
 		return ret;
 	}
 
-	T peek() {
+	T Peek() {
 		if (back != NULL) {
 			return back->val;
 		}
@@ -82,7 +82,7 @@ public:
 		throw StackUnderflowException("Naked stack-peek is illegal");
 	}
 
-	T peek(int index) {
+	T Peek(int index) {
 		Node *node = front;
 
 		for (int i=0; i<index && node; i++) {

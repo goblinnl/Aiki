@@ -14,23 +14,23 @@ class Variable {
 			OBJECT,
 		};
 
-		static Variable* createVariable(const char *aValue);
-		static Type	getType(std::string aString);
+		static Variable* CreateVariable(const char *aValue);
+		static Type	GetType(std::string aString);
 
 
 		Variable(int aID = 0);
 		~Variable();
 
-		Type getType() const;
-		int getID() const;
-		int getInteger() const;
-		float getFloat() const;
-		const char*	getString() const;
+		Type GetType() const;
+		int GetID() const;
+		int GetInteger() const;
+		float GetFloat() const;
+		const char*	GetString() const;
 
-		void set(int);
-		void set(float);
-		void set(const char*);
-		void undefine();
+		void Set(int);
+		void Set(float);
+		void Set(const char*);
+		void Undefine();
 
 		void operator=(const Variable &aVariable);
 		void operator+=(const Variable &aVariable);
@@ -73,8 +73,8 @@ class Variable {
 		char* valueString;
 		int valueID;
 
-		bool convert(const char *aString);
-		void clear();
+		bool Convert(const char *aString);
+		void Clear();
 
 		enum commandPrompResults {
 			UNDEFCMP = 0x01,

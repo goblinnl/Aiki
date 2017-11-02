@@ -85,4 +85,4 @@ public:
 MString operator+(const MString &rLHS, const char* rRHS);
 MString operator+(const MString &rLHS, const char rRHS);
 
-#endif
+#endif // MIXER_STRING_H

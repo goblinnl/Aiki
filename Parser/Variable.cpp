@@ -8,15 +8,15 @@
 #include <sstream>
 #include <math.h>
 
-Variable* Variable::createVariable(const char *aValue) {
+Variable* Variable::CreateVariable(const char *aValue) {
 	assert(aValue != NULL && strlen(aValue) != 0);
 
 	Variable *variable = new Variable();
-	variable->set(aValue);
+	variable->Set(aValue);
 	return variable;
 }
 
-Variable::Type Variable::getType(std::string aString) {
+Variable::Type Variable::GetType(std::string aString) {
 	bool flt = false;
 
 	for (int i=0; i < (int)aString.length(); i++) {
@@ -57,37 +57,37 @@ Variable::~Variable() {
 	}	
 }
 
-Variable::Type Variable::getType() const {
+Variable::Type Variable::GetType() const {
 	return type;
 }
 
-int Variable::getID() const {
+int Variable::GetID() const {
 	return valueID;
 }
 
-void Variable::set(int aValue) {
-	clear();
+void Variable::Set(int aValue) {
+	Clear();
 
 	type = INT;
 	valueInteger = aValue;
 }
 
-void Variable::set(float aValue) {
-	clear();
+void Variable::Set(float aValue) {
+	Clear();
 
 	type = FLOAT;
 	valueFloat = aValue;
 }
 
-void Variable::set(const char *aValue) {
-	clear();
+void Variable::Set(const char *aValue) {
+	Clear();
 
-	Variable::Type t = getType(aValue);
+	Variable::Type t = GetType(aValue);
 	if (t == INT) {
-		set(atoi(aValue));
+		Set(atoi(aValue));
 		return;
 	} else if (t == FLOAT) {
-		set((float)atof(aValue));
+		Set((float)atof(aValue));
 		return;
 	}
 
@@ -102,14 +102,14 @@ void Variable::set(const char *aValue) {
 	strcpy_s(valueString, strlen(aValue), aValue);
 }
 
-void Variable::undefine() {
+void Variable::Undefine() {
 	type = UNDEFINED;
 	valueFloat = 0.f;
 	valueInteger = 0;
 	valueString = NULL;
 }
 
-int Variable::getInteger() const {
+int Variable::GetInteger() const {
 	if (type == INT) {
 		return valueInteger;
 	} else if (type == FLOAT) {
@@ -120,19 +120,19 @@ int Variable::getInteger() const {
 	return 0;
 }
 
-float Variable::getFloat() const {
+float Variable::GetFloat() const {
 	if (type == FLOAT) {
 		return valueFloat;
 	} else if (type == INT) {
-		return valueInteger;
+		return (float)valueInteger;
 	} else if (type == STRING && valueString) {
-		return strtod(valueString, NULL);
+		return (float)strtod(valueString, NULL);
 	}
 
 	return 0.0;
 }
 
-const char* Variable::getString() const {
+const char* Variable::GetString() const {
 	if (type == STRING) {
 		return valueString;
 	} else if (type == FLOAT) {
@@ -148,24 +148,24 @@ const char* Variable::getString() const {
 }
 
 void Variable::operator=(const Variable &aVariable) {
-	Variable::Type type = aVariable.getType();
+	Variable::Type type = aVariable.GetType();
 
 	if (type == INT) {
-		set(aVariable.getInteger());
+		Set(aVariable.GetInteger());
 	} else if (type == FLOAT) {
-		set(aVariable.getFloat());
+		Set(aVariable.GetFloat());
 	} else if (type == STRING) {
-		set(aVariable.getString());
+		Set(aVariable.GetString());
 	} else {
-		clear();
+		Clear();
 	}
 }
 
 void Variable::operator+=(const Variable &aVariable) {
 	if (type == INT) {
-		valueInteger += aVariable.getInteger();
+		valueInteger += aVariable.GetInteger();
 	} else if (type == FLOAT) {
-		valueFloat += aVariable.getFloat();
+		valueFloat += aVariable.GetFloat();
 	}
 }
 
@@ -175,7 +175,7 @@ void Variable::operator+=(const int &aValue) {
 	} else if (type == FLOAT) {
 		valueFloat += aValue;
 	} else if (type == UNDEFINED) {
-		set(aValue);
+		Set(aValue);
 	}
 }
 
@@ -183,17 +183,17 @@ void Variable::operator+=(const float &aValue) {
 	if (type == FLOAT) {
 		valueFloat += aValue;
 	} else if (type == INT) {
-		set(aValue + (float)valueInteger);
+		Set(aValue + (float)valueInteger);
 	} else if (type == UNDEFINED) {
-		set(aValue);
+		Set(aValue);
 	}
 }
 
 void Variable::operator-=(const Variable &aVariable) {
 	if (type == INT) {
-		valueInteger -= aVariable.getInteger();
+		valueInteger -= aVariable.GetInteger();
 	} else if (type == FLOAT) {
-		valueFloat -= aVariable.getFloat();
+		valueFloat -= aVariable.GetFloat();
 	}
 }
 
@@ -203,7 +203,7 @@ void Variable::operator-=(const int &aValue) {
 	} else if (type == FLOAT) {
 		valueFloat -= aValue;
 	} else if (type == UNDEFINED) {
-		set(-aValue);
+		Set(-aValue);
 	}
 }
 
@@ -211,17 +211,17 @@ void Variable::operator-=(const float &aValue) {
 	if (type == FLOAT) {
 		valueFloat -= aValue;
 	} else if (type == INT) {
-		set((float)valueInteger - aValue);
+		Set((float)valueInteger - aValue);
 	} else if (type == UNDEFINED) {
-		set(-aValue);
+		Set(-aValue);
 	}
 }
 
 void Variable::operator*=(const Variable &aVariable) {
 	if (type == INT) {
-		valueInteger *= aVariable.getInteger();
+		valueInteger *= aVariable.GetInteger();
 	} else if (type == FLOAT) {
-		valueFloat *= aVariable.getFloat();
+		valueFloat *= aVariable.GetFloat();
 	}
 }
 
@@ -237,19 +237,19 @@ void Variable::operator*=(const float &aValue) {
 	if (type == FLOAT) {
 		valueFloat *= aValue;
 	} else if (type == INT) {
-		set((float)valueInteger * aValue);
+		Set((float)valueInteger * aValue);
 	}
 }
 
 void Variable::operator/=(const Variable &aVariable) {
-	if (aVariable.getFloat() == 0.f || !aVariable.getInteger()) {
+	if (aVariable.GetFloat() == 0.f || !aVariable.GetInteger()) {
 		throw "DIVISION BY ZERO";
 	}
 
 	if (type == INT) {
-		valueInteger /= aVariable.getInteger();
+		valueInteger /= aVariable.GetInteger();
 	} else if (type == FLOAT) {
-		valueFloat /= aVariable.getFloat();
+		valueFloat /= aVariable.GetFloat();
 	}
 }
 
@@ -265,12 +265,12 @@ void Variable::operator/=(const float &aValue) {
 	if (type == FLOAT) {
 		valueFloat /= aValue;
 	} else if (type == INT) {
-		set((float)valueInteger / aValue);
+		Set((float)valueInteger / aValue);
 	}
 }
 
 void Variable::operator%=(const Variable &aVariable) {
-	set(getInteger() % aVariable.getInteger());
+	Set(GetInteger() % aVariable.GetInteger());
 }
 
 void Variable::operator%=(const int &aVariable) {
@@ -369,7 +369,7 @@ bool Variable::operator!=(const float &aValue) const {
 	return res != EQUAL;
 }
 
-void Variable::clear() {
+void Variable::Clear() {
 	type = UNDEFINED;
 
 	if (valueString) {
@@ -381,20 +381,20 @@ void Variable::clear() {
 }
 
 Variable::commandPrompResults Variable::CompareWith(const Variable &aVariable) const {
-	Variable::Type type = aVariable.getType();
+	Variable::Type type = aVariable.GetType();
 	if (type == FLOAT || type == FLOAT) {
-		return CompareWithFloat(aVariable.getFloat());
+		return CompareWithFloat(aVariable.GetFloat());
 	} else if (type == INT && type == INT) {
-		return CompareWithInt(aVariable.getInteger());
+		return CompareWithInt(aVariable.GetInteger());
 	} else if (type == STRING || type == STRING) {
-		return CompareWithString(aVariable.getString());
+		return CompareWithString(aVariable.GetString());
 	}
 
 	return UNDEFCMP;
 }
 
 Variable::commandPrompResults Variable::CompareWithInt(const int &aValue) const {
-	int tVal = getInteger();
+	int tVal = GetInteger();
 
 	if (tVal < aValue) {
 		return LESS;
@@ -408,7 +408,7 @@ Variable::commandPrompResults Variable::CompareWithInt(const int &aValue) const 
 }
 
 Variable::commandPrompResults Variable::CompareWithFloat(const float &aValue) const {
-	float tVal = getFloat();
+	float tVal = GetFloat();
 
 	if ((float)fabs((float)tVal-aValue) < 0.0000001f) {
 		return EQUAL;
@@ -422,7 +422,7 @@ Variable::commandPrompResults Variable::CompareWithFloat(const float &aValue) co
 }
 
 Variable::commandPrompResults Variable::CompareWithString(const char *aValue) const {
-	const char *tVal = getString();
+	const char *tVal = GetString();
 
 	if (strcmp(tVal, aValue) == 0) {
 		return EQUAL;
