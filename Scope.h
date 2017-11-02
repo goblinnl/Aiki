@@ -1,7 +1,7 @@
 #ifndef SCOPETYPE_H
 #define SCOPETYPE_H
 
-// Interal
+// Internal
 #include "./Parser/Variable.h"
 #include "./codes.h"
 #include "./stack.h"
@@ -14,109 +14,108 @@
 template<typename T>
 
 class ScopeType {
-	public:
-		ScopeType() {
-			varCounter = 1;
+protected:
+	std::map<uint, T> mVars;
+	Stack<ScopeType<T>*> mJoined;
+	uint mVarCounter;
+
+public:
+	ScopeType() {
+		mVarCounter = 1;
+	}
+
+	~ScopeType() {
+		typename std::map<uint, T>::iterator it;
+
+		for(it = mVars.begin(); it != mVars.end(); it++) {
+			delete it->second;
 		}
 
-		~ScopeType() {
-			typename map<uint,T>::iterator it;
+		while(mJoined.Size() > 0) {
+			delete mJoined.Pop();
+		}
+	}
 
-			for (it = vars.begin(); it != vars.end(); it++) {
-				delete it->second;
-			}
-
-			while (joined.Size() > 0) {
-				delete joined.Pop();
+	uint GetItemID(T rValue) {
+		for(int i = mJoined.Size() - 1; i >= 0; i--) {
+			uint id = mJoined.Peek(i)->GetItemID(rValue);
+			if(id != 0) {
+				return id;
 			}
 		}
 
-		uint GetItemID(T aValue) {
-			for (int i=joined.Size()-1; i>=0; i--) {
-				uint id = joined.Peek(i)->GetItemID(aValue);
-				if (id != 0) {
-					return id;
-				}
+		typename std::map<uint, T>::iterator it;
+		for(it = mVars.begin(); it != mVars.end(); it++) {
+			if(*(it->second) == *rValue) {
+				return it->first;
 			}
-
-			typename map<uint,T>::iterator it;
-			for (it = vars.begin(); it != vars.end(); it++) {
-				if (*(it->second) == *aValue) {
-					return it->first;
-				}
-			}
-
-			return 0;
 		}
 
-		bool ItemExists(uint aID) {
-			for (int i=joined.Size()-1; i>=0; i--) {
-				if (joined.Peek(i)->ItemExists(aID)) {
-					return true;
-				}
-			}
+		return 0;
+	}
 
-			if (vars.count(aID) != 0) {
+	bool ItemExists(uint rID) {
+		for(int i = mJoined.Size() - 1; i >= 0; i--) {
+			if(mJoined.Peek(i)->ItemExists(rID)) {
 				return true;
 			}
-
-			return false;
 		}
 
-		void AddItem(uint id, T t) {
-			varCounter++;
+		if(mVars.count(rID) != 0) {
+			return true;
+		}
 
-			if (joined.Size()) {
-				ScopeType<T> *nested = joined.Peek();
-				nested->AddItem(id, t);
-				return;
+		return false;
+	}
+
+	void AddItem(uint rID, T rTemp) {
+		mVarCounter++;
+
+		if(mJoined.Size()) {
+			ScopeType<T> *nested = mJoined.Peek();
+			nested->AddItem(rID, rTemp);
+			return;
+		}
+
+		mVars[rID] = rTemp;
+	}
+
+	uint GetVarCounter() {
+		return mVarCounter;
+	}
+
+	T GetVar(uint rID) {
+		for(int i = mJoined.Size() - 1; i >= 0; i--) {
+			T temp = mJoined.Peek(i)->GetVar(rID);
+			if(temp) {
+				return temp;
 			}
-
-			vars[id] = t;
 		}
 
-		uint GetVarCounter() {
-			return varCounter;
+		if(mVars.count(rID) == 0) {
+			return NULL;
 		}
 
-		T GetVar(uint aID) {
-			for (int i=joined.Size()-1; i>=0; i--) {
-				T t = joined.Peek(i)->GetVar(aID);
-				if (t) {
-					return t;
-				}
-			}
+		return mVars[rID];
+	}
 
-			if (vars.count(aID) == 0) {
-				return NULL;
-			}
+	int NestCount() {
+		return mJoined.Size();
+	}
 
-			return vars[aID];
-		}
+	void PushNestedScope() {
+		ScopeType<T> *nested = new ScopeType<T>();
+		mJoined.Push(nested);
+	}
 
-
-		int NestCount() {
-			return joined.Size();
-		}
-
-		void PushNestedScope() {
-			ScopeType<T> *nested = new ScopeType<T>();
-			joined.Push(nested);
-		}
-
-		void PopNestedScope() {
-			delete joined.Pop();
-		}
-
-	protected:
-		map<uint,T> vars;
-		Stack<ScopeType<T>*> joined;
-		uint varCounter;
+	void PopNestedScope() {
+		delete mJoined.Pop();
+	}
 };
-#endif
+#endif // SCOPETYPE_H
 
-/* ScopeType 
-* Default scope, used at runtime. 
+/* ScopeType
+* Default scope, used at runtime.
 * ID's are mapped directly to the variable objects
 */
 typedef ScopeType<Variable*> Scope;
@@ -125,4 +124,4 @@ typedef ScopeType<Variable*> Scope;
 * Scope used for scope checking during compilation
 * IDs are mapped to variable names rather than actual variables
 */
-typedef ScopeType<string*> CompileScope;
+typedef ScopeType<std::string*> CompileScope;

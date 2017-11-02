@@ -10,23 +10,23 @@
 #include <stdexcept>
 #include <string>
 
-// Namespaces
-using namespace std;
+//using namespace std;
+
 
 #define EXCEPTION_BEGIN(_NAME, _TXTDEFAULT)	\
-	class _NAME : public runtime_error {	\
+	class _NAME : public std::runtime_error {	\
 	public: 								\
-	_NAME(string txt=_TXTDEFAULT)			\
-			:runtime_error(txt){}			\
+	_NAME(std::string txt = _TXTDEFAULT)	\
+			:std::runtime_error(txt){}			\
 	const char *what() {					\
-		string str = #_NAME;				\
+		std::string str = #_NAME;			\
 		str += ": ";						\
 		str += runtime_error::what();		\
 		return str.c_str();					\
-	}
+		}
 
 #define EXCEPTION_END	\
-	};
+		};
 
 EXCEPTION_BEGIN(InternalErrorException, "Internal error")
 EXCEPTION_END

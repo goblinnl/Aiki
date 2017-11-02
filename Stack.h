@@ -1,16 +1,14 @@
 #ifndef STACK_H
 #define STACK_H
 
-// External
-#include <stdlib.h>
-
 // Internal
 #include "Exception.h"
 
-using namespace std;
+// External
+#include <stdlib.h>
+
 
 template<typename T> class Stack {
-
 private:
 	struct Node {
 		Node() {
@@ -22,51 +20,57 @@ private:
 		Node *next;
 	};
 
+private:
+	int mMaxSize;
+	int mSize;
+
+	Node *mFront;
+	Node *mBack;
 
 public:
-	Stack(int aMaxSize = 2048) {
-		maxSize = aMaxSize;
-		size = 0;
-		back = 0;
-		front = 0;
+	Stack(int rMaxSize = 2048) {
+		mMaxSize = rMaxSize;
+		mSize = 0;
+		mBack = 0;
+		mFront = 0;
 	}
 
 	~Stack() {
-		while (back) {
-			Node *prev = back->prev;
-			delete back;
+		while(mBack) {
+			Node *prev = mBack->prev;
+			delete mBack;
 
-			back = prev;
+			mBack = prev;
 		}
 	}
 
-	void Push(T val) {
-		if (++size >= maxSize) {
+	void Push(T rVal) {
+		if(++mSize >= mMaxSize) {
 			throw StackOverflowException();
 		}
 
 		Node *node = new Node();
-		node->val = val;
-		node->prev = back;
+		node->val = rVal;
+		node->prev = mBack;
 
-		if (back) {
-			back->next = node;
+		if(mBack) {
+			mBack->next = node;
 		}
 
-		back = node;
+		mBack = node;
 
-		if (size == 1) {
-			front = back;
+		if(mSize == 1) {
+			mFront = mBack;
 		}
 	}
 
 	T Pop() {
-		if (--size < 0) {
+		if(--mSize < 0) {
 			throw StackUnderflowException();
 		}
 
-		Node *node = back;
-		back = back->prev;
+		Node *node = mBack;
+		mBack = mBack->prev;
 
 		T ret = node->val;
 		delete node;
@@ -75,17 +79,17 @@ public:
 	}
 
 	T Peek() {
-		if (back != NULL) {
-			return back->val;
+		if(mBack != NULL) {
+			return mBack->val;
 		}
 
 		throw StackUnderflowException("Naked stack-peek is illegal");
 	}
 
-	T Peek(int index) {
-		Node *node = front;
+	T Peek(int rIndex) {
+		Node *node = mFront;
 
-		for (int i=0; i<index && node; i++) {
+		for(int i = 0; i < rIndex && node; i++) {
 			node = node->next;
 		}
 
@@ -93,15 +97,7 @@ public:
 	}
 
 	int Size() {
-		return size;
+		return mSize;
 	}
-
-private:
-	int maxSize;
-	int size;
-
-	Node *front;
-	Node *back;
 };
-
 #endif // STACK_H

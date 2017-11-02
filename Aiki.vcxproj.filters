@@ -45,9 +45,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Parser\Variable.hpp">
-      <Filter>Header Files\Parser</Filter>
-    </ClInclude>
     <ClInclude Include="Codes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -106,6 +103,9 @@
       <Filter>Header Files\Mixer</Filter>
     </ClInclude>
     <ClInclude Include="Parser\Environment.h">
+      <Filter>Header Files\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="Parser\Variable.h">
       <Filter>Header Files\Parser</Filter>
     </ClInclude>
   </ItemGroup>

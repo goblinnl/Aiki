@@ -13,46 +13,46 @@ class Tokens;
 struct Token;
 
 class Statement : public Fragment {
-	protected:
-		Statement();
+protected:
+	Statement();
 
-	public:
-		static Statement* CreateStatement(Tokens *aTokens, Parser *aParser);
+public:
+	static Statement* CreateStatement(Tokens *rTokens, Parser *rParser);
 };
 
 class IfStatement : public Statement {
-	public:
-		void ParseFragment(Tokens *aTokens, Parser *aParser);
-		void ProvideIntermediates(OperationCode *aOpcode, Parser *aParser);
+private:
+	bool mAlloc;
+	Token *mAssignee;
+	Token *mOperators;
+	Expression *mExpression;
 
-	private:
-		bool alloc;
-		Token *assignee;
-		Token *operators;
-		Expression *expression;
+public:
+	void ParseFragment(Tokens *rTokens, Parser *rParser);
+	void ProvideIntermediates(OperationCode *rOpcode, Parser *rParser);
 };
 
 class AssignStatement : public Statement {
+private:
+	bool mAlloc;
+	Token *mAssignee;
+	Token *mOperators;
+	Expression *mExpression;
+
 public:
-	void ParseFragment(Tokens *aTokens, Parser *aParser);
-	void ProvideIntermediates(OperationCode *aOpcode, Parser *aParser);
+	void ParseFragment(Tokens *rTokens, Parser *rParser);
+	void ProvideIntermediates(OperationCode *rOpcode, Parser *rParser);
 
 private:
-	bool alloc;
-	Token *assignee;
-	Token *operators;
-	Expression *expression;
-
-	void HandleOperator(OperationCode *aOpcode, uint varID);
+	void HandleOperator(OperationCode *rOpcode, uint rVarID);
 };
 
 class ReturnStatement : public Statement {
-	public:
-		void ParseFragment(Tokens *aTokens, Parser *aParser);
-		void ProvideIntermediates(OperationCode *aOpcode, Parser *aParser);
+private:
+	Expression *mExpression;
 
-	private:
-		Expression *expression;
+public:
+	void ParseFragment(Tokens *rTokens, Parser *rParser);
+	void ProvideIntermediates(OperationCode *rOpcode, Parser *rParser);
 };
-
 #endif // STATEMENT_H

@@ -1,7 +1,7 @@
 #ifndef OPERATIONCODE_H
 #define OPERATIONCODE_H
 
-/* Operation Code 
+/* Operation Code
 * Defines a wrapper for modifying byte codes at run-time
 */
 
@@ -17,33 +17,32 @@
 
 class IntermediateOperation;
 
-typedef list<IntermediateOperation*>::iterator InteropIter;
+typedef std::list<IntermediateOperation*>::iterator InteropIter;
 
 class OperationCode {
+private:
+	std::list<IntermediateOperation*> mInterops;
+	Stack<InteropIter> mInsertTails;
+
+	std::vector<byte> mBytes;
+	bool mBigEnd;
+
 public:
 	OperationCode();
-	bool				IsBigEnd();
-	const vector<byte>	GetBytecode();
-	int					Length();
-	InteropIter			AddInterop(IntermediateOperation *interop);
-	void				PushTail(InteropIter it);
-	void				PopTail();
-	bool				BuildBytecodeFromIntermediates();
+	bool IsBigEnd();
+	const std::vector<byte>	GetBytecode();
+	int Length();
+	InteropIter AddInterop(IntermediateOperation *rInterop);
+	void PushTail(InteropIter rIt);
+	void PopTail();
+	bool BuildBytecodeFromIntermediates();
 
-	OperationCode* AddByte(byte val);
-	OperationCode* AddDword(void *dword);
-	OperationCode* AddInt(int val);
-	OperationCode* AddUint(uint val);
+	OperationCode* AddByte(byte rVal);
+	OperationCode* AddDword(void *rDword);
+	OperationCode* AddInt(int rVal);
+	OperationCode* AddUint(uint rVal);
 
-	void ReplaceByte(int index, byte val);
-	void ReplaceUint(int index, uint val);
-
-private:
-	std::list<IntermediateOperation*> interops;
-	Stack<InteropIter>	insertTails;
-
-	vector<byte>		bytes;
-	bool				bigEnd;
+	void ReplaceByte(int rIndex, byte rVal);
+	void ReplaceUint(int rIndex, uint rVal);
 };
-
 #endif // OPERATIONCODE_H

@@ -13,65 +13,62 @@ class Expression;
 class PositionReference;
 
 class FunctionCall : public Fragment {
-
 public:
-	FunctionCall(Token *aFuncToken);
-	void ParseFragment(Tokens * aTokens, Parser *aParser);
-	void ProvideIntermediates(OperationCode *aOpcode, Parser *aParser);
+	FunctionCall(Token *rFuncToken);
+	void ParseFragment(Tokens * rTokens, Parser *rParser);
+	void ProvideIntermediates(OperationCode *rOpcode, Parser *rParser);
 	std::string	GetString();
 
 protected:
-	Token::Type		delimter;
-	Token			*functionToken;
-	std::list<Expression*>	parameters;
-	void HandleParameters(OperationCode *aOpcode, Parser *aParser);
+	Token::Type		mDelimter;
+	Token			*mFunctionToken;
+	std::list<Expression*>	mParameters;
+	void HandleParameters(OperationCode *rOpcode, Parser *rParser);
 };
 
 class FunctionDefinition : public Fragment {
+protected:
+	std::list<Token*> mParameter;
+	PositionReference *mPositionReference;
+	uint mFunctionID;
 
 public:
-	static bool	IsFunctionDefinition(Tokens *aTokens);
 	FunctionDefinition();
 	PositionReference* GetPositionReference();
 
-	void ParseFragment(Tokens *aTokens, Parser *aParser);
-	void ProvideIntermediates(OperationCode *aOpcode, Parser *aParser);
+	void ParseFragment(Tokens *aTokens, Parser *rParser);
+	void ProvideIntermediates(OperationCode *rOpcode, Parser *rParser);
 
 	uint GetID();
 
-protected:
-	std::list<Token*> parameter;
-	PositionReference *positionReference;
-	uint functionID;
+	static bool	IsFunctionDefinition(Tokens *rTokens);
+
 };
 
 
 class FunctionTail : public Fragment {
-
 public:
 	FunctionTail();
-	void ParseFragment(Tokens *aTokens, Parser *aParser);
-	void ProvideIntermediates(OperationCode *aOpcode, Parser *aParser);
+	void ParseFragment(Tokens *rTokens, Parser *rParser);
+	void ProvideIntermediates(OperationCode *rOpcode, Parser *rParser);
 	PositionReference*	GetPositionReference();
 
 private:
-	PositionReference *posRef;
+	PositionReference *mPosRef;
 };
 
 class FunctionSignature {
+private:
+	std::string mSignatureName;
+	int	mParameterCount;
+	uint mFunctionID;
 
 public:
-	FunctionSignature(std::string aName, int aParams);
+	FunctionSignature(std::string rName, int rParams);
 	std::string GetName();
 	int GetParameterCount();
 
 	uint GetID();
-	void SetID(uint aID);
-
-private:
-	std::string signatureName;
-	int	parameterCount;
-	uint functionID;
+	void SetID(uint rID);
 };
-
 #endif  // FUNCTION_H

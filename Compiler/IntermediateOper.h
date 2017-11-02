@@ -9,47 +9,46 @@
 
 
 class IntermediateOperation {
-	public:
-		virtual void ProvideBytecode(OperationCode * aOpcode) = 0;
+public:
+	virtual void ProvideBytecode(OperationCode * rOpcode) = 0;
 };
-
 
 class ByteOperation : public IntermediateOperation {
-	public:
-		ByteOperation(byte aVal);
-		virtual void ProvideBytecode(OperationCode *aOpcode);
-	protected:
-		byte bytes;
-};
+protected:
+	byte mBytes;
 
+public:
+	ByteOperation(byte rVal);
+	virtual void ProvideBytecode(OperationCode *rOpcode);
+
+};
 
 class DwordOperation : public IntermediateOperation {
-	public:
-		DwordOperation(void *aDword);
-		~DwordOperation();
-		virtual void ProvideBytecode(OperationCode *aOpcode);
-	protected:
-		void *dword;
+protected:
+	void *mDword;
+
+public:
+	DwordOperation(void *rDword);
+	~DwordOperation();
+	virtual void ProvideBytecode(OperationCode *rOpcode);
 };
 
-
 class PositionInquirer : public DwordOperation {
-	public:
-		PositionInquirer() : DwordOperation(NULL) {}
-		virtual void	ProvideBytecode(OperationCode *aOpcode);
-		void			InsertPosition(OperationCode *aOpcode, uint aFinalValue);
+private:
+	int mReplaceIndex;
 
-	private:
-		int				replaceIndex;
+public:
+	PositionInquirer() : DwordOperation(NULL) {}
+	virtual void ProvideBytecode(OperationCode *rOpcode);
+	void InsertPosition(OperationCode *rOpcode, uint rFinalValue);
 };
 
 class PositionReference : public IntermediateOperation {
-public:
-	void			ProvideBytecode(OperationCode *aOpcode);	
-	void			AddInquirer(PositionInquirer *aInquirer);
-
 protected:
-	vector<PositionInquirer*> inquirers;
-};
+	std::vector<PositionInquirer*> mInquirers;
 
+public:
+	void ProvideBytecode(OperationCode *rOpcode);
+	void AddInquirer(PositionInquirer *rInquirer);
+};
 #endif // INTERMEDIATEOPERATION_H

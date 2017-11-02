@@ -12,13 +12,13 @@ Statement::Statement() {
 
 }
 
-Statement* Statement::CreateStatement(Tokens *aTokens, Parser *aParser) {
+Statement* Statement::CreateStatement(Tokens *rTokens, Parser *rParser) {
 	Statement *stmt = NULL;
 
-	const Token *token = aTokens->CheckNext();
+	const Token *token = rTokens->CheckNext();
 
-	if (token->aType == Token::RESERVED) {
-		string s = token->token;
+	if (token->mType == Token::RESERVED) {
+		std::string s = token->mToken;
 
 		if (s == "var") {
 			stmt = new AssignStatement();
@@ -27,24 +27,25 @@ Statement* Statement::CreateStatement(Tokens *aTokens, Parser *aParser) {
 		} else if (s == "if") {
 			stmt = new IfStatement();
 		}
-	} else if (token->aType == Token::VARIABLE_FUNCTION) {
+	}
+	else if(token->mType == Token::VARIABLE_FUNCTION) {
 		stmt = new AssignStatement();
 	}
 
 	if (stmt) {
-		stmt->ParseFragment(aTokens, aParser);
+		stmt->ParseFragment(rTokens, rParser);
 	}
 
 	return stmt;
 }
 
-void IfStatement::ParseFragment(Tokens *aTokens, Parser *aParser) {
-	operators = NULL;
-	expression = NULL;
-	assignee = NULL;
+void IfStatement::ParseFragment(Tokens *rTokens, Parser *rParser) {
+	mOperators = NULL;
+	mExpression = NULL;
+	mAssignee = NULL;
 
-	delete aTokens->PopExpected(Token::RESERVED);
-	delete aTokens->PopExpected(Token::PARANTH_BEG);
+	delete rTokens->PopExpected(Token::RESERVED);
+	delete rTokens->PopExpected(Token::PARANTH_BEG);
 
 	// Check of allocation
 	//if(aTokens->checkNext()->token == "if") {
@@ -61,56 +62,56 @@ void IfStatement::ParseFragment(Tokens *aTokens, Parser *aParser) {
 	throw NotImplementedException("If statements are not implemented");
 }
 
-void IfStatement::ProvideIntermediates(OperationCode *aOpcode, Parser *aParser) {
+void IfStatement::ProvideIntermediates(OperationCode *rOpcode, Parser *rParser) {
 	throw NotImplementedException("If statements are not implemented");
 }
 
-void AssignStatement::ParseFragment(Tokens *aTokens, Parser *aParser) {
-	alloc = false;
-	operators = NULL;
-	expression = NULL;
-	assignee = NULL;
+void AssignStatement::ParseFragment(Tokens *rTokens, Parser *rParser) {
+	mAlloc = false;
+	mOperators = NULL;
+	mExpression = NULL;
+	mAssignee = NULL;
 
 	// Check for allocation
-	if (aTokens->CheckNext()->token == "var") {
-		alloc = true;
-		delete aTokens->PopExpected(Token::RESERVED);
+	if(rTokens->CheckNext()->mToken == "var") {
+		mAlloc = true;
+		delete rTokens->PopExpected(Token::RESERVED);
 
-		assignee = aTokens->PopExpected(Token::VARIABLE_FUNCTION);
-		operators = aTokens->PopIfExists(Token::OPERATOR);
+		mAssignee = rTokens->PopExpected(Token::VARIABLE_FUNCTION);
+		mOperators = rTokens->PopIfExists(Token::OPERATOR);
 	} else {
-		TokenIterertor it = aTokens->GetPointer();
-		if ((*it++)->aType == Token::VARIABLE_FUNCTION &&
-			(*it)->aType == Token::OPERATOR) {
-				assignee = aTokens->PopExpected(Token::VARIABLE_FUNCTION);
-				operators = aTokens->PopExpected(Token::OPERATOR);
+		TokenIterertor it = rTokens->GetPointer();
+		if ((*it++)->mType == Token::VARIABLE_FUNCTION &&
+			(*it)->mType == Token::OPERATOR) {
+			mAssignee = rTokens->PopExpected(Token::VARIABLE_FUNCTION);
+			mOperators = rTokens->PopExpected(Token::OPERATOR);
 		}
 	}
 
 	// Parse the expression
-	expression = new Expression();
-	expression->ParseFragment(aTokens, aParser);
+	mExpression = new Expression();
+	mExpression->ParseFragment(rTokens, rParser);
 }
 
-void AssignStatement::ProvideIntermediates(OperationCode *aOpcode, Parser *aParser) {
+void AssignStatement::ProvideIntermediates(OperationCode *rOpcode, Parser *rParser) {
 	uint varID = 0;
 
-	if (alloc) {
-		varID = SetVariable(aParser, assignee->token);
-		AllocateVariable(aOpcode, varID);
-	} else if (assignee) {
-		varID = GetVariableID(aParser, assignee->token);
+	if (mAlloc) {
+		varID = SetVariable(rParser, mAssignee->mToken);
+		AllocateVariable(rOpcode, varID);
+	} else if (mAssignee) {
+		varID = GetVariableID(rParser, mAssignee->mToken);
 	}
 
-	expression->ProvideIntermediates(aOpcode, aParser);
+	mExpression->ProvideIntermediates(rOpcode, rParser);
 
-	if (varID && operators) {
-		HandleOperator(aOpcode, varID);
+	if (varID && mOperators) {
+		HandleOperator(rOpcode, varID);
 	}
 }
 
-void AssignStatement::HandleOperator(OperationCode *aOpcode, uint aVarID) {
-	string s = operators->token;
+void AssignStatement::HandleOperator(OperationCode *rOpcode, uint rVarID) {
+	std::string s = mOperators->mToken;
 	byte operation = 0;
 
 	if (s == "+=") {
@@ -124,52 +125,55 @@ void AssignStatement::HandleOperator(OperationCode *aOpcode, uint aVarID) {
 	} else if (s == "%=") {
 		operation = OP_MOD;
 	} else if (s == "=") {
-		aOpcode->AddInterop(new ByteOperation(OP_POPMOV));
-		aOpcode->AddInterop(new DwordOperation(&aVarID));
+		rOpcode->AddInterop(new ByteOperation(OP_POPMOV));
+		rOpcode->AddInterop(new DwordOperation(&rVarID));
 		return;
-	} else {
+	} 
+	else {
 		throw NotImplementedException("Operator not implemented: " + s);
 	}
 	
-	aOpcode->AddInterop(new ByteOperation(OP_PUSH));
-	aOpcode->AddInterop(new DwordOperation(&aVarID));
-	aOpcode->AddInterop(new ByteOperation(operation));
-	aOpcode->AddInterop(new ByteOperation(OP_POPMOV));
-	aOpcode->AddInterop(new DwordOperation(&aVarID));
+	rOpcode->AddInterop(new ByteOperation(OP_PUSH));
+	rOpcode->AddInterop(new DwordOperation(&rVarID));
+	rOpcode->AddInterop(new ByteOperation(operation));
+	rOpcode->AddInterop(new ByteOperation(OP_POPMOV));
+	rOpcode->AddInterop(new DwordOperation(&rVarID));
 }
 
-void ReturnStatement::ParseFragment(Tokens *aTokens, Parser *aParser) {
-	delete aTokens->PopExpected(Token::RESERVED);
+void ReturnStatement::ParseFragment(Tokens *rTokens, Parser *rParser) {
+	delete rTokens->PopExpected(Token::RESERVED);
 
-	if (aTokens->CheckNext()->aType == Token::SEMICOLON) {
-		expression = NULL;
-		delete aTokens->PopNext();
-	} else {
-		expression = new Expression;
-		expression->ParseFragment(aTokens, aParser);
+	if(rTokens->CheckNext()->mType == Token::SEMICOLON) {
+		mExpression = NULL;
+		delete rTokens->PopNext();
+	}
+	else {
+		mExpression = new Expression;
+		mExpression->ParseFragment(rTokens, rParser);
 	}
 }
 
-void ReturnStatement::ProvideIntermediates(OperationCode *aOpcode, Parser *aParser) {
-	if (!aParser->IsInLocalScope()) {
+void ReturnStatement::ProvideIntermediates(OperationCode *rOpcode, Parser *rParser) {
+	if(!rParser->IsInLocalScope()) {
 		throw InvalidTokenException("Unexpected return");
 	}
 
 
-	if (expression) {
-		uint varID = aParser->RegisterVariable("");
-		AllocateVariable(aOpcode, varID);
+	if (mExpression) {
+		uint varID = rParser->RegisterVariable("");
+		AllocateVariable(rOpcode, varID);
 
-		expression->ProvideIntermediates(aOpcode, aParser);
+		mExpression->ProvideIntermediates(rOpcode, rParser);
 
-		aOpcode->AddInterop(new ByteOperation(OP_POPMOV));
-		aOpcode->AddInterop(new DwordOperation(&varID));
+		rOpcode->AddInterop(new ByteOperation(OP_POPMOV));
+		rOpcode->AddInterop(new DwordOperation(&varID));
 
-		aOpcode->AddInterop(new ByteOperation(OP_RET));
-		aOpcode->AddInterop(new DwordOperation(&varID));
-	} else {
+		rOpcode->AddInterop(new ByteOperation(OP_RET));
+		rOpcode->AddInterop(new DwordOperation(&varID));
+	}
+	else {
 		uint zero = 0;
-		aOpcode->AddInterop(new ByteOperation(OP_RET));
-		aOpcode->AddInterop(new DwordOperation(&zero));
+		rOpcode->AddInterop(new ByteOperation(OP_RET));
+		rOpcode->AddInterop(new DwordOperation(&zero));
 	}
 }

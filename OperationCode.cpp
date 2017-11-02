@@ -3,8 +3,8 @@
 #include "./Compiler/IntermediateOper.h"
 
 OperationCode::OperationCode() {
-	bigEnd = IsBigEnd();	
-	insertTails.Push(interops.end());
+	mBigEnd = IsBigEnd();	
+	mInsertTails.Push(mInterops.end());
 }
 
 bool OperationCode::IsBigEnd() {
@@ -16,51 +16,51 @@ bool OperationCode::IsBigEnd() {
     return bint.c[0] == 1;
 }
 
-const vector<byte> OperationCode::GetBytecode() {
-	return bytes;
+const std::vector<byte> OperationCode::GetBytecode() {
+	return mBytes;
 }
 
 int OperationCode::Length() {
-	return bytes.size();
+	return mBytes.size();
 }
 
-InteropIter OperationCode::AddInterop(IntermediateOperation *aInterop) {
-	InteropIter tail = insertTails.Peek();
-	return interops.insert(tail, aInterop);
+InteropIter OperationCode::AddInterop(IntermediateOperation *rInterop) {
+	InteropIter tail = mInsertTails.Peek();
+	return mInterops.insert(tail, rInterop);
 }
 
-void OperationCode::PushTail(InteropIter aIt) {
-	insertTails.Push(aIt);
+void OperationCode::PushTail(InteropIter rIt) {
+	mInsertTails.Push(rIt);
 }
 
 void OperationCode::PopTail() {
-	if (insertTails.Size() <= 1) {
+	if (mInsertTails.Size() <= 1) {
 		throw StackUnderflowException("Stack underflow: internal error");
 	}
 
-	insertTails.Pop();
+	mInsertTails.Pop();
 }
 
 bool OperationCode::BuildBytecodeFromIntermediates() {
-	list<IntermediateOperation*>::iterator it;
+	std::list<IntermediateOperation*>::iterator it;
 
-	for (it = interops.begin(); it != interops.end(); it++) {
+	for (it = mInterops.begin(); it != mInterops.end(); it++) {
 		(*it)->ProvideBytecode(this);
 	}
 
 	return true;
 }
 
-OperationCode* OperationCode::AddByte(byte aValue) {
-	bytes.push_back(aValue);
+OperationCode* OperationCode::AddByte(byte rValue) {
+	mBytes.push_back(rValue);
 	return this;
 }
 
-OperationCode* OperationCode::AddDword(void *aDword) {
-	byte *b = (byte*)aDword;
-	uint xx = *(uint*)aDword;
+OperationCode* OperationCode::AddDword(void *rDword) {
+	byte *b = (byte*)rDword;
+	uint xx = *(uint*)rDword;
 
-	if (bigEnd) {
+	if (mBigEnd) {
 		for (int i = 3; i >= 0; i--) {
 			AddByte(b[i]);
 		}
@@ -73,31 +73,32 @@ OperationCode* OperationCode::AddDword(void *aDword) {
 	return this;
 }
 
-OperationCode* OperationCode::AddInt(int aValue) {
-	return AddDword(&aValue);
+OperationCode* OperationCode::AddInt(int rValue) {
+	return AddDword(&rValue);
 }
 
-OperationCode* OperationCode::AddUint(uint aValue) {
-	return AddDword(&aValue);
+OperationCode* OperationCode::AddUint(uint rValue) {
+	return AddDword(&rValue);
 }
 
-void OperationCode::ReplaceByte(int aIndex, byte aValue) {
-	if (aIndex < 0 || (unsigned int)aIndex >= bytes.size()) {
-		throw range_error("Byte replacement index out of range");
+void OperationCode::ReplaceByte(int rIndex, byte rValue) {
+	if(rIndex < 0 || (unsigned int)rIndex >= mBytes.size()) {
+		throw std::range_error("Byte replacement index out of range");
 	}
-	bytes[aIndex] = aValue;
+	mBytes[rIndex] = rValue;
 }
 
-void OperationCode::ReplaceUint(int aIndex, uint aValue) {
-	byte *b = (byte*)&aValue;
+void OperationCode::ReplaceUint(int rIndex, uint rValue) {
+	byte *b = (byte*)&rValue;
 
-	if (bigEnd) {
+	if (mBigEnd) {
 		for (int i=3; i>=0; i--) {
-			ReplaceByte(aIndex + i, b[i]);
+			ReplaceByte(rIndex + i, b[i]);
 		}
-	} else {
+	} 
+	else {
 		for (int i=0; i<4; i++) {
-			ReplaceByte(aIndex + i, b[i]);
+			ReplaceByte(rIndex + i, b[i]);
 		}
 	}
 }

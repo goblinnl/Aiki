@@ -1,45 +1,45 @@
 #include "IntermediateOper.h"
 #include <cstring>
 
-ByteOperation::ByteOperation(byte aVal) {
-	bytes = aVal;
+ByteOperation::ByteOperation(byte rVal) {
+	mBytes = rVal;
 }
 
-void ByteOperation::ProvideBytecode(OperationCode *aOpcode) {
-	aOpcode->AddByte(bytes);
+void ByteOperation::ProvideBytecode(OperationCode *rOpcode) {
+	rOpcode->AddByte(mBytes);
 }
 
-DwordOperation::DwordOperation(void *aDword) {
-	dword = malloc(4);
+DwordOperation::DwordOperation(void *rDword) {
+	mDword = malloc(4);
 
-	if (aDword != NULL) {
-		memcpy(dword, aDword, 4);
+	if(rDword != NULL) {
+		memcpy(mDword, rDword, 4);
 	}
 }
 
 DwordOperation::~DwordOperation() {
-	free(dword);
+	free(mDword);
 }
 
-void PositionReference::AddInquirer(PositionInquirer *aInquirer) {
-	inquirers.push_back(aInquirer);
+void PositionReference::AddInquirer(PositionInquirer *rInquirer) {
+	mInquirers.push_back(rInquirer);
 }
 
-void DwordOperation::ProvideBytecode(OperationCode *aOpcode) {
-	aOpcode->AddDword(dword);
+void DwordOperation::ProvideBytecode(OperationCode *rOpcode) {
+	rOpcode->AddDword(mDword);
 }
 
-void PositionInquirer::InsertPosition(OperationCode *aOpcode, uint aFinalValue) {
-	aOpcode->ReplaceUint(replaceIndex, aFinalValue);
+void PositionInquirer::InsertPosition(OperationCode *rOpcode, uint rFinalValue) {
+	rOpcode->ReplaceUint(mReplaceIndex, rFinalValue);
 }
 
-void PositionReference::ProvideBytecode(OperationCode *aOpcode) {
-	for (unsigned int i = 0; i < inquirers.size(); i++) {
-		inquirers[i]->InsertPosition(aOpcode, aOpcode->Length());
+void PositionReference::ProvideBytecode(OperationCode *rOpcode) {
+	for(unsigned int i = 0; i < mInquirers.size(); i++) {
+		mInquirers[i]->InsertPosition(rOpcode, rOpcode->Length());
 	}
 }
 
-void PositionInquirer::ProvideBytecode(OperationCode *aOpcode) {
-	replaceIndex = aOpcode->Length();
-	aOpcode->AddUint(0);
+void PositionInquirer::ProvideBytecode(OperationCode *rOpcode) {
+	mReplaceIndex = rOpcode->Length();
+	rOpcode->AddUint(0);
 }

@@ -10,32 +10,35 @@
 #include "compiler/parser.h"
 #include "OperationCodeText.h"
 
-
 int main(int argc, const char *argv[])
 {
-	if (argc == 1) {
+	if(argc == 1) {
 		printf("No file specified.\n");
 		return 1;
-	} else {
-		string file = argv[1];
+	}
+	else {
+		std::string file = argv[1];
 		Parser parser(file, true);
-		
-		if (parser.ParseFile()) {
+
+		if(parser.ParseFile()) {
 			try {
-				if (parser.CompileTokens()) {
+				if(parser.CompileTokens()) {
 					try {
 						OperationCodeText tostr;
 						tostr.Parse(parser.GetOpcodes());
-						
+
 						Environment env(parser.GetOpcodes());
 						env.Execute();
-					} catch (exception &e) {
+					}
+					catch(std::exception &e) {
 						printf("Runtime error:\n%s\n", e.what());
 					}
-				} else {
+				}
+				else {
 					printf("Compilation failed.\n");
 				}
-			} catch (exception &e) {
+			}
+			catch(std::exception &e) {
 				printf("Compilation failed.\n%s\n", e.what());
 			}
 		}

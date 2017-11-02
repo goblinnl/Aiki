@@ -17,59 +17,64 @@ struct Token {
 		VARIABLE_INT = 0x00100000,
 		VARIABLE_FLOAT = 0x00200000,
 		VARIABLE_FUNCTION = 0x00400000,
-		PARANTH_BEG	= 0x00000400,
-		PARANTH_END	= 0x00000800,
+		PARANTH_BEG = 0x00000400,
+		PARANTH_END = 0x00000800,
 		RESERVED = 0x00001000,
-		BRACKET_BEG	= 0x00002000,
-		BRACKET_END = 0x00004000,	
+		BRACKET_BEG = 0x00002000,
+		BRACKET_END = 0x00004000,
 		VALUE = 0x00040000,
 		SEMICOLON = 0x00008000,
-		DOT	= 0x00010000,
-		COMMA = 0x00020000,		
+		DOT = 0x00010000,
+		COMMA = 0x00020000,
 	};
 
-	static std::string GetStringValue(Token::Type aType);
-	Token() { aType = INVALID; }
-	Token(std::string aToken, Type t = INVALID) {
-		token = aToken;
-		aType = t;
+	static std::string GetStringValue(Token::Type rType);
+
+	Token() {
+		mType = INVALID;
+	}
+	Token(std::string rToken, Type rType = INVALID) {
+		mToken = rToken;
+		mType = rType;
 	}
 
-	std::string	token;
-	Type aType;
+	std::string	mToken;
+	Type mType;
 };
-
 typedef std::list<Token*>::iterator TokenIterertor;
 
 class Tokens {
-	public:
-		Tokens();
-		void GenerateTokens(std::string aFile);
-		void SetPointer(TokenIterertor aFront);	
-		Token* PopIfExists(Token::Type aType);
-		Token* PopExpected(Token::Type aType);
-		Token* PopNext();
-		Token* CheckNext();
-		TokenIterertor GetFirstIterator();
-		TokenIterertor GetPointer();
-		bool IsMore();
-	
+private:
+	std::list<Token*> tokens;
+	TokenIterertor pointer;
 
-	private:
-		std::list<Token*> tokens;
-		TokenIterertor pointer;
-		bool GetToken(std::ifstream &aFile);
-		bool GetOperator(std::ifstream &aFile);
-		bool GetSpecialChar(std::ifstream &aFile);
-		bool GetWord(std::ifstream &aFile);
-		bool PeekOperator(std::ifstream &aFile, char aContext=0);	
-		bool ReservedWord(std::string aWord);
-		bool IsValidName(std::string aName);
-		bool BlockNextChar(std::ifstream &aFile, bool aNumerical);
-		bool ReachedEnd(std::ifstream &aFile);
-		void SeekNextToken(std::ifstream &aFile);
-		void SkipLine(std::ifstream &aFile);	
-		void DetermineOperator(Token* aToken);
+public:
+	Tokens();
+	Token* PopIfExists(Token::Type rType);
+	Token* PopExpected(Token::Type rType);
+	Token* PopNext();
+	Token* CheckNext();
+	TokenIterertor GetFirstIterator();
+	TokenIterertor GetPointer();
+
+	void GenerateTokens(std::string rFile);
+	void SetPointer(TokenIterertor rFront);
+
+	bool IsMore();
+
+private:
+	bool GetToken(std::ifstream &rFile);
+	bool GetOperator(std::ifstream &rFile);
+	bool GetSpecialChar(std::ifstream &rFile);
+	bool GetWord(std::ifstream &rFile);
+	bool PeekOperator(std::ifstream &rFile, char rContext = 0);
+	bool ReservedWord(std::string rWord);
+	bool IsValidName(std::string rName);
+	bool BlockNextChar(std::ifstream &rFile, bool rNumerical);
+	bool ReachedEnd(std::ifstream &rFile);
+
+	void SeekNextToken(std::ifstream &rFile);
+	void SkipLine(std::ifstream &rFile);
+	void DetermineOperator(Token* rToken);
 };
-
 #endif // TOKENS_H

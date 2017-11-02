@@ -2,7 +2,7 @@
 #define OPERATIONCODETEXT_H
 
 /* Operation Code Text
-* Class for oncerting scrap bytecode to readable text
+* Class for concerting scrap byte code to readable text
 */
 
 // Internal
@@ -11,25 +11,25 @@
 // External
 #include <string>
 #include <vector>
-using namespace std;
 
 class OperationCode;
 
 class OperationCodeText {
+private:
+	std::vector<byte> mOperationCodes;
+
 public:
-	void Parse(OperationCode *aOperationCode);
+	void Parse(OperationCode *rOperationCode);
 
 private:
-	vector<byte> operationCodes;
+	void* GetDword(int rOpcodeIdx);
 
-	int	ParametersCount(byte aCode);
-	string	GetLieteral(byte aCode);
-	string	GetParameter(byte aCtx, int aOpcodeIdx, int aParamIdx);
+	int	ParametersCount(byte rCode);
 
-	void* GetDword(int aOpcodeIdx);
-	string GetUint(int aOpcodeIdx);
-	string GetInteger(int aOpcodeIdx);
-	string GetFloat(int aOpcodeIdx);
+	std::string GetUint(int rOpcodeIdx);
+	std::string GetInteger(int rOpcodeIdx);
+	std::string GetFloat(int rOpcodeIdx);
+	std::string	GetLieteral(byte rCode);
+	std::string	GetParameter(byte rCtx, int rOpcodeIdx, int rParamIdx);
 };
-
 #endif // OPERATIONCODETEXT_H

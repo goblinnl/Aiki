@@ -12,60 +12,61 @@ class FunctionDefinition;
 class PositionInquirer;
 class FunctionSignature;
 
-typedef list<Fragment*>::iterator FragmentIter;
+typedef std::list<Fragment*>::iterator FragmentIter;
 
 class Parser {
-	public:
-		Parser(string aFile, bool aMainFile);
-		~Parser();
+private:
+	static uint	mFunctionID;
+	static uint	mStdFunctionID;
+	static uint	mVariableID;
 
-		bool ParseFile();
-		bool CompileTokens();
-		OperationCode*	GetOpcodes();
-		void PushScope();
-		void PopScope();
-		bool IsInLocalScope();
+	std::string mInputFile;
+	bool mIsMainFile;
 
-		void PushNestedScope();
-		void PopNestedScope();
+	Tokens *mTokens;
+	OperationCode *mInterMedOperCode;
+	CompileScope mCompileScope;
+	Stack<CompileScope*> mStackScope;
+	std::list<Fragment*> mFragmentList;
+	std::list<FunctionSignature> mFunctionSignatureList;
+	Stack<FragmentIter> mFragmentTailStack;
+	FragmentIter mFragmentFunctionDef;
+	InteropIter mHeaderEnd;
+	PositionInquirer *mHeaderStart;
 
-		uint RegisterVariable(string aName);
-		uint GetVariableID(string aName);
+public:
+	Parser(std::string rFile, bool rMainFile);
+	~Parser();
 
-		uint RegisterFunction(FunctionSignature aFuncSign);
-		uint RegisterStdFunction(FunctionSignature aFuncSign);
-		uint GetFunctionID(string aName);
-		FunctionSignature GetFunctionSignature(string aFunctionName);
-		FunctionSignature GetFunctionSignature(uint aFunctionID);
+	bool ParseFile();
+	bool CompileTokens();
+	bool IsInLocalScope();
 
-	private:
-		static uint	functionID;
-		static uint	stdFunctionID;
-		static uint	VariableID;
+	void PushScope();
+	void PopScope();
+	void PushNestedScope();
+	void PopNestedScope();
 
-		string inputFile;
-		bool isMainFile;
-		Tokens *tokens;
+	uint RegisterVariable(std::string rName);
+	uint GetVariableID(std::string rName);
+	uint RegisterFunction(FunctionSignature rFuncSign);
+	uint RegisterStdFunction(FunctionSignature rFuncSign);
+	uint GetFunctionID(std::string rName);
 
-		OperationCode *interMedOperCode;
-		CompileScope compileScope;
-		Stack<CompileScope*> stackScope;
-		list<Fragment*> fragmentList;
-		list<FunctionSignature> functionSignatureList;
+	FunctionSignature GetFunctionSignature(std::string rFunctionName);
+	FunctionSignature GetFunctionSignature(uint rFunctionID);
 
-		bool BuildFragments();
-		bool BuildIntermediates();
-		bool BuildBytecode();
-		void AddFragment(Fragment *aFragment);
-		void PushFragmentTail(FragmentIter aTail);
-		void PopFragmentTail();
-		void AddHeader();
-		void AddFunctionData(FunctionDefinition *aFuncDef);
+	OperationCode*	GetOpcodes();
 
-		Stack<FragmentIter> fragmentTailStack;
-		FragmentIter fragmentFunctionDef;
-		InteropIter headerEnd;
-		PositionInquirer *headerStart;
+private:
+	bool BuildFragments();
+	bool BuildIntermediates();
+	bool BuildBytecode();
+	void AddFragment(Fragment *rFragment);
+	void PushFragmentTail(FragmentIter rTail);
+	void PopFragmentTail();
+	void AddHeader();
+	void AddFunctionData(FunctionDefinition *rFuncDef);
+
 };
-
 #endif // PARSER_H

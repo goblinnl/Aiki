@@ -112,7 +112,7 @@
     <ClInclude Include="OperationCode.h" />
     <ClInclude Include="OperationCodeText.h" />
     <ClInclude Include="Parser\Environment.h" />
-    <ClInclude Include="Parser\Variable.hpp" />
+    <ClInclude Include="Parser\Variable.h" />
     <ClInclude Include="Scope.h" />
     <ClInclude Include="Exception.h" />
     <ClInclude Include="Stack.h" />

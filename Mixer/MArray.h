@@ -17,8 +17,7 @@ public:
 	int mSlots;
 	int mUsed;
 
-public:
-	
+public:	
 	MArray() : mItems(NULL), mSlots(0), mUsed(0)
 	{
 		AllocSlots(256);

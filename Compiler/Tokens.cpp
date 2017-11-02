@@ -7,8 +7,8 @@
 // External
 #include <fstream>
 
-string Token::GetStringValue(Token::Type aType) {
-	switch (aType) {
+std::string Token::GetStringValue(Token::Type rType) {
+	switch(rType) {
 		case UNDEFINED: return "UNDEFINED";
 		case OPERATOR: return "OPERATOR";
 		case PARANTH_BEG: return "PARANTH_BEG";
@@ -33,11 +33,11 @@ Tokens::Tokens() {
 	pointer = tokens.begin();
 }
 
-void Tokens::GenerateTokens(string aFileName) {
-	ifstream file;
-	file.open(aFileName.c_str());
+void Tokens::GenerateTokens(std::string rFileName) {
+	std::ifstream file;
+	file.open(rFileName.c_str());
 	if (!file.good()) {
-		throw FileNotFoundException("File couldn't be found: " + (string)aFileName);		
+		throw FileNotFoundException("File couldn't be found: " + (std::string)rFileName);
 	}
 
 	while (GetToken(file) && !ReachedEnd(file));
@@ -51,10 +51,10 @@ bool Tokens::IsMore() {
 }
 
 
-Token* Tokens::PopIfExists(Token::Type aType) {
+Token* Tokens::PopIfExists(Token::Type rType) {
 	Token *token = NULL;
 
-	if ((*pointer)->aType & aType) {
+	if((*pointer)->mType & rType) {
 		token = *pointer;
 		pointer = tokens.erase(pointer);
 	}
@@ -62,8 +62,8 @@ Token* Tokens::PopIfExists(Token::Type aType) {
 	return token;
 }
 
-Token* Tokens::PopExpected(Token::Type aType) {
-	Token *token = PopIfExists(aType);
+Token* Tokens::PopExpected(Token::Type rType) {
+	Token *token = PopIfExists(rType);
 
 	if (token) { 
 		return token;
@@ -71,7 +71,7 @@ Token* Tokens::PopExpected(Token::Type aType) {
 
 	// All hell is loose - RELEASE THE KRAKEN!
 	token = PopNext();
-	throw InvalidTokenException("Expected '"+ Token::GetStringValue(aType) + "', got: '" + (token ?Token::GetStringValue(token->aType):"NULL") + "'.");
+	throw InvalidTokenException("Expected '" + Token::GetStringValue(rType) + "', got: '" + (token ? Token::GetStringValue(token->mType) : "NULL") + "'.");
 }
 
 Token* Tokens::PopNext() {
@@ -96,33 +96,33 @@ void Tokens::SetPointer(TokenIterertor aIterator) {
 	pointer = aIterator;
 }
 
-bool Tokens::GetToken(ifstream &aFile) {
-	if (!aFile.good()) return false;
+bool Tokens::GetToken(std::ifstream &rFile) {
+	if(!rFile.good()) return false;
 
 	Token token;
-	SeekNextToken(aFile);
+	SeekNextToken(rFile);
 
-	if (GetSpecialChar(aFile)) {
+	if(GetSpecialChar(rFile)) {
 		return true;
 	}
 
-	if (GetOperator(aFile)) {
+	if(GetOperator(rFile)) {
 		return true;
 	}
 
-	if (GetWord(aFile)) {
+	if(GetWord(rFile)) {
 		return true;
 	}
 
 	return false;
 }
 
-bool Tokens::GetOperator(ifstream &aFile) {
-	string str;
+bool Tokens::GetOperator(std::ifstream &rFile) {
+	std::string str;
 	char lastChar = 0;
 
-	while (PeekOperator(aFile, lastChar) && str.length() <= 1) {
-		lastChar = aFile.get();
+	while(PeekOperator(rFile, lastChar) && str.length() <= 1) {
+		lastChar = rFile.get();
 		str += lastChar;
 	}
 
@@ -137,40 +137,40 @@ bool Tokens::GetOperator(ifstream &aFile) {
 	return false;
 }
 
-bool Tokens::GetSpecialChar(ifstream &aFile) {
-	char ch = aFile.peek();
-	string str;
+bool Tokens::GetSpecialChar(std::ifstream &rFile) {
+	char ch = rFile.peek();
+	std::string str;
 	str = ch;
 
 	Token *t = new Token(str);
 
 	switch (ch) {
 		case '(':
-			t->aType = Token::PARANTH_BEG;
+			t->mType = Token::PARANTH_BEG;
 			break;
 
 		case ')':
-			t->aType = Token::PARANTH_END;
+			t->mType = Token::PARANTH_END;
 			break;
 
 		case '{':
-			t->aType = Token::BRACKET_BEG;
+			t->mType = Token::BRACKET_BEG;
 			break;
 
 		case '}':
-			t->aType = Token::BRACKET_END;
+			t->mType = Token::BRACKET_END;
 			break;
 
 		case ';':
-			t->aType = Token::SEMICOLON;
+			t->mType = Token::SEMICOLON;
 			break;
 
 		case '.':
-			t->aType = Token::DOT;
+			t->mType = Token::DOT;
 			break;
 
 		case ',':
-			t->aType = Token::COMMA;
+			t->mType = Token::COMMA;
 			break;
 
 		default:
@@ -180,26 +180,26 @@ bool Tokens::GetSpecialChar(ifstream &aFile) {
 	}
 
 	tokens.push_back(t);
-	aFile.get();
+	rFile.get();
 	return true;
 }
 
-bool Tokens::GetWord(ifstream &aFile) {
-	string str;
-	if (aFile.peek() == '\"') {
-		str = aFile.get();
-		char ch = aFile.peek();
+bool Tokens::GetWord(std::ifstream &rFile) {
+	std::string str;
+	if(rFile.peek() == '\"') {
+		str = rFile.get();
+		char ch = rFile.peek();
 		
-		while (ch != '\"' && !aFile.eof()) {
-			str += aFile.get();
-			ch = aFile.peek();
+		while(ch != '\"' && !rFile.eof()) {
+			str += rFile.get();
+			ch = rFile.peek();
 		}
-		str += aFile.get();
+		str += rFile.get();
 	} else {
-		bool numerical = (aFile.peek() >= '0' && aFile.peek() <= '9');
+		bool numerical = (rFile.peek() >= '0' && rFile.peek() <= '9');
 
-		while (!BlockNextChar(aFile, numerical) && !aFile.eof()) {
-			char ch = aFile.get();
+		while(!BlockNextChar(rFile, numerical) && !rFile.eof()) {
+			char ch = rFile.get();
 			str += ch;
 		}
 	}
@@ -208,20 +208,20 @@ bool Tokens::GetWord(ifstream &aFile) {
 		Token *t = new Token(str);
 
 		if (ReservedWord(str)) {
-			t->aType = Token::RESERVED;
+			t->mType = Token::RESERVED;
 		} else if (str[0] == '\"') {
-			t->aType = Token::VARIABLE_STRING;
+			t->mType = Token::VARIABLE_STRING;
 		} else {
 			Variable::Type vType = Variable::GetType(str);
 			if (vType == Variable::INT) {
-				t->aType = Token::VARIABLE_INT;
+				t->mType = Token::VARIABLE_INT;
 			} else if (vType == Variable::FLOAT) {
-				t->aType = Token::VARIABLE_FLOAT;
+				t->mType = Token::VARIABLE_FLOAT;
 			} else {
 				if (IsValidName(str)) {
-					t->aType = Token::VARIABLE_FUNCTION;
+					t->mType = Token::VARIABLE_FUNCTION;
 				} else {
-					t->aType = Token::INVALID;
+					t->mType = Token::INVALID;
 				}
 			}
 		}
@@ -233,8 +233,8 @@ bool Tokens::GetWord(ifstream &aFile) {
 	return false;
 }
 
-bool Tokens::PeekOperator(ifstream &aFile, char aContext) {
-	char ch = aFile.peek();
+bool Tokens::PeekOperator(std::ifstream &rFile, char rContext) {
+	char ch = rFile.peek();
 	
 	switch (ch) {
 	case '+':
@@ -242,7 +242,7 @@ bool Tokens::PeekOperator(ifstream &aFile, char aContext) {
 	case '&':
 	case '|':
 		{
-			if (aContext == ch || !aContext) {
+			if(rContext == ch || !rContext) {
 				return true;
 			}
 			return false;
@@ -253,12 +253,12 @@ bool Tokens::PeekOperator(ifstream &aFile, char aContext) {
 	case '<':
 	case '>':
 		{
-			return aContext == 0;
+			return rContext == 0;
 		}
 
 	case '=':
 		{
-			if (aContext == '&' || aContext == '|') {
+			if(rContext == '&' || rContext == '|') {
 				return false;
 			}
 			return true;
@@ -266,7 +266,7 @@ bool Tokens::PeekOperator(ifstream &aFile, char aContext) {
 
 	case '!':
 		{
-			if (aContext == 0) {
+			if(rContext == 0) {
 				return true;
 			}
 			return false;
@@ -276,8 +276,8 @@ bool Tokens::PeekOperator(ifstream &aFile, char aContext) {
 	return false;
 }
 
-void Tokens::DetermineOperator(Token *aToken) {
-	string str = aToken->token;
+void Tokens::DetermineOperator(Token *rToken) {
+	std::string str = rToken->mToken;
 
 	switch (str[0]) {
 		case '+':
@@ -286,16 +286,16 @@ void Tokens::DetermineOperator(Token *aToken) {
 		case '/':
 		case '%':
 			if (str.length() == 1) {
-				aToken->aType = Token::OPERATOR_ARIT;
+				rToken->mType = Token::OPERATOR_ARIT;
 			} else {
 				if (str[1] == '=') {
-					aToken->aType = Token::OPERATOR_ASSIGN;
+					rToken->mType = Token::OPERATOR_ASSIGN;
 				} else if (str[1] == str[0]) {
 					if (str[0] == '+' || str[0] == '-') {
-						aToken->aType = Token::OPERATOR_ASSIGN;
+						rToken->mType = Token::OPERATOR_ASSIGN;
 						throw NotImplementedException("Operator ++ and -- are not implemented yet");
 					} else {
-						throw InvalidTokenException("Token not supported: " + aToken->token);
+						throw InvalidTokenException("Token not supported: " + rToken->mToken);
 					}
 				}
 			}
@@ -303,37 +303,37 @@ void Tokens::DetermineOperator(Token *aToken) {
 
 		case '=':
 			if (str.length() == 1) {
-				aToken->aType = Token::OPERATOR_ASSIGN;
+				rToken->mType = Token::OPERATOR_ASSIGN;
 			} else if (str[0] == str[1]) {
-				aToken->aType = Token::OPERATOR_COMP;
+				rToken->mType = Token::OPERATOR_COMP;
 			}
 			return;
 
 		case '>':
 		case '<':
-			aToken->aType = Token::OPERATOR_COMP;
+			rToken->mType = Token::OPERATOR_COMP;
 			return;
 	}
 }
 
-bool Tokens::ReservedWord(string aStr) {
-	if (aStr == "class" || aStr == "for" || aStr == "if" || aStr == "else" || aStr == "while" || aStr == "func" || aStr == "var" || aStr == "return" || aStr == "include"){
+bool Tokens::ReservedWord(std::string rStr) {
+	if(rStr == "class" || rStr == "for" || rStr == "if" || rStr == "else" || rStr == "while" || rStr == "func" || rStr == "var" || rStr == "return" || rStr == "include") {
 		return true;
 	}
 	return false;
 }
 
-bool Tokens::IsValidName(string aName) {
-	if (!aName.length()) { 
+bool Tokens::IsValidName(std::string rName) {
+	if(!rName.length()) {
 		return false;
 	}
 
-	if (aName[0] >= '0' && aName[0] <= '9') {
+	if(rName[0] >= '0' && rName[0] <= '9') {
 		return false;
 	}
 
-	for (unsigned int i = 0; i < aName.length(); i++) {
-		char c = aName[i];
+	for(unsigned int i = 0; i < rName.length(); i++) {
+		char c = rName[i];
 
 		if ((c < 'a' || c > 'z') && (c < 'A' || c > 'Z') && (c < '0' || c > '9') && (c != '_')) {
 			return false;
@@ -343,8 +343,8 @@ bool Tokens::IsValidName(string aName) {
 	return true;
 }
 
-bool Tokens::BlockNextChar(ifstream &aFile, bool aNumericalContext) {
-	char ch = aFile.peek();
+bool Tokens::BlockNextChar(std::ifstream &rFile, bool rNumericalContext) {
+	char ch = rFile.peek();
 
 	switch (ch) {
 		case '(':
@@ -372,35 +372,35 @@ bool Tokens::BlockNextChar(ifstream &aFile, bool aNumericalContext) {
 			return true;
 
 		case '.':
-			return !aNumericalContext;
+			return !rNumericalContext;
 	}
 	return false;
 }
 
-void Tokens::SeekNextToken(ifstream &aFile) {
-	char ch = aFile.peek();
+void Tokens::SeekNextToken(std::ifstream &rFile) {
+	char ch = rFile.peek();
 	while (ch == '#') {
-		SkipLine(aFile);
-		ch = aFile.peek();
+		SkipLine(rFile);
+		ch = rFile.peek();
 	}
 
 	while (ch == ' ' || ch == '\n' || ch == '\t') {
-		aFile.get();
-		ch = aFile.peek();
+		rFile.get();
+		ch = rFile.peek();
 
 		while (ch == '#') {
-			SkipLine(aFile);
-			ch = aFile.peek();
+			SkipLine(rFile);
+			ch = rFile.peek();
 		}
 	}
 }
 
-void Tokens::SkipLine(ifstream &aFile) {
-	string waste;
-	std::getline(aFile, waste);
+void Tokens::SkipLine(std::ifstream &rFile) {
+	std::string waste;
+	std::getline(rFile, waste);
 }
 
-bool Tokens::ReachedEnd(ifstream &aFile) {
-	int next = aFile.peek();
-	return next == char_traits<char>::eof();
+bool Tokens::ReachedEnd(std::ifstream &rFile) {
+	int next = rFile.peek();
+	return next == std::char_traits<char>::eof();
 }

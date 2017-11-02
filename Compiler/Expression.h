@@ -11,23 +11,27 @@
 class FunctionCall;
 
 class Expression : public Fragment {
-public:
-	Expression(bool isFunctionParam=false, bool canBeNull=true);
-	~Expression();
-	std::string	GettingString();
+private:
+	bool mIsParam;
+	bool nCanBeNull;
 
-	void ParseFragment(Tokens *aTokens, Parser *aParser);
-	void ProvideIntermediates(OperationCode *aOpcode, Parser *aParser);
+public:
+	Expression(bool rIsFunctionParam = false, bool rCanBeNull = true);
+	~Expression();
+
+	std::string	GettingString();
+	void ParseFragment(Tokens *rTokens, Parser *rParser);
+	void ProvideIntermediates(OperationCode *rOpcode, Parser *rParser);
 
 private:
 	struct ExpressionTerm {
-		ExpressionTerm(FunctionCall *aFunc) {
-			func = aFunc;
+		ExpressionTerm(FunctionCall *rFunc) {
+			func = rFunc;
 			token = NULL;
 		}
 
-		ExpressionTerm(Token *aToken) {
-			token = aToken;
+		ExpressionTerm(Token *rToken) {
+			token = rToken;
 			func = NULL;
 		}
 
@@ -35,20 +39,16 @@ private:
 		Token *token;
 	};
 
-	std::list<ExpressionTerm*> postfix;
-	bool isParam;
-	bool canBeNull;
+	std::list<ExpressionTerm*> mPostfix;
+	std::map<ExpressionTerm*, uint> mExpressionVars;
 
-	std::map<ExpressionTerm*,uint> expressionVars;
+private:
+	void BuildPostfix(Tokens *rTokens, Parser *rParser);
+	void AllocateVariables(OperationCode *rOpcode, Parser *rParser);
+	void HandleFunctionCalls(OperationCode *rOpcode, Parser *rParser);
+	void BuildBytecodePostfix(OperationCode *rOpcode, Parser *rParser);
+	void AddOperator(OperationCode *rOpcode, Token *rToken);
 
-	void BuildPostfix(Tokens *tokens, Parser *parser);
-	int	OperatorPrecedence(Token *token);
-
-	void AllocateVariables(OperationCode *opcode, Parser *parser);
-	void HandleFunctionCalls(OperationCode *opcode, Parser *parser);
-	void BuildBytecodePostfix(OperationCode *opcode, Parser *parser);
-
-	void AddOperator(OperationCode *opcode, Token *token);
+	int	OperatorPrecedence(Token *rToken);
 };
-
 #endif // EXPRESSION_H

@@ -6,8 +6,8 @@
 #include "./Compiler/Parser.h"
 
 /***** Funbctions.h *****
-* Contains the maping between opcode-functions and  libc/stdlibc++/custom functions.
-* All Scrap-callable C-functions must have a Var* 
+* Contains the mapping between opcode-functions and  libc/stdlibc++/custom functions.
+* All Scrap-callable C-functions must have a Var*
 * return value, and zero or more Var* parameters.
 * Example:
 *		Var* f1();
@@ -15,13 +15,12 @@
 *****/
 
 namespace AikiStd {
-	void RegisterFunctions(Parser *aParser);
+	void RegisterFunctions(Parser *rParser);
 
-	int	GetParameterCount(uint aFuncID);
+	int	GetParameterCount(uint rFuncID);
 
-	Variable* CallStdFunc(uint ID, int aArgCount, Variable **aVariable);
-	Variable* TestFunction(Variable *aVariable1, Variable *aVariable2);
-	Variable* Print(Variable *aVariable);
+	Variable* CallStdFunc(uint rID, int rArgCount, Variable **rVar);
+	Variable* TestFunction(Variable *rVar1, Variable *rVar2);
+	Variable* Print(Variable *rVar);
 };
-
 #endif // FUNCTIONS_H

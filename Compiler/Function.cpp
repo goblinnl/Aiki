@@ -9,48 +9,48 @@
 #include <sstream>
 
 
-FunctionCall::FunctionCall(Token *aFuncToken) {
-	functionToken = aFuncToken;
+FunctionCall::FunctionCall(Token *rFuncToken) {
+	mFunctionToken = rFuncToken;
 }
 
-void FunctionCall::ParseFragment(Tokens * aTokens, Parser * aParser) {
-	delete aTokens->PopExpected(Token::PARANTH_BEG);
+void FunctionCall::ParseFragment(Tokens * rTokens, Parser * rParser) {
+	delete rTokens->PopExpected(Token::PARANTH_BEG);
 
-	if (aTokens->CheckNext()->aType == Token::PARANTH_END) {
-		delete aTokens->PopNext();
+	if(rTokens->CheckNext()->mType == Token::PARANTH_END) {
+		delete rTokens->PopNext();
 	} else {
-		while (aTokens->CheckNext()->aType != Token::PARANTH_END) {
+		while(rTokens->CheckNext()->mType != Token::PARANTH_END) {
 			Expression *expr = new Expression(true);
-			expr->ParseFragment(aTokens, aParser);
-			parameters.push_back(expr);
+			expr->ParseFragment(rTokens, rParser);
+			mParameters.push_back(expr);
 
-			if (Token *t = aTokens->PopIfExists(Token::COMMA)) {
+			if(Token *t = rTokens->PopIfExists(Token::COMMA)) {
 				delete t;
 			}
 		}
 
-		delete aTokens->PopExpected(Token::PARANTH_END);
+		delete rTokens->PopExpected(Token::PARANTH_END);
 	}
 
+	FunctionSignature funcSign = rParser->GetFunctionSignature(mFunctionToken->mToken);
 
-	FunctionSignature funcSign = aParser->GetFunctionSignature(functionToken->token);
-	if (funcSign.GetParameterCount() != parameters.size()) {
-		stringstream ss;
+	if (funcSign.GetParameterCount() != mParameters.size()) {
+		std::stringstream ss;
 		ss << "Function " << funcSign.GetName() << ": "
 			<< "Expected " << funcSign.GetParameterCount() << " parameters, "
-			<< "received " << parameters.size();
+			<< "received " << mParameters.size();
 		throw InvalidArgumentException(ss.str());
 	}
 }
 
-string FunctionCall::GetString() {
-	string ret = functionToken->token;
+std::string FunctionCall::GetString() {
+	std::string ret = mFunctionToken->mToken;
 
 	ret += "(";
 
-	list<Expression*>::iterator it;
+	std::list<Expression*>::iterator it;
 	int i = 0;
-	for (it = parameters.begin(); it != parameters.end(); it++) {
+	for (it = mParameters.begin(); it != mParameters.end(); it++) {
 		if (i++) ret += ", ";
 		ret += (*it)->GettingString();
 	}
@@ -61,141 +61,135 @@ string FunctionCall::GetString() {
 }
 
 
-void FunctionCall::ProvideIntermediates(OperationCode *aOpcode, Parser *aParser) {
-	HandleParameters(aOpcode, aParser);
+void FunctionCall::ProvideIntermediates(OperationCode *rOpcode, Parser *rParser) {
+	HandleParameters(rOpcode, rParser);
 
-	uint funcID = aParser->GetFunctionID(functionToken->token);
+	uint funcID = rParser->GetFunctionID(mFunctionToken->mToken);
 
-	aOpcode->AddInterop(new ByteOperation(OP_CALL));
-	aOpcode->AddInterop(new DwordOperation(&funcID));
+	rOpcode->AddInterop(new ByteOperation(OP_CALL));
+	rOpcode->AddInterop(new DwordOperation(&funcID));
 }
 
-void FunctionCall::HandleParameters(OperationCode *aOpcode, Parser *aParser) {
-	list<Expression*>::reverse_iterator it;
+void FunctionCall::HandleParameters(OperationCode *rOpcode, Parser *rParser) {
+	std::list<Expression*>::reverse_iterator it;
 
-	for (it=parameters.rbegin(); it != parameters.rend(); it++) {
-		(*it)->ProvideIntermediates(aOpcode, aParser);
+	for (it=mParameters.rbegin(); it != mParameters.rend(); it++) {
+		(*it)->ProvideIntermediates(rOpcode, rParser);
 	}
 }
 
-
-
 /***** FunctionDefinition *****/
-bool FunctionDefinition::IsFunctionDefinition(Tokens *aTokens) {
-	return aTokens->CheckNext()->token == "func";
+bool FunctionDefinition::IsFunctionDefinition(Tokens *rTokens) {
+	return rTokens->CheckNext()->mToken == "func";
 }
 
 FunctionDefinition::FunctionDefinition() {
-	functionID = 0;
+	mFunctionID = 0;
 }
 
 PositionReference* FunctionDefinition::GetPositionReference() {
-	return positionReference;
+	return mPositionReference;
 }
 
-
-void FunctionDefinition::ParseFragment(Tokens *aTokens, Parser *aParser) {
+void FunctionDefinition::ParseFragment(Tokens *rTokens, Parser *rParser) {
 	// Ensure that this really is a function
-	Token *token = aTokens->PopExpected(Token::RESERVED);
-	if (token->token != "func") {
-		throw InvalidTokenException("Expected 'function', got: " + token->token);
+	Token *token = rTokens->PopExpected(Token::RESERVED);
+	if(token->mToken != "func") {
+		throw InvalidTokenException("Expected 'function', got: " + token->mToken);
 	}
 	delete token;
 
 	// Get the function name
-	Token *funcName = aTokens->PopExpected(Token::VARIABLE_FUNCTION);
+	Token *funcName = rTokens->PopExpected(Token::VARIABLE_FUNCTION);
 
 	// Delete the opening parentheses
-	delete aTokens->PopExpected(Token::PARANTH_BEG);
+	delete rTokens->PopExpected(Token::PARANTH_BEG);
 
 	// Get the parameters
-	while (aTokens->CheckNext()->token == "var") {
-		delete aTokens->PopExpected(Token::RESERVED);
+	while(rTokens->CheckNext()->mToken == "var") {
+		delete rTokens->PopExpected(Token::RESERVED);
 
-		Token *param = aTokens->PopExpected(Token::VARIABLE_FUNCTION);
-		parameter.push_back(param);
+		Token *param = rTokens->PopExpected(Token::VARIABLE_FUNCTION);
+		mParameter.push_back(param);
 
-		Token *comma = aTokens->PopIfExists(Token::COMMA);
+		Token *comma = rTokens->PopIfExists(Token::COMMA);
 		if (comma) {
 			delete comma;
 		}
 	}
 
 	// Register the function
-	FunctionSignature sig(funcName->token, parameter.size());
-	functionID = aParser->RegisterFunction(sig);
+	FunctionSignature sig(funcName->mToken, mParameter.size());
+	mFunctionID = rParser->RegisterFunction(sig);
 
 	delete funcName;
-	delete aTokens->PopExpected(Token::PARANTH_END);
+	delete rTokens->PopExpected(Token::PARANTH_END);
 
-	if (aTokens->CheckNext()->aType != Token::BRACKET_BEG) {
+	if(rTokens->CheckNext()->mType != Token::BRACKET_BEG) {
 		throw InvalidTokenException("Expected {");
 	}
 
-	positionReference = new PositionReference();
+	mPositionReference = new PositionReference();
 }
 
-void FunctionDefinition::ProvideIntermediates(OperationCode *aOpcode, Parser *aParser) {
-	aParser->PushScope();
-	aOpcode->AddInterop(positionReference);
+void FunctionDefinition::ProvideIntermediates(OperationCode *rOpcode, Parser *rParser) {
+	rParser->PushScope();
+	rOpcode->AddInterop(mPositionReference);
 
-	for (TokenIterertor it = parameter.begin(); it != parameter.end(); it++) {
-		uint varID = aParser->RegisterVariable((*it)->token);
+	for (TokenIterertor it = mParameter.begin(); it != mParameter.end(); it++) {
+		uint varID = rParser->RegisterVariable((*it)->mToken);
 
 	
-		AllocateVariable(aOpcode, varID);
-		aOpcode->AddInterop(new ByteOperation(OP_POPMOV));
-		aOpcode->AddInterop(new DwordOperation(&varID));
+		AllocateVariable(rOpcode, varID);
+		rOpcode->AddInterop(new ByteOperation(OP_POPMOV));
+		rOpcode->AddInterop(new DwordOperation(&varID));
 	}
 }
 
 uint FunctionDefinition::GetID() {
-	return functionID;
+	return mFunctionID;
 }
-
 
 FunctionTail::FunctionTail() {
-	posRef = new PositionReference();
+	mPosRef = new PositionReference();
 }
 
-void FunctionTail::ParseFragment(Tokens *aTokens, Parser *aParser) {
+void FunctionTail::ParseFragment(Tokens *rTokens, Parser *rParser) {
 
 }
 
-
-void FunctionTail::ProvideIntermediates(OperationCode *aOpcode, Parser *aParser) {
-	aParser->PopScope();
+void FunctionTail::ProvideIntermediates(OperationCode *rOpcode, Parser *rParser) {
+	rParser->PopScope();
 	uint zero = 0;
 
-	aOpcode->AddInterop(new ByteOperation(OP_RET));
-	aOpcode->AddInterop(new DwordOperation(&zero));
-	aOpcode->AddInterop(posRef);
+	rOpcode->AddInterop(new ByteOperation(OP_RET));
+	rOpcode->AddInterop(new DwordOperation(&zero));
+	rOpcode->AddInterop(mPosRef);
 }
 
 PositionReference* FunctionTail::GetPositionReference() {
-	return posRef;
+	return mPosRef;
 }
-
 
 /***** FunctionSignature *****/
-FunctionSignature::FunctionSignature(string aName, int aParamCount) {
-	signatureName = aName;
-	parameterCount = aParamCount;
-	functionID = 0;
+FunctionSignature::FunctionSignature(std::string rName, int rParamCount) {
+	mSignatureName = rName;
+	mParameterCount = rParamCount;
+	mFunctionID = 0;
 }
 
-string FunctionSignature::GetName() {
-	return signatureName;
+std::string FunctionSignature::GetName() {
+	return mSignatureName;
 }
 
 int FunctionSignature::GetParameterCount() {
-	return parameterCount;
+	return mParameterCount;
 }
 
 uint FunctionSignature::GetID() {
-	return functionID;
+	return mFunctionID;
 }
 
-void FunctionSignature::SetID(uint aID) {
-	functionID = aID;
+void FunctionSignature::SetID(uint rID) {
+	mFunctionID = rID;
 }

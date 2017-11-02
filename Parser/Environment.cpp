@@ -9,31 +9,31 @@
 #include <cstring>
 #include <stdio.h>
 
-Environment::Environment(OperationCode *aOpcode) {
-	const vector<byte> opVec = aOpcode->GetBytecode();
+Environment::Environment(OperationCode *rOpcode) {
+	const std::vector<byte> opVec = rOpcode->GetBytecode();
 
-	operationcodes = new byte[opVec.size()];
-	copy(opVec.begin(), opVec.end(), stdext::checked_array_iterator<byte *>(operationcodes, opVec.size()));
+	mOperationcodes = new byte[opVec.size()];
+	copy(opVec.begin(), opVec.end(), stdext::checked_array_iterator<byte *>(mOperationcodes, opVec.size()));
 
-	operationPointer = 0;
-	dataDefinition = false;
+	mOperationPointer = 0;
+	mDataDefinition = false;
 
-	scope.AddItem(VAR_RETURN, new Variable(VAR_RETURN));
+	mScope.AddItem(VAR_RETURN, new Variable(VAR_RETURN));
 }
 
 Environment::~Environment() {
-	delete[] operationcodes;
+	delete[] mOperationcodes;
 }
 
 int Environment::Execute() {
-	while (operationcodes[operationPointer] != OP_EXIT) {
+	while(mOperationcodes[mOperationPointer] != OP_EXIT) {
 		Operations();
 	}
 
-	operationPointer++;
+	mOperationPointer++;
 	int exitId = GetOperationCodeUint();
 
-	if (exitId & (VAR_GLOBAL | VAR_LOCAL)) {
+	if(exitId & (VAR_GLOBAL | VAR_LOCAL)) {
 		Variable *var = GetVariableByID(exitId);
 		exitId = var->GetInteger();
 	}
@@ -43,263 +43,264 @@ int Environment::Execute() {
 }
 
 void Environment::Operations() {
-	byte op = operationcodes[operationPointer++];
+	byte op = mOperationcodes[mOperationPointer++];
 
-	if (op >= 0xF0) {
-		switch (op) {
-			case OP_DATA_BEGIN:
-				OperationDataBegin();	
-				break;
-			case OP_DATA_STRING: 
-				OperationDataString();
-				break;
-			case OP_DATA_FUNC:
-				OperationDataFunction();
-				break;
-			case OP_DATA_END:
-				OperationDataEnd();
-				break;
+	if(op >= 0xF0) {
+		switch(op) {
+		case OP_DATA_BEGIN:
+			OperationDataBegin();
+			break;
+		case OP_DATA_STRING:
+			OperationDataString();
+			break;
+		case OP_DATA_FUNC:
+			OperationDataFunction();
+			break;
+		case OP_DATA_END:
+			OperationDataEnd();
+			break;
 		}
-	} else {
-		if (dataDefinition) {
+	}
+	else {
+		if(mDataDefinition) {
 			throw InvalidOpException("Cannot perform common operations when defining data");
 		}
 
-		if (op <= 0x1F) {
-			switch (op) {
-				case OP_PUSH:
-					OperationPush();
-					break;
+		if(op <= 0x1F) {
+			switch(op) {
+			case OP_PUSH:
+				OperationPush();
+				break;
 
-				case OP_PUSH_DATA:
-					OperationPushData();
-					break;
+			case OP_PUSH_DATA:
+				OperationPushData();
+				break;
 
-				case OP_POP:
-					OperationPop();
-					break;
+			case OP_POP:
+				OperationPop();
+				break;
 
-				case OP_CALL:
-					OperationCall();
-					break;
+			case OP_CALL:
+				OperationCall();
+				break;
 
-				case OP_RET:
-					OperationRet();
-					break;
+			case OP_RET:
+				OperationRet();
+				break;
 
-				case OP_ALLOC:
-					OperationAlloc();
-					break;
+			case OP_ALLOC:
+				OperationAlloc();
+				break;
 
-				case OP_POPMOV:
-					OperationPopMove();
-					break;
+			case OP_POPMOV:
+				OperationPopMove();
+				break;
 
-				case OP_MOV: 
-					OperationMove();
-					break;
+			case OP_MOV:
+				OperationMove();
+				break;
 
-				case OP_MOVI: 
-					OperationMoveInt();
-					break;
+			case OP_MOVI:
+				OperationMoveInt();
+				break;
 
-				case OP_MOVF:
-					OperationMoveFloat();
-					break;
+			case OP_MOVF:
+				OperationMoveFloat();
+				break;
 
-				case OP_MOVS: 
-					OperationMoveString();
-					break;
+			case OP_MOVS:
+				OperationMoveString();
+				break;
 
-				case OP_ADD: 
-					OperationAdd();
-					break;
+			case OP_ADD:
+				OperationAdd();
+				break;
 
-				case OP_SUB: 
-					OperationSub();
-					break;
+			case OP_SUB:
+				OperationSub();
+				break;
 
-				case OP_MUL: 
-					OperationMultiply();
-					break;
+			case OP_MUL:
+				OperationMultiply();
+				break;
 
-				case OP_DIV:
-					OperationDivide();
-					break;
+			case OP_DIV:
+				OperationDivide();
+				break;
 
-				case OP_MOD: 
-					OpModulate();
-					break;
+			case OP_MOD:
+				OpModulate();
+				break;
 
-				case OP_ADD_I:	
-					OperationAddInt();		
-					break;
+			case OP_ADD_I:
+				OperationAddInt();
+				break;
 
-				case OP_SUB_I:		
-					OperationSubInt();		
-					break;
+			case OP_SUB_I:
+				OperationSubInt();
+				break;
 
-				case OP_MUL_I:		
-					OperationMultiplyInt();		
-					break;
+			case OP_MUL_I:
+				OperationMultiplyInt();
+				break;
 
-				case OP_DIV_I:	
-					OperationDivdeInt();		
-					break;
+			case OP_DIV_I:
+				OperationDivdeInt();
+				break;
 
-				case OP_MOD_I:		
-					OperationModulesInt();		
-					break;
+			case OP_MOD_I:
+				OperationModulesInt();
+				break;
 
-				case OP_ADD_F:		
-					OperationAddFloat();	
-					break;
+			case OP_ADD_F:
+				OperationAddFloat();
+				break;
 
-				case OP_SUB_F:	
-					OperationSubdivisionFloat();	
-					break;
+			case OP_SUB_F:
+				OperationSubdivisionFloat();
+				break;
 
-				case OP_MUL_F:	
-					SubdivisionMultiplyFloat();	
-					break;
+			case OP_MUL_F:
+				SubdivisionMultiplyFloat();
+				break;
 
-				case OP_DIV_F:	
-					OperationDivdeFloat();	
-					break;
+			case OP_DIV_F:
+				OperationDivdeFloat();
+				break;
 
-				case OP_PUSH_SCOPE:
-					OperationPushScope();
-					break;
+			case OP_PUSH_SCOPE:
+				OperationPushScope();
+				break;
 
-				case OP_POP_SCOPE:	
-					OperationPopScope();
-					break;
+			case OP_POP_SCOPE:
+				OperationPopScope();
+				break;
 			}
+		}
+		else if(op <= 0x2F) {
+			switch(op) {
+			case OP_JMP:
+				OperationJump();
+				break;
 
-		} else if (op <= 0x2F) {
-			switch (op) {
-				case OP_JMP:		
-					OperationJump();
-					break;
+			case OP_JE:
+				OperationJe();
+				break;
 
-				case OP_JE:		
-					OperationJe();		
-					break;
+			case OP_JNE:
+				OperationJne();
+				break;
 
-				case OP_JNE:	
-					OperationJne();		
-					break;
+			case OP_JG:
+				OperationJg();
+				break;
 
-				case OP_JG:		
-					OperationJg();	
-					break;
+			case OP_JGE:
+				OperationJge();
+				break;
 
-				case OP_JGE:	
-					OperationJge();	
-					break;
+			case OP_JL:
+				OperationJl();
+				break;
 
-				case OP_JL:		
-					OperationJl();		
-					break;
+			case OP_JLE:
+				OperationJle();
+				break;
 
-				case OP_JLE:	
-					OperationJle();	
-					break;
+			case OP_JE_I:
+				OpJeInt();
+				break;
 
-				case OP_JE_I:
-					OpJeInt();	
-					break;
+			case OP_JNE_I:
+				OperationJneInt();
+				break;
 
-				case OP_JNE_I:
-					OperationJneInt();
-					break;
+			case OP_JG_I:
+				OperationJgInt();
+				break;
 
-				case OP_JG_I:	
-					OperationJgInt();
-					break;
+			case OP_JGE_I:
+				OperationJgeInt();
+				break;
 
-				case OP_JGE_I:	
-					OperationJgeInt();	
-					break;
+			case OP_JL_I:
+				OperationPJlInt();
+				break;
 
-				case OP_JL_I:	
-					OperationPJlInt();	
-					break;
+			case OP_JLE_I:
+				OperationPJleInt();
+				break;
 
-				case OP_JLE_I:	
-					OperationPJleInt();	
-					break;
+			case OP_JE_F:
+				OperationPJeF();
+				break;
 
-				case OP_JE_F:	
-					OperationPJeF();	
-					break;
+			case OP_JNE_F:
+				OperationpJneFloat();
+				break;
 
-				case OP_JNE_F:	
-					OperationpJneFloat();
-					break;
+			case OP_JG_F:
+				OperationPJgFloat();
+				break;
 
-				case OP_JG_F:	
-					OperationPJgFloat();
-					break;
+			case OP_JGE_F:
+				OperationpJgeFloat();
+				break;
 
-				case OP_JGE_F:	
-					OperationpJgeFloat();
-					break;
+			case OP_JL_F:
+				OperationPJlFloat();
+				break;
 
-				case OP_JL_F:	
-					OperationPJlFloat();	
-					break;
-
-				case OP_JLE_F:	
-					OperationPJleFloat();
-					break;
+			case OP_JLE_F:
+				OperationPJleFloat();
+				break;
 			}
-		} 
+		}
 	}
 }
 
-Variable* Environment::GetVariableByID(uint aID) {
+Variable* Environment::GetVariableByID(uint rID) {
 	Variable *ret = NULL;
 
-	if (aID & VAR_GLOBAL) {
-		ret = scope.GetVar(aID);
-	} else if (aID & VAR_LOCAL) {
-		if (sizeScope.Size()) {
-			ret = sizeScope.Peek()->GetVar(aID);
+	if(rID & VAR_GLOBAL) {
+		ret = mScope.GetVar(rID);
+	}
+	else if(rID & VAR_LOCAL) {
+		if(mSizeScope.Size()) {
+			ret = mSizeScope.Peek()->GetVar(rID);
 		}
 	}
 
 	return ret;
 }
 
-void Environment::PopStackingVariable(Variable *&aVar) {
+void Environment::PopStackingVariable(Variable *&rVar) {
 	uint varID = 0;
 
-	varID = stackPointer.Pop();
-	aVar = GetVariableByID(varID);
+	varID = mStackPointer.Pop();
+	rVar = GetVariableByID(varID);
 }
 
-
 int Environment::GetOperationCodeInteger() {
-	byte *bytePtr = &((byte*)operationcodes)[operationPointer];
+	byte *bytePtr = &((byte*)mOperationcodes)[mOperationPointer];
 
-	operationPointer += 4;
+	mOperationPointer += 4;
 
 	return *(int*)bytePtr;
 }
 
 uint Environment::GetOperationCodeUint() {
-	byte *bytePtr = &((byte*)operationcodes)[operationPointer];
+	byte *bytePtr = &((byte*)mOperationcodes)[mOperationPointer];
 
-	operationPointer += 4;
+	mOperationPointer += 4;
 
 	return *(uint*)bytePtr;
 }
 
 float Environment::GetOperationCodeFloat() {
-	byte *bytePtr = &((byte*)operationcodes)[operationPointer];
+	byte *bytePtr = &((byte*)mOperationcodes)[mOperationPointer];
 
-	operationPointer += 4;
+	mOperationPointer += 4;
 
 	return *(float*)bytePtr;
 }
@@ -309,19 +310,17 @@ Variable* Environment::GetOperationCodeVariable() {
 	return GetVariableByID(id);
 }
 
-
 Scope* Environment::GetCurrentScope() {
-	if (!sizeScope.Size()) {
-		return &scope;
-	} 
-		
-	return sizeScope.Peek();
-}
+	if(!mSizeScope.Size()) {
+		return &mScope;
+	}
 
+	return mSizeScope.Peek();
+}
 
 void Environment::OperationPush() {
 	uint varId = GetOperationCodeUint();
-	stackPointer.Push(varId);
+	mStackPointer.Push(varId);
 
 	LOGFILE(("Pushing var %x\n", varId));
 }
@@ -331,40 +330,42 @@ void Environment::OperationPushData() {
 }
 
 void Environment::OperationPop() {
-	stackPointer.Pop();
+	mStackPointer.Pop();
 }
 
 void Environment::OperationCall() {
 	uint funcID = GetOperationCodeUint();
 
-	if (funcID & FUNC_STD) {
+	if(funcID & FUNC_STD) {
 		OperationCallStd(funcID);
-	} else {
-		uint funcPos = functions[funcID];
+	}
+	else {
+		uint funcPos = mFunctions[funcID];
 
-		stack.Push(operationPointer);
-		operationPointer = funcPos;
+		mStack.Push(mOperationPointer);
+		mOperationPointer = funcPos;
 
 		Scope *localScope = new Scope();
-		sizeScope.Push(localScope);
+		mSizeScope.Push(localScope);
 	}
 
 	LOGFILE(("Calling %x\n", funcID));
 }
 
-void Environment::OperationCallStd(uint aFuncID) {
-	int pCount = AikiStd::GetParameterCount(aFuncID);
+void Environment::OperationCallStd(uint rFuncID) {
+	int pCount = AikiStd::GetParameterCount(rFuncID);
 
 	Variable **params = new Variable*[pCount];
-	for (int i=0; i < pCount; i++) {
+	for(int i = 0; i < pCount; i++) {
 		PopStackingVariable(params[i]);
 	}
 
-	Variable *retVal = AikiStd::CallStdFunc(aFuncID, pCount, params);
+	Variable *retVal = AikiStd::CallStdFunc(rFuncID, pCount, params);
 
-	if (retVal) {
+	if(retVal) {
 		*GetVariableByID(VAR_RETURN) = *retVal;
-	} else {
+	}
+	else {
 		GetVariableByID(VAR_RETURN)->Undefine();
 	}
 
@@ -377,33 +378,35 @@ void Environment::OperationRet() {
 
 	retID = GetOperationCodeUint();
 	Variable *retSrc = NULL;
-	if ((retSrc = GetVariableByID(retID))) {
+	if((retSrc = GetVariableByID(retID))) {
 		Variable *retDst = GetVariableByID(VAR_RETURN);
 		*retDst = *retSrc;
-		stackPointer.Push(VAR_RETURN);
-	} else {
-		stackPointer.Push(0);
+		mStackPointer.Push(VAR_RETURN);
+	}
+	else {
+		mStackPointer.Push(0);
 	}
 
-	localScope = sizeScope.Pop();
+	localScope = mSizeScope.Pop();
 	delete localScope;
 
-	operationPointer = stack.Pop();
+	mOperationPointer = mStack.Pop();
 
-	LOGFILE(("Returning to %u\n", operationPointer));
+	LOGFILE(("Returning to %u\n", mOperationPointer));
 }
 
 void Environment::OperationAlloc() {
 	uint varID = GetOperationCodeUint();
 
-	if (varID & VAR_GLOBAL) {
-		if (!scope.ItemExists(varID)) {
-			scope.AddItem(varID, new Variable(varID));
+	if(varID & VAR_GLOBAL) {
+		if(!mScope.ItemExists(varID)) {
+			mScope.AddItem(varID, new Variable(varID));
 		}
-	} else {
-		if (sizeScope.Size()) {
-			if (!sizeScope.Peek()->ItemExists(varID)) {
-				sizeScope.Peek()->AddItem(varID, new Variable(varID));
+	}
+	else {
+		if(mSizeScope.Size()) {
+			if(!mSizeScope.Peek()->ItemExists(varID)) {
+				mSizeScope.Peek()->AddItem(varID, new Variable(varID));
 			}
 		}
 	}
@@ -419,9 +422,10 @@ void Environment::OperationPopMove() {
 
 	dest = GetOperationCodeVariable();
 
-	if (source != NULL) {
+	if(source != NULL) {
 		*dest = *source;
-	} else {
+	}
+	else {
 		dest->Undefine();
 	}
 }
@@ -442,7 +446,7 @@ void Environment::OperationMoveInt() {
 
 	dest = GetOperationCodeVariable();
 	literal = GetOperationCodeInteger();
-	
+
 	dest->Set(literal);
 
 	LOGFILE(("Var %x = %i\n", dest->GetID(), literal));
@@ -484,15 +488,15 @@ void Environment::OpModulate() {
 	ArithmeticStack(&Variable::operator%=);
 }
 
-void Environment::ArithmeticStack(void(Variable::*aOper)(const Variable&)) {
+void Environment::ArithmeticStack(void(Variable::*rOper)(const Variable&)) {
 	Variable *left = NULL;
 	Variable *right = NULL;
 
 	PopStackingVariable(right);
 	PopStackingVariable(left);
 
-	(*left.*aOper)(*right);
-	stackPointer.Push(left->GetID());
+	(*left.*rOper)(*right);
+	mStackPointer.Push(left->GetID());
 }
 
 void Environment::OperationAddInt() {
@@ -515,15 +519,15 @@ void Environment::OperationModulesInt() {
 	ArithmeticInt(&Variable::operator%=);
 }
 
-void Environment::ArithmeticInt(void(Variable::*aOper)(const int&)) {
+void Environment::ArithmeticInt(void(Variable::*rOper)(const int&)) {
 	Variable *var = NULL;
 	int literal = 0;
 
 	PopStackingVariable(var);
 	literal = GetOperationCodeInteger();
 
-	(*var.*aOper)(literal);
-	stackPointer.Push(var->GetID());
+	(*var.*rOper)(literal);
+	mStackPointer.Push(var->GetID());
 }
 
 void Environment::OperationAddFloat() {
@@ -542,15 +546,15 @@ void Environment::OperationDivdeFloat() {
 	ArithmeticFloat(&Variable::operator/=);
 }
 
-void Environment::ArithmeticFloat(void(Variable::*aOper)(const float&)) {
+void Environment::ArithmeticFloat(void(Variable::*rOper)(const float&)) {
 	Variable *var = NULL;
 	float literal = 0.f;
 
 	PopStackingVariable(var);
 	literal = GetOperationCodeFloat();
 
-	(*var.*aOper)(literal);
-	stackPointer.Push(var->GetID());
+	(*var.*rOper)(literal);
+	mStackPointer.Push(var->GetID());
 }
 
 void Environment::OperationPushScope() {
@@ -565,7 +569,7 @@ void Environment::OperationPopScope() {
 
 void Environment::OperationJump() {
 	int dest = GetOperationCodeUint();
-	operationPointer = dest;
+	mOperationPointer = dest;
 
 	LOGFILE(("Jumping to %i\n", dest));
 }
@@ -600,17 +604,18 @@ void Environment::OperationJle() {
 	CompareJumpStack(&Variable::operator<=);
 }
 
-void Environment::CompareJumpStack(bool(Variable::*aCmp)(const Variable&)const) {
+void Environment::CompareJumpStack(bool(Variable::*rCmp)(const Variable&)const) {
 	Variable *left = NULL;
 	Variable *right = NULL;
 
 	PopStackingVariable(right);
 	PopStackingVariable(left);
 
-	if ((left->*aCmp)(*right)) {
+	if((left->*rCmp)(*right)) {
 		OperationJump();
-	} else {
-		operationPointer += 4;
+	}
+	else {
+		mOperationPointer += 4;
 	}
 }
 
@@ -638,17 +643,18 @@ void Environment::OperationPJleInt() {
 	CompareJumpInt(&Variable::operator<=);
 }
 
-void Environment::CompareJumpInt(bool(Variable::*aCmp)(const int&)const) {
+void Environment::CompareJumpInt(bool(Variable::*rCmp)(const int&)const) {
 	Variable *var = NULL;
 	int literal = 0;
 
 	PopStackingVariable(var);
 	literal = GetOperationCodeInteger();
 
-	if ((*var.*aCmp)(literal)) {
+	if((*var.*rCmp)(literal)) {
 		OperationJump();
-	} else {
-		operationPointer += 4;
+	}
+	else {
+		mOperationPointer += 4;
 	}
 }
 
@@ -676,25 +682,26 @@ void Environment::OperationPJleFloat() {
 	CompareJumpInt(&Variable::operator<=);
 }
 
-void Environment::CompareJumpFloat(bool(Variable::*aCmp)(const float&)const) {
+void Environment::CompareJumpFloat(bool(Variable::*rCmp)(const float&)const) {
 	Variable *var = NULL;
 	float literal = 0.f;
 
 	PopStackingVariable(var);
 	literal = GetOperationCodeFloat();
 
-	if ((*var.*aCmp)(literal)) {
+	if((*var.*rCmp)(literal)) {
 		OperationJump();
-	} else {
-		operationPointer += 4;
+	}
+	else {
+		mOperationPointer += 4;
 	}
 }
 
 void Environment::OperationDataBegin() {
-	if (dataDefinition) {
+	if(mDataDefinition) {
 		throw InvalidOpException("Already defining data");
 	}
-	dataDefinition = true;
+	mDataDefinition = true;
 }
 
 void Environment::OperationDataString() {
@@ -702,19 +709,19 @@ void Environment::OperationDataString() {
 }
 
 void Environment::OperationDataFunction() {
-	int funcId = 0;
+	int funcID = 0;
 	int funcPos = 0;
 
-	funcId = GetOperationCodeUint();
+	funcID = GetOperationCodeUint();
 	funcPos = GetOperationCodeUint();
 
-	functions[funcId] = funcPos;
+	mFunctions[funcID] = funcPos;
 }
 
 void Environment::OperationDataEnd() {
-	if (!dataDefinition) {
+	if(!mDataDefinition) {
 		throw InvalidOpException("Was not defining data");
 	}
 
-	dataDefinition = false;
+	mDataDefinition = false;
 }
