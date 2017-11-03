@@ -9,9 +9,14 @@ MString::MString() : mBuffer(MString::mEmpty)
 
 MString::MString(double rNumber) : mBuffer(MString::mEmpty)
 {
-	char buffer[255];
-	sprintf(buffer, "%f", rNumber);
+	va_list ap;	
+	const int size = 255;
+	char buffer[size];
 
+	va_start(ap, "%f");
+	vsnprintf(buffer,size, "%f", ap);
+	va_end(ap);
+	
 	CopyToBuffer(buffer);
 
 	TrimRight('0');
