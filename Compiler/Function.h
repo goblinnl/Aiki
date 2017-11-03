@@ -8,7 +8,6 @@
 // External
 #include <stdlib.h>
 
-
 class Expression;
 class PositionReference;
 
@@ -17,7 +16,7 @@ public:
 	FunctionCall(Token *rFuncToken);
 	void ParseFragment(Tokens * rTokens, Parser *rParser);
 	void ProvideIntermediates(OperationCode *rOpcode, Parser *rParser);
-	std::string	GetString();
+	MString	GetString();
 
 protected:
 	Token::Type		mDelimter;
@@ -45,7 +44,6 @@ public:
 
 };
 
-
 class FunctionTail : public Fragment {
 public:
 	FunctionTail();
@@ -59,13 +57,13 @@ private:
 
 class FunctionSignature {
 private:
-	std::string mSignatureName;
+	MString mSignatureName;
 	int	mParameterCount;
 	uint mFunctionID;
 
 public:
-	FunctionSignature(std::string rName, int rParams);
-	std::string GetName();
+	FunctionSignature(MString rName, int rParams);
+	MString GetName();
 	int GetParameterCount();
 
 	uint GetID();

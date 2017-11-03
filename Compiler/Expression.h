@@ -19,7 +19,7 @@ public:
 	Expression(bool rIsFunctionParam = false, bool rCanBeNull = true);
 	~Expression();
 
-	std::string	GettingString();
+	MString	GettingString();
 	void ParseFragment(Tokens *rTokens, Parser *rParser);
 	void ProvideIntermediates(OperationCode *rOpcode, Parser *rParser);
 

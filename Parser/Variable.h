@@ -1,8 +1,9 @@
 #ifndef VARIABLE_H
 #define VARIABLE_H
 
-// External
-#include <string>
+// Internal
+#include "../Mixer/MCommon.h"
+#include "../Mixer/MString.h"
 
 class Variable {
 public:
@@ -23,7 +24,7 @@ private:
 
 public:
 	static Variable* CreateVariable(const char *rValue);
-	static Type	GetType(std::string rString);
+	static Type	GetType(MString rString);
 
 	Variable(int rID = 0);
 	~Variable();

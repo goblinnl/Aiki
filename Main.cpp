@@ -17,7 +17,7 @@ int main(int argc, const char *argv[])
 		return 1;
 	}
 	else {
-		std::string file = argv[1];
+		MString file = argv[1];
 		Parser parser(file, true);
 
 		if(parser.ParseFile()) {

@@ -3,10 +3,12 @@
 
 // External
 #include <stdlib.h>
-#include <string>
 
 // Internal
 #include "../Codes.h"
+#include "../Mixer/MCommon.h"
+#include "../Mixer/MString.h"
+
 
 class OperationCode;
 class Parser;
@@ -16,11 +18,11 @@ class Fragment {
 public:
 	virtual void ParseFragment(Tokens *rTokens, Parser *rParser) = 0;
 	virtual void ProvideIntermediates(OperationCode *rOpcode, Parser *rParser) = 0;
-	virtual std::string	GettingString();
+	virtual MString	GettingString();
 
 protected:
-	uint SetVariable(Parser *rParser, std::string rName);
-	uint GetVariableID(Parser *rParser, std::string rName);
+	uint SetVariable(Parser *rParser, MString rName);
+	uint GetVariableID(Parser *rParser, MString rName);
 	void AllocateVariable(OperationCode *rOperationCode, uint rVariableID);
 };
 #endif // FRAGMENT_H

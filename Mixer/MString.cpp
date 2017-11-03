@@ -1,14 +1,16 @@
 #include "MString.h"
 
+char* MString::mEmpty = "";
 
-MString::MString() : mEmpty(""), mBuffer(MString::mEmpty)
+MString::MString() : mBuffer(MString::mEmpty)
 {
-	
+
 }
 
-MString::MString(double rNumber) : mEmpty(""), mBuffer(mEmpty)
+MString::MString(double rNumber) : mBuffer(MString::mEmpty)
 {
 	char buffer[255];
+	sprintf(buffer, "%f", rNumber);
 
 	CopyToBuffer(buffer);
 
@@ -16,47 +18,48 @@ MString::MString(double rNumber) : mEmpty(""), mBuffer(mEmpty)
 	Trim('.');
 }
 
-MString::MString(char rVal) : mEmpty(""), mBuffer(mEmpty)
+MString::MString(char rVal) : mBuffer(MString::mEmpty)
 {
 	mBuffer = new char[2];
 	mBuffer[0] = rVal;
 	mBuffer[1] = 0;
 }
 
-MString::MString(MString* rVal) : mEmpty(""), mBuffer(mEmpty)
+MString::MString(MString* rVal) : mBuffer(MString::mEmpty)
 {
 	CopyToBuffer(rVal->mBuffer);
 }
 
-MString::MString(const MString &rCopy) : mEmpty(""), mBuffer(mEmpty)
+MString::MString(const MString &rCopy) : mBuffer(MString::mEmpty)
 {
 	CopyToBuffer(rCopy);
 }
 
-MString::MString(MString&& rMove)
+MString::MString(MString&& rMove) : mBuffer(MString::mEmpty)
 {
-	rMove.mBuffer = GetEmpty();
+	rMove.mBuffer = MString::mEmpty;
 }
 
-MString::MString(const char* rVal) : mEmpty(""), mBuffer(mEmpty)
+MString::MString(const char* rVal) : mBuffer(MString::mEmpty)
 {
 	CopyToBuffer(rVal);
 }
 
 MString::~MString()
 {
-	if(mBuffer != GetEmpty())
+	if(mBuffer != MString::mEmpty) {
 		delete[] mBuffer;
+	}
 }
-
+/*
 char* MString::GetEmpty() {
-	return mEmpty;
+	return MString::mEmpty;
 }
 
-void MString::SetEmpty(char* const &rEmpty) 
+void MString::SetEmpty(char* const &rEmpty)
 {
-	mEmpty = rEmpty;
-}
+	MString::mEmpty = rEmpty;
+}*/
 
 MString MString::Trim()
 {
@@ -66,11 +69,9 @@ MString MString::Trim()
 		offset++;
 	}
 
-	for(unsigned int i = 0; i < strlen(offset); i++)
-	{
+	for(unsigned int i = strlen(offset) - 1; i >= 0; i--) {
 		if(offset[i] != ' ' && offset[i] != '\n' && offset[i] != '\r' && offset[i] != '\t') {
 			offset[i + 1] = '\0';
-
 			break;
 		}
 	}
@@ -81,11 +82,12 @@ MString MString::Trim()
 MString MString::Trim(char rChar)
 {
 	char* offset = mBuffer;
-	
-	while(*offset == rChar)
-		offset++;
 
-	for(unsigned int i = 0; i < strlen(offset) - 1; i++){
+	while(*offset == rChar) {
+		offset++;
+	}
+
+	for(unsigned int i = strlen(offset) - 1; i >= 0; i--){
 		if(offset[i] != rChar){
 			offset[i + 1] = '\0';
 
@@ -100,11 +102,12 @@ MString MString::TrimLeft()
 {
 	char* offset = mBuffer;
 
-	while(*offset == ' ' || *offset == '\n' || *offset == '\r' || *offset == '\r') {
+	while(*offset == ' ' || *offset == '\n' || *offset == '\r' || *offset == '\t') {
 		offset++;
 	}
 
-	return MString(offset);}
+	return MString(offset);
+}
 
 MString MString::TrimLeft(char rChar)
 {
@@ -124,7 +127,7 @@ MString MString::TrimRight()
 		if(offset[i] != ' ' && offset[i] != '\n' && offset[i] != '\r' && offset[i] != '\t') {
 			offset[i + 1] = '\0';
 
-			break;			
+			break;
 		}
 	}
 
@@ -138,7 +141,7 @@ MString MString::TrimRight(char rChar)
 	for(unsigned int i = 0; i < strlen(offset) - 1; i++){
 		if(offset[i] != rChar) {
 			offset[i + 1] = '\0';
-			break;		
+			break;
 		}
 	}
 
@@ -190,35 +193,35 @@ MString MString::ToUpper()
 
 MString MString::Substring(int rStart)
 {
-	return Substring(rStart, Size() - rStart);
+	return Substring(rStart, Length() - rStart);
 
 }
 
-MString MString::Substring(int rStart, int rLengt)
+MString MString::Substring(int rStart, int rLength)
 {
 	if((unsigned int)rStart >= strlen(mBuffer)) {
 		return "";
 	}
 
 	if(rStart < 0) {
-		rLengt += rStart;
+		rLength += rStart;
 		rStart = 0;
 
-		if(rLengt <= 0)
+		if(rLength <= 0)
 			return "";
 	}
 
 	MString offset(mBuffer + rStart);
 
-	if(rLengt < 0)
-		rLengt = offset.Size() + rLengt;
+	if(rLength < 0)
+		rLength = offset.Length() + rLength;
 
-	if((unsigned int)rLengt >= strlen(offset)) {
+	if((unsigned int)rLength >= strlen(offset)) {
 		offset.AppendToBuffer('\0');
 		return offset;
 	}
 
-	offset[rLengt] = '\0';
+	offset[rLength] = '\0';
 
 	return offset;
 }
@@ -242,10 +245,10 @@ MString MString::Format(const char* rFormat, ...)
 
 	va_end(list);
 
-	MString mbuffer(buffer);
+	MString ret(buffer);
 	delete[] buffer;
 
-	return mbuffer;
+	return ret;
 }
 
 void MString::SetFormat(const char* rFormat, ...)
@@ -266,6 +269,10 @@ void MString::SetFormat(const char* rFormat, ...)
 	}
 
 	va_end(list);
+
+	CopyToBuffer(buffer);
+
+	delete[] buffer;
 }
 
 void MString::AppendFormat(const char* rFormat, ...)
@@ -277,12 +284,12 @@ void MString::AppendFormat(const char* rFormat, ...)
 	va_list list;
 	va_start(list, rFormat);
 
-	int lenght = snprintf(buffer, size, rFormat, list);
+	int lenght = vsnprintf(buffer, size, rFormat, list);
 	if(size <= lenght) {
 		delete[] buffer;
 
 		buffer = new char[lenght + 1];
-		lenght = snprintf(buffer, size, rFormat, list);
+		lenght = vsnprintf(buffer, size, rFormat, list);
 	}
 
 	va_end(list);
@@ -294,34 +301,35 @@ void MString::AppendFormat(const char* rFormat, ...)
 
 void MString::CopyToBuffer(const char* rBuffer)
 {
-	if(mBuffer != GetEmpty()) {
+	if(mBuffer != MString::mEmpty) {
 		delete[] mBuffer;
 	}
 
-	int size = strlen(rBuffer);
-	if(size == 0) {
-		mBuffer = GetEmpty();
+	int lenght = strlen(rBuffer);
+	if(lenght == 0) {
+		mBuffer = MString::mEmpty;
 		return;
 	}
-	size++;
-	mBuffer = new char[size];
-	memcpy(mBuffer, rBuffer, size);
+	lenght++;
+	mBuffer = new char[lenght];
+	memcpy(mBuffer, rBuffer, lenght);
 }
 
 void MString::AppendToBuffer(const char* rBuffer)
 {
 	size_t count = strlen(rBuffer);
-	if(count <= 0)
+	if(count <= 0) {
 		return;
+	}
 
-	int size = Size();
+	int size = Length();
 
-	char* buffer = new char[size = count + 1];
+	char* buffer = new char[size + count + 1];
 	memcpy(buffer, mBuffer, size);
 	memcpy(buffer + size, rBuffer, count);
 	buffer[size + count] = 0;
 
-	if(mBuffer != GetEmpty())
+	if(mBuffer != MString::mEmpty)
 		delete[] mBuffer;
 
 	mBuffer = buffer;
@@ -332,30 +340,32 @@ void MString::AppendToBuffer(const char* rBuffer, int rCounter)
 	if(rCounter <= 0)
 		return;
 
-	int size = Size();
+	int size = Length();
 
 	char* buffer = new char[size + rCounter + 1];
 	memcpy(buffer, mBuffer, size);
 	memcpy(buffer + size, rBuffer, rCounter);
 	buffer[size + rCounter] = 0;
 
-	if(buffer != GetEmpty())
+	if(mBuffer != MString::mEmpty) {
 		delete[] mBuffer;
+	}
 
 	mBuffer = buffer;
 }
 
 void MString::AppendToBuffer(char rBuffer)
 {
-	int size = Size();
+	int size = Length();
 
 	char* buffer = new char[size + 2];
 	memcpy(buffer, mBuffer, size);
 	buffer[size] = rBuffer;
 	buffer[++size] = 0;
 
-	if(mBuffer != GetEmpty())
+	if(mBuffer != MString::mEmpty) {
 		delete[] mBuffer;
+	}
 
 	mBuffer = buffer;
 }
@@ -378,7 +388,7 @@ void MString::Split(const MString &rNeedle, MArray<MString> &rResult)
 				index = i;
 			}
 			part[index] = '\0';
-						
+
 
 			rResult.Push() = part;
 
@@ -425,14 +435,14 @@ int MString::Count(const MString &rNeedle)
 	return counter;
 }
 
-int MString::Size()
+int MString::Length()
 {
 	return strlen(mBuffer);
 }
 
 int MString::IndexOf(char rChar)
 {
-	int lenght = Size();
+	int lenght = Length();
 	for(int i = 0; i < lenght; i++) {
 		if(mBuffer[i] == rChar) {
 			return i;
@@ -443,7 +453,7 @@ int MString::IndexOf(char rChar)
 
 int MString::IndexOf(char rChar, int rPos)
 {
-	int lenght = Size();
+	int lenght = Length();
 	for(int i = rPos; i < lenght; i++) {
 		if(mBuffer[i] == rChar) {
 			return i;
@@ -454,8 +464,8 @@ int MString::IndexOf(char rChar, int rPos)
 
 int MString::IndexOf(MString rTxt, int rPos)
 {
-	int lenght = Size();
-	int textLenght = rTxt.Size();
+	int lenght = Length();
+	int textLenght = rTxt.Length();
 
 	for(int i = rPos; i <= lenght - textLenght; i++) {
 		if(MString(mBuffer).Substring(i, textLenght) == rTxt) {
@@ -467,7 +477,7 @@ int MString::IndexOf(MString rTxt, int rPos)
 
 int MString::LastIndexOf(char rChar)
 {
-	int lenght = Size();
+	int lenght = Length();
 	for(unsigned int i = lenght - 1; i > -1; i--) {
 		if(mBuffer[i] == rChar) {
 			return i;
@@ -479,7 +489,7 @@ int MString::LastIndexOf(char rChar)
 
 int MString::LastIndexOf(char rChar, int rPos)
 {
-	int lenght = Size();
+	int lenght = Length();
 	for(int i = rPos; i > -1; i--) {
 		if(mBuffer[i] == rChar) {
 			return i;
@@ -490,8 +500,8 @@ int MString::LastIndexOf(char rChar, int rPos)
 
 int MString::LastIndexOf(MString rTxt, int rPos)
 {
-	int lenght = Size();
-	int textLenght = Size();
+	int lenght = Length();
+	int textLenght = Length();
 
 	for(int i = rPos; i > -1; i--){
 		if(MString(mBuffer).Substring(i, textLenght) == rTxt) {
@@ -520,17 +530,17 @@ bool MString::EndsWith(const MString &rPoint)
 {
 	MString* point = (MString*)&rPoint;
 
-	int a = Size();
-	int b = point->Size();
+	int a = Length();
+	int b = point->Length();
 
-	if(a > b) return false;
+	if(b > a) return false;
 
 	return Substring(a - b) == rPoint;
 }
 
 bool MString::EndsWith(const char rPoint)
 {
-	return rPoint == mBuffer[strlen(mBuffer - 1)];
+	return rPoint == mBuffer[strlen(mBuffer) - 1];
 }
 
 MString::operator const char*() {
@@ -580,7 +590,7 @@ bool MString::operator==(const char* rChar)
 
 bool MString::operator!=(const char* rChar)
 {
-	return !strcmp(mBuffer, rChar) != 0;
+	return strcmp(mBuffer, rChar) != 0;
 }
 
 char& MString::operator[](int rIndex)
@@ -607,7 +617,7 @@ char* MString::StringToLower(char* rString)
 	unsigned char *point = (unsigned char *)rString;
 
 	while(*point) {
-		*point = tolower((unsigned char) *point);
+		*point = tolower((unsigned char)*point);
 		point++;
 	}
 

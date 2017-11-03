@@ -18,7 +18,7 @@ Statement* Statement::CreateStatement(Tokens *rTokens, Parser *rParser) {
 	const Token *token = rTokens->CheckNext();
 
 	if (token->mType == Token::RESERVED) {
-		std::string s = token->mToken;
+		MString s = token->mToken;
 
 		if (s == "var") {
 			stmt = new AssignStatement();
@@ -111,7 +111,7 @@ void AssignStatement::ProvideIntermediates(OperationCode *rOpcode, Parser *rPars
 }
 
 void AssignStatement::HandleOperator(OperationCode *rOpcode, uint rVarID) {
-	std::string s = mOperators->mToken;
+	MString s = mOperators->mToken;
 	byte operation = 0;
 
 	if (s == "+=") {

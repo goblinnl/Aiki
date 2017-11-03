@@ -1,5 +1,7 @@
 // Internal
 #include "Variable.h"
+#include "../Mixer/MCommon.h"
+#include "../Mixer/MString.h"
 
 // External
 #include <cstring>
@@ -16,10 +18,10 @@ Variable* Variable::CreateVariable(const char *rValue) {
 	return variable;
 }
 
-Variable::Type Variable::GetType(std::string rString) {
+Variable::Type Variable::GetType(MString rString) {
 	bool flt = false;
 
-	for(int i = 0; i < (int)rString.length(); i++) {
+	for(int i = 0; i < (int)rString.Length(); i++) {
 		if(rString[i] >= '0' && rString[i] <= '9') {
 		}
 		else if(rString[i] == '.') {

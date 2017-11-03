@@ -124,4 +124,4 @@ typedef ScopeType<Variable*> Scope;
 * Scope used for scope checking during compilation
 * IDs are mapped to variable names rather than actual variables
 */
-typedef ScopeType<std::string*> CompileScope;
+typedef ScopeType<MString*> CompileScope;

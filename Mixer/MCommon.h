@@ -35,7 +35,7 @@
 #define snprintf c99_snprintf
 #define vsnprintf c99_vsnprintf
 
-int c99_vsnprintf(char *rOutBuf, size_t rSize, const char *rFormat, va_list rAp)
+inline int c99_vsnprintf(char *rOutBuf, size_t rSize, const char *rFormat, va_list rAp)
 {
 	int count = -1;
 
@@ -47,7 +47,7 @@ int c99_vsnprintf(char *rOutBuf, size_t rSize, const char *rFormat, va_list rAp)
 	return count;
 }
 
-int c99_snprintf(char *rOutBuf, size_t rSize, const char *rFormat, ...)
+inline int c99_snprintf(char *rOutBuf, size_t rSize, const char *rFormat, ...)
 {
 	int count;
 	va_list ap;

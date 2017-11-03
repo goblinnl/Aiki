@@ -6,10 +6,11 @@
 */
 
 // Internal
+#include "Mixer/MCommon.h"
+#include "Mixer/MString.h"
 #include "Codes.h"
 
 // External
-#include <string>
 #include <vector>
 
 class OperationCode;
@@ -26,10 +27,10 @@ private:
 
 	int	ParametersCount(byte rCode);
 
-	std::string GetUint(int rOpcodeIdx);
-	std::string GetInteger(int rOpcodeIdx);
-	std::string GetFloat(int rOpcodeIdx);
-	std::string	GetLieteral(byte rCode);
-	std::string	GetParameter(byte rCtx, int rOpcodeIdx, int rParamIdx);
+	MString GetUint(int rOpcodeIdx);
+	MString GetInteger(int rOpcodeIdx);
+	MString GetFloat(int rOpcodeIdx);
+	MString	GetLieteral(byte rCode);
+	MString	GetParameter(byte rCtx, int rOpcodeIdx, int rParamIdx);
 };
 #endif // OPERATIONCODETEXT_H

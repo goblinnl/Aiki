@@ -1,6 +1,10 @@
 #ifndef TOKENS_H
 #define TOKENS_H
 
+// Internal
+#include "../Mixer/MCommon.h"
+#include "../Mixer/MString.h"
+
 // External
 #include <string>
 #include <list>
@@ -28,17 +32,17 @@ struct Token {
 		COMMA = 0x00020000,
 	};
 
-	static std::string GetStringValue(Token::Type rType);
+	static MString GetStringValue(Token::Type rType);
 
 	Token() {
 		mType = INVALID;
 	}
-	Token(std::string rToken, Type rType = INVALID) {
+	Token(MString rToken, Type rType = INVALID) {
 		mToken = rToken;
 		mType = rType;
 	}
 
-	std::string	mToken;
+	MString	mToken;
 	Type mType;
 };
 typedef std::list<Token*>::iterator TokenIterertor;
@@ -57,7 +61,7 @@ public:
 	TokenIterertor GetFirstIterator();
 	TokenIterertor GetPointer();
 
-	void GenerateTokens(std::string rFile);
+	void GenerateTokens(MString rFile);
 	void SetPointer(TokenIterertor rFront);
 
 	bool IsMore();
@@ -68,8 +72,8 @@ private:
 	bool GetSpecialChar(std::ifstream &rFile);
 	bool GetWord(std::ifstream &rFile);
 	bool PeekOperator(std::ifstream &rFile, char rContext = 0);
-	bool ReservedWord(std::string rWord);
-	bool IsValidName(std::string rName);
+	bool ReservedWord(MString rWord);
+	bool IsValidName(MString rName);
 	bool BlockNextChar(std::ifstream &rFile, bool rNumerical);
 	bool ReachedEnd(std::ifstream &rFile);
 

@@ -4,6 +4,8 @@
 // Internal
 #include "tokens.h"
 #include "statement.h"
+#include "../Mixer/MCommon.h"
+#include "../Mixer/MString.h"
 #include "../OperationCode.h"
 #include "../scope.h"
 
@@ -20,7 +22,8 @@ private:
 	static uint	mStdFunctionID;
 	static uint	mVariableID;
 
-	std::string mInputFile;
+	MString mInputFile;
+	FILE* mFile;
 	bool mIsMainFile;
 
 	Tokens *mTokens;
@@ -35,25 +38,38 @@ private:
 	PositionInquirer *mHeaderStart;
 
 public:
-	Parser(std::string rFile, bool rMainFile);
+	Parser();
+	Parser(MString rFile, bool rMainFile);
 	~Parser();
 
 	bool ParseFile();
+	bool OpenFile(const char* rFilename, const char* rMode);
+
+	unsigned long SizeFile();
+	unsigned long LocationFile();
+
 	bool CompileTokens();
 	bool IsInLocalScope();
+
+	void CloseFile();
+	void WriteFile(const void* rPointer, unsigned long rLenght);
+	void* ReadFile(unsigned long rLenght);
+	const void* ReadFileToEnd();
 
 	void PushScope();
 	void PopScope();
 	void PushNestedScope();
 	void PopNestedScope();
 
-	uint RegisterVariable(std::string rName);
-	uint GetVariableID(std::string rName);
+	void Seek(unsigned long rPos, int rOrigin);
+
+	uint RegisterVariable(MString rName);
+	uint GetVariableID(MString rName);
 	uint RegisterFunction(FunctionSignature rFuncSign);
 	uint RegisterStdFunction(FunctionSignature rFuncSign);
-	uint GetFunctionID(std::string rName);
+	uint GetFunctionID(MString rName);
 
-	FunctionSignature GetFunctionSignature(std::string rFunctionName);
+	FunctionSignature GetFunctionSignature(MString rFunctionName);
 	FunctionSignature GetFunctionSignature(uint rFunctionID);
 
 	OperationCode*	GetOpcodes();

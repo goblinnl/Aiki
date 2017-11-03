@@ -8,7 +8,7 @@ class MString {
 
 public:
 	char* mBuffer;
-	char* mEmpty;
+	static char* mEmpty;
 
 	MString();
 	MString(double rNumber);
@@ -20,8 +20,8 @@ public:
 	~MString();
 
 	char* GetEmpty();
-	void SetEmpty(char* const &rEmpty);	
-	
+	void SetEmpty(char* const &rEmpty);
+
 	MString Trim();
 	MString TrimLeft();
 	MString TrimRight();
@@ -34,7 +34,7 @@ public:
 	MString ToUpper();
 	MString Substring(int rStart);
 	MString Substring(int rStart, int rLengt);
-	
+
 
 	static MString Format(const char* rFormat, ...);
 
@@ -47,7 +47,7 @@ public:
 	void Split(const MString &rNeedle, MArray<MString> &rResult);
 
 	int Count(const MString &rNeedle);
-	int Size();	
+	int Length();
 	int IndexOf(char rChar);
 	int IndexOf(char rChar, int rPos);
 	int LastIndexOf(char rChar);

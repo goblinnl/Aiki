@@ -18,8 +18,8 @@ Expression::~Expression() {
 	}
 }
 
-std::string Expression::GettingString() {
-	std::string ret;
+MString Expression::GettingString() {
+	MString ret;
 
 	std::list<ExpressionTerm*>::iterator it;
 	for (it = mPostfix.begin(); it != mPostfix.end(); it++) {
@@ -116,7 +116,7 @@ int Expression::OperatorPrecedence(Token *rToken) {
 		return -1;
 	}
 
-	std::string s = rToken->mToken;
+	MString s = rToken->mToken;
 
 	if (s == "=") {
 		return 11;
@@ -175,11 +175,11 @@ void Expression::AllocateVariables(OperationCode *rOpcode, Parser* rParser) {
 
 				if(it->first->token->mType == Token::VARIABLE_INT) {
 					operation = OP_MOVI;
-					*(int*)dword = atoi(token->mToken.c_str());
+					*(int*)dword = atoi(token->mToken);
 				}
 				else if(token->mType == Token::VARIABLE_FLOAT) {
 					operation = OP_MOVF;
-					*(float*)dword = (float)atof(token->mToken.c_str());
+					*(float*)dword = (float)atof(token->mToken);
 				} else {
 					throw InvalidTokenException("Invalid token expression of type");
 				}
@@ -235,7 +235,7 @@ void Expression::AddOperator(OperationCode *rOpcode, Token *rToken) {
 	}
 
 	byte oper = 0;
-	std::string s = rToken->mToken;
+	MString s = rToken->mToken;
 
 	if (s == "+") {
 		oper = OP_ADD;

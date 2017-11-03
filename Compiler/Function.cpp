@@ -39,12 +39,12 @@ void FunctionCall::ParseFragment(Tokens * rTokens, Parser * rParser) {
 		ss << "Function " << funcSign.GetName() << ": "
 			<< "Expected " << funcSign.GetParameterCount() << " parameters, "
 			<< "received " << mParameters.size();
-		throw InvalidArgumentException(ss.str());
+		throw InvalidArgumentException((MString)ss.str().c_str());
 	}
 }
 
-std::string FunctionCall::GetString() {
-	std::string ret = mFunctionToken->mToken;
+MString FunctionCall::GetString() {
+	MString ret = mFunctionToken->mToken;
 
 	ret += "(";
 
@@ -172,13 +172,13 @@ PositionReference* FunctionTail::GetPositionReference() {
 }
 
 /***** FunctionSignature *****/
-FunctionSignature::FunctionSignature(std::string rName, int rParamCount) {
+FunctionSignature::FunctionSignature(MString rName, int rParamCount) {
 	mSignatureName = rName;
 	mParameterCount = rParamCount;
 	mFunctionID = 0;
 }
 
-std::string FunctionSignature::GetName() {
+MString FunctionSignature::GetName() {
 	return mSignatureName;
 }
 
