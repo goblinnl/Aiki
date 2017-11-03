@@ -3,7 +3,7 @@
 
 // Internal
 #include "../Mixer/MCommon.h"
-#include "../Mixer/MString.h"
+#include "../Mixer/MCString.h"
 
 class Variable {
 public:
@@ -24,7 +24,7 @@ private:
 
 public:
 	static Variable* CreateVariable(const char *rValue);
-	static Type	GetType(MString rString);
+	static Type	GetType(MCString rString);
 
 	Variable(int rID = 0);
 	~Variable();

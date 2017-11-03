@@ -1,7 +1,7 @@
 // Internal
 #include "Variable.h"
 #include "../Mixer/MCommon.h"
-#include "../Mixer/MString.h"
+#include "../Mixer/MCString.h"
 
 // External
 #include <cstring>
@@ -18,7 +18,7 @@ Variable* Variable::CreateVariable(const char *rValue) {
 	return variable;
 }
 
-Variable::Type Variable::GetType(MString rString) {
+Variable::Type Variable::GetType(MCString rString) {
 	bool flt = false;
 
 	for(int i = 0; i < (int)rString.Length(); i++) {
