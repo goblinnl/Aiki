@@ -7,7 +7,7 @@
 // External
 #include <fstream>
 
-MString Token::GetStringValue(Token::Type rType) {
+MCString Token::GetStringValue(Token::Type rType) {
 	switch(rType) {
 	case UNDEFINED: return "UNDEFINED";
 	case OPERATOR: return "OPERATOR";
@@ -33,7 +33,7 @@ Tokens::Tokens() {
 	pointer = tokens.begin();
 }
 
-void Tokens::GenerateTokens(MString rFileName) {
+void Tokens::GenerateTokens(MCString rFileName) {
 	std::ifstream file;
 	file.open(rFileName);
 	if(!file.good()) {
@@ -118,7 +118,7 @@ bool Tokens::GetToken(std::ifstream &rFile) {
 }
 
 bool Tokens::GetOperator(std::ifstream &rFile) {
-	MString str;
+	MCString str;
 	char lastChar = 0;
 
 	while(PeekOperator(rFile, lastChar) && str.Length() <= 1) {
@@ -139,7 +139,7 @@ bool Tokens::GetOperator(std::ifstream &rFile) {
 
 bool Tokens::GetSpecialChar(std::ifstream &rFile) {
 	char ch = rFile.peek();
-	MString str;
+	MCString str;
 	str = ch;
 
 	Token *t = new Token(str);
@@ -283,7 +283,7 @@ bool Tokens::PeekOperator(std::ifstream &rFile, char rContext) {
 }
 
 void Tokens::DetermineOperator(Token *rToken) {
-	MString str = rToken->mToken;
+	MCString str = rToken->mToken;
 
 	switch(str[0]) {
 	case '+':
@@ -326,14 +326,14 @@ void Tokens::DetermineOperator(Token *rToken) {
 	}
 }
 
-bool Tokens::ReservedWord(MString rStr) {
+bool Tokens::ReservedWord(MCString rStr) {
 	if(rStr == "class" || rStr == "for" || rStr == "if" || rStr == "else" || rStr == "while" || rStr == "func" || rStr == "var" || rStr == "return" || rStr == "include") {
 		return true;
 	}
 	return false;
 }
 
-bool Tokens::IsValidName(MString rName) {
+bool Tokens::IsValidName(MCString rName) {
 	if(!rName.Length()) {
 		return false;
 	}
@@ -406,7 +406,7 @@ void Tokens::SeekNextToken(std::ifstream &rFile) {
 }
 
 void Tokens::SkipLine(std::ifstream &rFile) {
-	MString waste;
+	MCString waste;
 	std::getline(rFile, (std::string)waste);
 }
 

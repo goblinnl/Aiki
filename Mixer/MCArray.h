@@ -1,5 +1,5 @@
-#ifndef MIXER_ARRAY_H
-#define MIXER_ARRAY_H
+#ifndef MIXER_C_ARRAY_H
+#define MIXER_C_ARRAY_H
 
 // Internal
 #include "MCommon.h"
@@ -10,7 +10,7 @@
 #include <cctype>
 #include <cstdarg>
 
-template<class T> class MArray
+template<class T> class MCArray
 {
 public:
 	T** mItems;
@@ -18,12 +18,12 @@ public:
 	int mUsed;
 
 public:	
-	MArray() : mItems(NULL), mSlots(0), mUsed(0)
+	MCArray() : mItems(NULL), mSlots(0), mUsed(0)
 	{
 		AllocSlots(256);
 	}
 
-	MArray(const MArray& rCopy)
+	MCArray(const MCArray& rCopy)
 	{
 		mItems = NULL;
 		mSlots = 0;
@@ -39,7 +39,7 @@ public:
 		}
 	}
 
-	~MArray()
+	~MCArray()
 	{
 		ClearAll();
 
@@ -144,4 +144,4 @@ private:
 		mItems = pMemory;
 	}
 };
-#endif // MIXER_ARRAY_H
+#endif // MIXER_C_ARRAY_H

@@ -1,8 +1,8 @@
-#ifndef MIXER_COMMON_H
-#define MIXER_COMMON_H
+#ifndef MIXER_C_COMMON_H
+#define MIXER_C_COMMON_H
 
 // Internal
-#include "MMath.h"
+#include "MCMath.h"
 
 // External
 #include <cstdio>
@@ -60,4 +60,4 @@ inline int c99_snprintf(char *rOutBuf, size_t rSize, const char *rFormat, ...)
 }
 #endif
 
-#endif // MIXER_COMMON_H
+#endif // MIXER_C_COMMON_H

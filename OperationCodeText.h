@@ -7,7 +7,7 @@
 
 // Internal
 #include "Mixer/MCommon.h"
-#include "Mixer/MString.h"
+#include "Mixer/MCString.h"
 #include "Codes.h"
 
 // External
@@ -27,10 +27,10 @@ private:
 
 	int	ParametersCount(byte rCode);
 
-	MString GetUint(int rOpcodeIdx);
-	MString GetInteger(int rOpcodeIdx);
-	MString GetFloat(int rOpcodeIdx);
-	MString	GetLieteral(byte rCode);
-	MString	GetParameter(byte rCtx, int rOpcodeIdx, int rParamIdx);
+	MCString GetUint(int rOpcodeIdx);
+	MCString GetInteger(int rOpcodeIdx);
+	MCString GetFloat(int rOpcodeIdx);
+	MCString	GetLieteral(byte rCode);
+	MCString	GetParameter(byte rCtx, int rOpcodeIdx, int rParamIdx);
 };
 #endif // OPERATIONCODETEXT_H

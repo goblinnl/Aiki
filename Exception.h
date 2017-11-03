@@ -6,7 +6,7 @@
 *****/
 // Internal
 #include "Mixer/MCommon.h"
-#include "Mixer/MString.h"
+#include "Mixer/MCString.h"
 
 
 // External
@@ -20,10 +20,10 @@
 #define EXCEPTION_BEGIN(_NAME, _TXTDEFAULT)		\
 	class _NAME : public std::runtime_error {	\
 	public: 									\
-	_NAME(MString txt = _TXTDEFAULT)			\
+	_NAME(MCString txt = _TXTDEFAULT)			\
 			:std::runtime_error(txt){}			\
 	const char *what() {						\
-		MString str = #_NAME;					\
+		MCString str = #_NAME;					\
 		str += ": ";							\
 		str += runtime_error::what();			\
 		return str;								\

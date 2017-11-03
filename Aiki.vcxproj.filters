@@ -40,7 +40,7 @@
     <ClCompile Include="Parser\Variable.cpp">
       <Filter>Source Files\Parser</Filter>
     </ClCompile>
-    <ClCompile Include="Mixer\MString.cpp">
+    <ClCompile Include="Mixer\MCString.cpp">
       <Filter>Source Files\Mixer</Filter>
     </ClCompile>
   </ItemGroup>
@@ -87,7 +87,19 @@
     <ClInclude Include="Compiler\Tokens.h">
       <Filter>Header Files\Compiler</Filter>
     </ClInclude>
-    <ClInclude Include="Mixer\MArray.h">
+    <ClInclude Include="Parser\Environment.h">
+      <Filter>Header Files\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="Parser\Variable.h">
+      <Filter>Header Files\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="Mixer\MCArray.h">
+      <Filter>Header Files\Mixer</Filter>
+    </ClInclude>
+    <ClInclude Include="Mixer\MCMath.h">
+      <Filter>Header Files\Mixer</Filter>
+    </ClInclude>
+    <ClInclude Include="Mixer\MCString.h">
       <Filter>Header Files\Mixer</Filter>
     </ClInclude>
     <ClInclude Include="Mixer\MCommon.h">
@@ -95,18 +107,6 @@
     </ClInclude>
     <ClInclude Include="Mixer\Mixer.h">
       <Filter>Header Files\Mixer</Filter>
-    </ClInclude>
-    <ClInclude Include="Mixer\MMath.h">
-      <Filter>Header Files\Mixer</Filter>
-    </ClInclude>
-    <ClInclude Include="Mixer\MString.h">
-      <Filter>Header Files\Mixer</Filter>
-    </ClInclude>
-    <ClInclude Include="Parser\Environment.h">
-      <Filter>Header Files\Parser</Filter>
-    </ClInclude>
-    <ClInclude Include="Parser\Variable.h">
-      <Filter>Header Files\Parser</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

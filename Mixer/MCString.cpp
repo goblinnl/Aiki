@@ -1,13 +1,13 @@
-#include "MString.h"
+#include "MCString.h"
 
-char* MString::mEmpty = "";
+char* MCString::mEmpty = "";
 
-MString::MString() : mBuffer(MString::mEmpty)
+MCString::MCString() : mBuffer(MCString::mEmpty)
 {
 
 }
 
-MString::MString(double rNumber) : mBuffer(MString::mEmpty)
+MCString::MCString(double rNumber) : mBuffer(MCString::mEmpty)
 {
 	va_list ap;	
 	const int size = 255;
@@ -23,36 +23,36 @@ MString::MString(double rNumber) : mBuffer(MString::mEmpty)
 	Trim('.');
 }
 
-MString::MString(char rVal) : mBuffer(MString::mEmpty)
+MCString::MCString(char rVal) : mBuffer(MCString::mEmpty)
 {
 	mBuffer = new char[2];
 	mBuffer[0] = rVal;
 	mBuffer[1] = 0;
 }
 
-MString::MString(MString* rVal) : mBuffer(MString::mEmpty)
+MCString::MCString(MCString* rVal) : mBuffer(MCString::mEmpty)
 {
 	CopyToBuffer(rVal->mBuffer);
 }
 
-MString::MString(const MString &rCopy) : mBuffer(MString::mEmpty)
+MCString::MCString(const MCString &rCopy) : mBuffer(MCString::mEmpty)
 {
 	CopyToBuffer(rCopy);
 }
 
-MString::MString(MString&& rMove) : mBuffer(MString::mEmpty)
+MCString::MCString(MCString&& rMove) : mBuffer(MCString::mEmpty)
 {
-	rMove.mBuffer = MString::mEmpty;
+	rMove.mBuffer = MCString::mEmpty;
 }
 
-MString::MString(const char* rVal) : mBuffer(MString::mEmpty)
+MCString::MCString(const char* rVal) : mBuffer(MCString::mEmpty)
 {
 	CopyToBuffer(rVal);
 }
 
-MString::~MString()
+MCString::~MCString()
 {
-	if(mBuffer != MString::mEmpty) {
+	if(mBuffer != MCString::mEmpty) {
 		delete[] mBuffer;
 	}
 }
@@ -66,7 +66,7 @@ void MString::SetEmpty(char* const &rEmpty)
 	MString::mEmpty = rEmpty;
 }*/
 
-MString MString::Trim()
+MCString MCString::Trim()
 {
 	char* offset = mBuffer;
 
@@ -81,10 +81,10 @@ MString MString::Trim()
 		}
 	}
 
-	return MString(offset);
+	return MCString(offset);
 }
 
-MString MString::Trim(char rChar)
+MCString MCString::Trim(char rChar)
 {
 	char* offset = mBuffer;
 
@@ -100,10 +100,10 @@ MString MString::Trim(char rChar)
 		}
 	}
 
-	return MString(offset);
+	return MCString(offset);
 }
 
-MString MString::TrimLeft()
+MCString MCString::TrimLeft()
 {
 	char* offset = mBuffer;
 
@@ -111,20 +111,20 @@ MString MString::TrimLeft()
 		offset++;
 	}
 
-	return MString(offset);
+	return MCString(offset);
 }
 
-MString MString::TrimLeft(char rChar)
+MCString MCString::TrimLeft(char rChar)
 {
 	char* offset = mBuffer;
 	while(*offset == rChar) {
 		offset++;
 	}
 
-	return MString(offset);
+	return MCString(offset);
 }
 
-MString MString::TrimRight()
+MCString MCString::TrimRight()
 {
 	char* offset = mBuffer;
 
@@ -136,10 +136,10 @@ MString MString::TrimRight()
 		}
 	}
 
-	return MString(offset);
+	return MCString(offset);
 }
 
-MString MString::TrimRight(char rChar)
+MCString MCString::TrimRight(char rChar)
 {
 	char* offset = mBuffer;
 
@@ -150,12 +150,12 @@ MString MString::TrimRight(char rChar)
 		}
 	}
 
-	return MString(offset);
+	return MCString(offset);
 }
 
-MString MString::Replace(const MString &rNeedle, const MString &rReplace)
+MCString MCString::Replace(const MCString &rNeedle, const MCString &rReplace)
 {
-	MString str("");
+	MCString str("");
 
 	char* offset = mBuffer;
 	char* prev = offset;
@@ -178,31 +178,31 @@ MString MString::Replace(const MString &rNeedle, const MString &rReplace)
 	return str;
 }
 
-MString MString::Reverse()
+MCString MCString::Reverse()
 {
-	MString str(mBuffer);
+	MCString str(mBuffer);
 	return StringReverse(str.mBuffer);
 }
 
-MString MString::ToLower()
+MCString MCString::ToLower()
 {
-	MString str(mBuffer);
+	MCString str(mBuffer);
 	return StringToLower(str.mBuffer);
 }
 
-MString MString::ToUpper()
+MCString MCString::ToUpper()
 {
-	MString str(mBuffer);
+	MCString str(mBuffer);
 	return StringToUpper(str.mBuffer);
 }
 
-MString MString::Substring(int rStart)
+MCString MCString::Substring(int rStart)
 {
 	return Substring(rStart, Length() - rStart);
 
 }
 
-MString MString::Substring(int rStart, int rLength)
+MCString MCString::Substring(int rStart, int rLength)
 {
 	if((unsigned int)rStart >= strlen(mBuffer)) {
 		return "";
@@ -216,7 +216,7 @@ MString MString::Substring(int rStart, int rLength)
 			return "";
 	}
 
-	MString offset(mBuffer + rStart);
+	MCString offset(mBuffer + rStart);
 
 	if(rLength < 0)
 		rLength = offset.Length() + rLength;
@@ -231,7 +231,7 @@ MString MString::Substring(int rStart, int rLength)
 	return offset;
 }
 
-MString MString::Format(const char* rFormat, ...)
+MCString MCString::Format(const char* rFormat, ...)
 {
 	int size = 512;
 	char* buffer = 0;
@@ -250,13 +250,13 @@ MString MString::Format(const char* rFormat, ...)
 
 	va_end(list);
 
-	MString ret(buffer);
+	MCString ret(buffer);
 	delete[] buffer;
 
 	return ret;
 }
 
-void MString::SetFormat(const char* rFormat, ...)
+void MCString::SetFormat(const char* rFormat, ...)
 {
 	int size = 512;
 	char* buffer = 0;
@@ -280,7 +280,7 @@ void MString::SetFormat(const char* rFormat, ...)
 	delete[] buffer;
 }
 
-void MString::AppendFormat(const char* rFormat, ...)
+void MCString::AppendFormat(const char* rFormat, ...)
 {
 	int size = 512;
 	char* buffer = 0;
@@ -304,15 +304,15 @@ void MString::AppendFormat(const char* rFormat, ...)
 	delete[] buffer;
 }
 
-void MString::CopyToBuffer(const char* rBuffer)
+void MCString::CopyToBuffer(const char* rBuffer)
 {
-	if(mBuffer != MString::mEmpty) {
+	if(mBuffer != MCString::mEmpty) {
 		delete[] mBuffer;
 	}
 
 	int lenght = strlen(rBuffer);
 	if(lenght == 0) {
-		mBuffer = MString::mEmpty;
+		mBuffer = MCString::mEmpty;
 		return;
 	}
 	lenght++;
@@ -320,7 +320,7 @@ void MString::CopyToBuffer(const char* rBuffer)
 	memcpy(mBuffer, rBuffer, lenght);
 }
 
-void MString::AppendToBuffer(const char* rBuffer)
+void MCString::AppendToBuffer(const char* rBuffer)
 {
 	size_t count = strlen(rBuffer);
 	if(count <= 0) {
@@ -334,13 +334,13 @@ void MString::AppendToBuffer(const char* rBuffer)
 	memcpy(buffer + size, rBuffer, count);
 	buffer[size + count] = 0;
 
-	if(mBuffer != MString::mEmpty)
+	if(mBuffer != MCString::mEmpty)
 		delete[] mBuffer;
 
 	mBuffer = buffer;
 }
 
-void MString::AppendToBuffer(const char* rBuffer, int rCounter)
+void MCString::AppendToBuffer(const char* rBuffer, int rCounter)
 {
 	if(rCounter <= 0)
 		return;
@@ -352,14 +352,14 @@ void MString::AppendToBuffer(const char* rBuffer, int rCounter)
 	memcpy(buffer + size, rBuffer, rCounter);
 	buffer[size + rCounter] = 0;
 
-	if(mBuffer != MString::mEmpty) {
+	if(mBuffer != MCString::mEmpty) {
 		delete[] mBuffer;
 	}
 
 	mBuffer = buffer;
 }
 
-void MString::AppendToBuffer(char rBuffer)
+void MCString::AppendToBuffer(char rBuffer)
 {
 	int size = Length();
 
@@ -368,14 +368,14 @@ void MString::AppendToBuffer(char rBuffer)
 	buffer[size] = rBuffer;
 	buffer[++size] = 0;
 
-	if(mBuffer != MString::mEmpty) {
+	if(mBuffer != MCString::mEmpty) {
 		delete[] mBuffer;
 	}
 
 	mBuffer = buffer;
 }
 
-void MString::Split(const MString &rNeedle, MArray<MString> &rResult)
+void MCString::Split(const MCString &rNeedle, MCArray<MCString> &rResult)
 {
 	char* offset = mBuffer;
 	char* prev = offset;
@@ -419,7 +419,7 @@ void MString::Split(const MString &rNeedle, MArray<MString> &rResult)
 	} while(offset != NULL);
 }
 
-int MString::Count(const MString &rNeedle)
+int MCString::Count(const MCString &rNeedle)
 {
 	int counter = 0;
 
@@ -440,12 +440,12 @@ int MString::Count(const MString &rNeedle)
 	return counter;
 }
 
-int MString::Length()
+int MCString::Length()
 {
 	return strlen(mBuffer);
 }
 
-int MString::IndexOf(char rChar)
+int MCString::IndexOf(char rChar)
 {
 	int lenght = Length();
 	for(int i = 0; i < lenght; i++) {
@@ -456,7 +456,7 @@ int MString::IndexOf(char rChar)
 	return -1;
 }
 
-int MString::IndexOf(char rChar, int rPos)
+int MCString::IndexOf(char rChar, int rPos)
 {
 	int lenght = Length();
 	for(int i = rPos; i < lenght; i++) {
@@ -467,20 +467,20 @@ int MString::IndexOf(char rChar, int rPos)
 	return -1;
 }
 
-int MString::IndexOf(MString rTxt, int rPos)
+int MCString::IndexOf(MCString rTxt, int rPos)
 {
 	int lenght = Length();
 	int textLenght = rTxt.Length();
 
 	for(int i = rPos; i <= lenght - textLenght; i++) {
-		if(MString(mBuffer).Substring(i, textLenght) == rTxt) {
+		if(MCString(mBuffer).Substring(i, textLenght) == rTxt) {
 			return i;
 		}
 	}
 	return -1;
 }
 
-int MString::LastIndexOf(char rChar)
+int MCString::LastIndexOf(char rChar)
 {
 	int lenght = Length();
 	for(unsigned int i = lenght - 1; i > -1; i--) {
@@ -492,7 +492,7 @@ int MString::LastIndexOf(char rChar)
 	return -1;
 }
 
-int MString::LastIndexOf(char rChar, int rPos)
+int MCString::LastIndexOf(char rChar, int rPos)
 {
 	int lenght = Length();
 	for(int i = rPos; i > -1; i--) {
@@ -503,37 +503,37 @@ int MString::LastIndexOf(char rChar, int rPos)
 	return -1;
 }
 
-int MString::LastIndexOf(MString rTxt, int rPos)
+int MCString::LastIndexOf(MCString rTxt, int rPos)
 {
 	int lenght = Length();
 	int textLenght = Length();
 
 	for(int i = rPos; i > -1; i--){
-		if(MString(mBuffer).Substring(i, textLenght) == rTxt) {
+		if(MCString(mBuffer).Substring(i, textLenght) == rTxt) {
 			return i;
 		}
 	}
 	return -1;
 }
 
-bool MString::Contains(const MString &rPoint)
+bool MCString::Contains(const MCString &rPoint)
 {
 	return strstr(mBuffer, rPoint) != NULL;
 }
 
-bool MString::StartsWith(const MString &rPoint)
+bool MCString::StartsWith(const MCString &rPoint)
 {
 	return strstr(mBuffer, rPoint) == mBuffer;
 }
 
-bool MString::StartsWith(const char rPoint)
+bool MCString::StartsWith(const char rPoint)
 {
 	return rPoint == mBuffer[0];
 }
 
-bool MString::EndsWith(const MString &rPoint)
+bool MCString::EndsWith(const MCString &rPoint)
 {
-	MString* point = (MString*)&rPoint;
+	MCString* point = (MCString*)&rPoint;
 
 	int a = Length();
 	int b = point->Length();
@@ -543,32 +543,32 @@ bool MString::EndsWith(const MString &rPoint)
 	return Substring(a - b) == rPoint;
 }
 
-bool MString::EndsWith(const char rPoint)
+bool MCString::EndsWith(const char rPoint)
 {
 	return rPoint == mBuffer[strlen(mBuffer) - 1];
 }
 
-MString::operator const char*() {
+MCString::operator const char*() {
 	return  mBuffer;
 }
 
-MString::operator const char*() const {
+MCString::operator const char*() const {
 	return mBuffer;
 }
 
-MString& MString::operator=(char* rChar)
+MCString& MCString::operator=(char* rChar)
 {
 	CopyToBuffer(rChar);
 	return *this;
 }
 
-MString& MString::operator=(const char* rChar)
+MCString& MCString::operator=(const char* rChar)
 {
 	CopyToBuffer(rChar);
 	return *this;
 }
 
-MString& MString::operator=(const MString &rStr)
+MCString& MCString::operator=(const MCString &rStr)
 {
 	if(this != &rStr){
 		CopyToBuffer(rStr);
@@ -576,34 +576,34 @@ MString& MString::operator=(const MString &rStr)
 	return *this;
 }
 
-MString& MString::operator+=(const char* rChar)
+MCString& MCString::operator+=(const char* rChar)
 {
 	AppendToBuffer(rChar);
 	return *this;
 }
 
-MString& MString::operator+=(const char rChar)
+MCString& MCString::operator+=(const char rChar)
 {
 	AppendToBuffer(rChar);
 	return *this;
 }
 
-bool MString::operator==(const char* rChar)
+bool MCString::operator==(const char* rChar)
 {
 	return !strcmp(mBuffer, rChar);
 }
 
-bool MString::operator!=(const char* rChar)
+bool MCString::operator!=(const char* rChar)
 {
 	return strcmp(mBuffer, rChar) != 0;
 }
 
-char& MString::operator[](int rIndex)
+char& MCString::operator[](int rIndex)
 {
 	return mBuffer[rIndex];
 }
 
-char* MString::StringReverse(char* rString)
+char* MCString::StringReverse(char* rString)
 {
 	char ch;
 	int index = 0;
@@ -616,7 +616,7 @@ char* MString::StringReverse(char* rString)
 	return rString;
 }
 
-char* MString::StringToLower(char* rString)
+char* MCString::StringToLower(char* rString)
 {
 
 	unsigned char *point = (unsigned char *)rString;
@@ -629,7 +629,7 @@ char* MString::StringToLower(char* rString)
 	return rString;
 }
 
-char* MString::StringToUpper(char* rString)
+char* MCString::StringToUpper(char* rString)
 {
 
 	unsigned char *point = (unsigned char *)rString;
@@ -642,12 +642,12 @@ char* MString::StringToUpper(char* rString)
 	return rString;
 }
 
-MString operator+(const MString &rLHS, const char* rRHS)
+MCString operator+(const MCString &rLHS, const char* rRHS)
 {
-	return MString(rLHS) += rRHS;
+	return MCString(rLHS) += rRHS;
 }
 
-MString operator+(const MString &rLHS, const char rRHS)
+MCString operator+(const MCString &rLHS, const char rRHS)
 {
-	return MString(rLHS) += rRHS;
+	return MCString(rLHS) += rRHS;
 }

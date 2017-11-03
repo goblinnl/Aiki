@@ -124,7 +124,7 @@ int OperationCodeText::ParametersCount(byte rCode) {
 	return 0;
 }
 
-MString OperationCodeText::GetLieteral(byte rCode) {
+MCString OperationCodeText::GetLieteral(byte rCode) {
 	switch(rCode) {
 		/* Basics */
 	case OP_PUSH:			return "PUSH";
@@ -189,10 +189,10 @@ MString OperationCodeText::GetLieteral(byte rCode) {
 
 	char s[32];
 	sprintf_s(s, "UNKOWN(%2x)", rCode);
-	return (MString)s;
+	return (MCString)s;
 }
 
-MString OperationCodeText::GetParameter(byte rCtx, int rBytecodeIdx, int rParamIdx) {
+MCString OperationCodeText::GetParameter(byte rCtx, int rBytecodeIdx, int rParamIdx) {
 	switch(rCtx) {
 		/* Operations with 1 parameter */
 	case OP_PUSH:
@@ -282,7 +282,7 @@ void* OperationCodeText::GetDword(int rOpcodeIdx) {
 	return dword;
 }
 
-MString OperationCodeText::GetUint(int rOpcodeIdx) {
+MCString OperationCodeText::GetUint(int rOpcodeIdx) {
 	std::stringstream ss;
 
 	uint val = *(uint*)(&mOperationCodes[rOpcodeIdx]);
@@ -302,23 +302,23 @@ MString OperationCodeText::GetUint(int rOpcodeIdx) {
 
 	ss << val;
 
-	return (MString)ss.str().c_str();
+	return (MCString)ss.str().c_str();
 }
 
-MString OperationCodeText::GetInteger(int rOpcodeIdx) {
+MCString OperationCodeText::GetInteger(int rOpcodeIdx) {
 	std::stringstream ss;
 
 	int val = *(int*)(&mOperationCodes[rOpcodeIdx]);
 	ss << val;
 
-	return (MString)ss.str().c_str();
+	return (MCString)ss.str().c_str();
 }
 
-MString OperationCodeText::GetFloat(int rOpcodeIdx) {
+MCString OperationCodeText::GetFloat(int rOpcodeIdx) {
 	std::stringstream ss;
 
 	float val = *(float*)(&mOperationCodes[rOpcodeIdx]);
 	ss << val;
 
-	return (MString)ss.str().c_str();
+	return (MCString)ss.str().c_str();
 }

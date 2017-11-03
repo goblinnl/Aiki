@@ -7,7 +7,7 @@
 // Internal
 #include "../Codes.h"
 #include "../Mixer/MCommon.h"
-#include "../Mixer/MString.h"
+#include "../Mixer/MCString.h"
 
 
 class OperationCode;
@@ -18,11 +18,11 @@ class Fragment {
 public:
 	virtual void ParseFragment(Tokens *rTokens, Parser *rParser) = 0;
 	virtual void ProvideIntermediates(OperationCode *rOpcode, Parser *rParser) = 0;
-	virtual MString	GettingString();
+	virtual MCString	GettingString();
 
 protected:
-	uint SetVariable(Parser *rParser, MString rName);
-	uint GetVariableID(Parser *rParser, MString rName);
+	uint SetVariable(Parser *rParser, MCString rName);
+	uint GetVariableID(Parser *rParser, MCString rName);
 	void AllocateVariable(OperationCode *rOperationCode, uint rVariableID);
 };
 #endif // FRAGMENT_H

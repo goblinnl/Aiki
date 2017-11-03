@@ -16,7 +16,7 @@ public:
 	FunctionCall(Token *rFuncToken);
 	void ParseFragment(Tokens * rTokens, Parser *rParser);
 	void ProvideIntermediates(OperationCode *rOpcode, Parser *rParser);
-	MString	GetString();
+	MCString	GetString();
 
 protected:
 	Token::Type		mDelimter;
@@ -57,13 +57,13 @@ private:
 
 class FunctionSignature {
 private:
-	MString mSignatureName;
+	MCString mSignatureName;
 	int	mParameterCount;
 	uint mFunctionID;
 
 public:
-	FunctionSignature(MString rName, int rParams);
-	MString GetName();
+	FunctionSignature(MCString rName, int rParams);
+	MCString GetName();
 	int GetParameterCount();
 
 	uint GetID();

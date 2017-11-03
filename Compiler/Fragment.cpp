@@ -5,16 +5,16 @@
 
 #include "../OperationCode.h"
 
-MString Fragment::GettingString() {
+MCString Fragment::GettingString() {
 	return "";
 }
 
 
-uint Fragment::SetVariable(Parser *rParser, MString rName) {
+uint Fragment::SetVariable(Parser *rParser, MCString rName) {
 	return rParser->RegisterVariable(rName);
 }
 
-uint Fragment::GetVariableID(Parser *rParser, MString rName) {
+uint Fragment::GetVariableID(Parser *rParser, MCString rName) {
 	return rParser->GetVariableID(rName);
 }
 

@@ -18,8 +18,8 @@ Expression::~Expression() {
 	}
 }
 
-MString Expression::GettingString() {
-	MString ret;
+MCString Expression::GettingString() {
+	MCString ret;
 
 	std::list<ExpressionTerm*>::iterator it;
 	for (it = mPostfix.begin(); it != mPostfix.end(); it++) {
@@ -116,7 +116,7 @@ int Expression::OperatorPrecedence(Token *rToken) {
 		return -1;
 	}
 
-	MString s = rToken->mToken;
+	MCString s = rToken->mToken;
 
 	if (s == "=") {
 		return 11;
@@ -235,7 +235,7 @@ void Expression::AddOperator(OperationCode *rOpcode, Token *rToken) {
 	}
 
 	byte oper = 0;
-	MString s = rToken->mToken;
+	MCString s = rToken->mToken;
 
 	if (s == "+") {
 		oper = OP_ADD;

@@ -5,7 +5,7 @@
 #include "tokens.h"
 #include "statement.h"
 #include "../Mixer/MCommon.h"
-#include "../Mixer/MString.h"
+#include "../Mixer/MCString.h"
 #include "../OperationCode.h"
 #include "../scope.h"
 
@@ -22,7 +22,7 @@ private:
 	static uint	mStdFunctionID;
 	static uint	mVariableID;
 
-	MString mInputFile;
+	MCString mInputFile;
 	FILE* mFile;
 	bool mIsMainFile;
 
@@ -39,7 +39,7 @@ private:
 
 public:
 	Parser();
-	Parser(MString rFile, bool rMainFile);
+	Parser(MCString rFile, bool rMainFile);
 	~Parser();
 
 	bool ParseFile();
@@ -63,13 +63,13 @@ public:
 
 	void Seek(unsigned long rPos, int rOrigin);
 
-	uint RegisterVariable(MString rName);
-	uint GetVariableID(MString rName);
+	uint RegisterVariable(MCString rName);
+	uint GetVariableID(MCString rName);
 	uint RegisterFunction(FunctionSignature rFuncSign);
 	uint RegisterStdFunction(FunctionSignature rFuncSign);
-	uint GetFunctionID(MString rName);
+	uint GetFunctionID(MCString rName);
 
-	FunctionSignature GetFunctionSignature(MString rFunctionName);
+	FunctionSignature GetFunctionSignature(MCString rFunctionName);
 	FunctionSignature GetFunctionSignature(uint rFunctionID);
 
 	OperationCode*	GetOpcodes();

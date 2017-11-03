@@ -12,7 +12,7 @@ Parser::Parser() : mFile(NULL), mInputFile(""), mIsMainFile(false) {
 
 }
 
-Parser::Parser(MString rFile, bool rMainFile) : mFile(NULL), mInputFile(""), mIsMainFile(false) {
+Parser::Parser(MCString rFile, bool rMainFile) : mFile(NULL), mInputFile(""), mIsMainFile(false) {
 	mInputFile = rFile;
 	mIsMainFile = rMainFile;
 
@@ -112,7 +112,7 @@ void Parser::PopNestedScope() {
 	}
 }
 
-uint Parser::RegisterVariable(MString rName) {
+uint Parser::RegisterVariable(MCString rName) {
 	CompileScope *scope = NULL;
 	uint id = 0;
 
@@ -125,14 +125,14 @@ uint Parser::RegisterVariable(MString rName) {
 		id = VAR_GLOBAL | (++mVariableID);
 	}
 
-	MString *n = new MString;
+	MCString *n = new MCString;
 	*n = rName;
 
 	scope->AddItem(id, n);
 	return id;
 }
 
-uint Parser::GetVariableID(MString rName) {
+uint Parser::GetVariableID(MCString rName) {
 	if(!rName.Length()) {
 		throw std::runtime_error("No Variable ID");
 	}
@@ -183,7 +183,7 @@ uint Parser::RegisterStdFunction(FunctionSignature rFuncSign) {
 	return rFuncSign.GetID();
 }
 
-uint Parser::GetFunctionID(MString rName) {
+uint Parser::GetFunctionID(MCString rName) {
 	std::list<FunctionSignature>::iterator it;
 	for(it = mFunctionSignatureList.begin(); it != mFunctionSignatureList.end(); it++) {
 		if(it->GetName() == rName) {
@@ -195,7 +195,7 @@ uint Parser::GetFunctionID(MString rName) {
 	return 0;
 }
 
-FunctionSignature Parser::GetFunctionSignature(MString rFuncName) {
+FunctionSignature Parser::GetFunctionSignature(MCString rFuncName) {
 	std::list<FunctionSignature>::iterator it;
 	for(it = mFunctionSignatureList.begin(); it != mFunctionSignatureList.end(); it++) {
 		if(it->GetName() == rFuncName) {
@@ -214,7 +214,7 @@ FunctionSignature Parser::GetFunctionSignature(uint rFuncID) {
 		}
 	}
 
-	MString errorMsg;
+	MCString errorMsg;
 	errorMsg += "Function with ID '";
 	errorMsg += rFuncID;
 	errorMsg += "' not defined";

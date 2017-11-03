@@ -17,7 +17,7 @@ int main(int argc, const char *argv[])
 		return 1;
 	}
 	else {
-		MString file = argv[1];
+		MCString file = argv[1];
 		Parser parser(file, true);
 
 		if(parser.ParseFile()) {

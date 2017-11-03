@@ -3,7 +3,7 @@
 
 // Internal
 #include "../Mixer/MCommon.h"
-#include "../Mixer/MString.h"
+#include "../Mixer/MCString.h"
 
 // External
 #include <string>
@@ -32,17 +32,17 @@ struct Token {
 		COMMA = 0x00020000,
 	};
 
-	static MString GetStringValue(Token::Type rType);
+	static MCString GetStringValue(Token::Type rType);
 
 	Token() {
 		mType = INVALID;
 	}
-	Token(MString rToken, Type rType = INVALID) {
+	Token(MCString rToken, Type rType = INVALID) {
 		mToken = rToken;
 		mType = rType;
 	}
 
-	MString	mToken;
+	MCString	mToken;
 	Type mType;
 };
 typedef std::list<Token*>::iterator TokenIterertor;
@@ -61,7 +61,7 @@ public:
 	TokenIterertor GetFirstIterator();
 	TokenIterertor GetPointer();
 
-	void GenerateTokens(MString rFile);
+	void GenerateTokens(MCString rFile);
 	void SetPointer(TokenIterertor rFront);
 
 	bool IsMore();
@@ -72,8 +72,8 @@ private:
 	bool GetSpecialChar(std::ifstream &rFile);
 	bool GetWord(std::ifstream &rFile);
 	bool PeekOperator(std::ifstream &rFile, char rContext = 0);
-	bool ReservedWord(MString rWord);
-	bool IsValidName(MString rName);
+	bool ReservedWord(MCString rWord);
+	bool IsValidName(MCString rName);
 	bool BlockNextChar(std::ifstream &rFile, bool rNumerical);
 	bool ReachedEnd(std::ifstream &rFile);
 
