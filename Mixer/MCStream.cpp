@@ -10,6 +10,11 @@ MCStream::~MCStream()
 	Close();
 }
 
+void MCStream::Close()
+{
+
+}
+
 MCString MCStream::ReadLine()
 {
 	MCString str;
