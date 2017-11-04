@@ -43,6 +43,12 @@
     <ClCompile Include="Mixer\MCString.cpp">
       <Filter>Source Files\Mixer</Filter>
     </ClCompile>
+    <ClCompile Include="Mixer\MCStream.cpp">
+      <Filter>Source Files\Mixer</Filter>
+    </ClCompile>
+    <ClCompile Include="Mixer\MCDictionary.cpp">
+      <Filter>Source Files\Mixer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Codes.h">
@@ -106,6 +112,12 @@
       <Filter>Header Files\Mixer</Filter>
     </ClInclude>
     <ClInclude Include="Mixer\Mixer.h">
+      <Filter>Header Files\Mixer</Filter>
+    </ClInclude>
+    <ClInclude Include="Mixer\MCStream.h">
+      <Filter>Header Files\Mixer</Filter>
+    </ClInclude>
+    <ClInclude Include="Mixer\MCDictionary.h">
       <Filter>Header Files\Mixer</Filter>
     </ClInclude>
   </ItemGroup>
