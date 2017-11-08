@@ -2,10 +2,10 @@
 #define POOL_H
 
 // Internal
-#include "Parser/Variable.h"
+#include "../Global.h"
+#include "../Parser/Variable.h"
 #include "PReference.h"
 #include "PLinker.h"
-#include "Global.h"
 
 class Pool {
 public:
