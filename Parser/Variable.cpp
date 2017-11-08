@@ -47,14 +47,10 @@ Variable::Type Variable::GetType(MCString rString) {
 	}
 }
 
-Variable::Variable(int rID) {
-	mType = UNDEFINED;
+Variable::Variable(int rID) : mValueID(rID), mType(UNDEFINED), mValueInteger(0), mValueFloat(0.0f), 
+mValueString(NULL), mValueBool(UNDEFINED)
+{
 
-	mValueInteger = 0;
-	mValueFloat = 0.0f;
-	mValueString = NULL;
-
-	mValueID = rID;
 }
 
 Variable::~Variable() {
@@ -143,7 +139,31 @@ float Variable::GetFloat() const {
 	return 0.0;
 }
 
-const char* Variable::GetString() const {
+/*
+bool Variable::GetBool() const {
+
+	if(mType == BOOL) {
+		return mValueBool;
+	}
+	else if(mType == INT) {
+		return (bool)(mValueInteger == 0 ? false : true);
+	}
+	else if(mType == FLOAT) {
+		return (bool)(mValueFloat == 0 ? false : true);
+	}
+
+	return NULL;
+}
+*/
+
+bool Variable::GetBool() const {
+	if(mType == BOOL) {
+		return mValueBool;
+	}
+	return NULL;
+}
+
+MCString Variable::GetString() const {
 	if(mType == STRING) {
 		return mValueString;
 	}
@@ -159,6 +179,7 @@ const char* Variable::GetString() const {
 	}
 	return "NULL";
 }
+
 
 void Variable::operator=(const Variable &rVariable) {
 	Variable::Type type = rVariable.GetType();

@@ -4,6 +4,7 @@
 // Internal
 #include "../Mixer/MCommon.h"
 #include "../Mixer/MCString.h"
+#include "../Pool/PReference.h"
 
 class Variable {
 public:
@@ -13,15 +14,26 @@ public:
 		FLOAT,
 		STRING,
 		OBJECT,
+		Null,
+		BOOL,
+		TABLE,
+		FUNCTION,
+		CLASS,
+		UserData = 9
 	};
+
+public:
+	PReference mLinkerRef;
 
 private:
 	Type mType;
+	int mValueID;
 	int mValueInteger;
+	bool mValueBool;
 	float mValueFloat;
 	char* mValueString;
-	int mValueID;
 
+	
 public:
 	static Variable* CreateVariable(const char *rValue);
 	static Type	GetType(MCString rString);
@@ -33,8 +45,9 @@ public:
 	int GetID() const;
 	int GetInteger() const;
 	float GetFloat() const;
-	const char*	GetString() const;
-
+	bool GetBool() const;
+	MCString GetString() const;
+	
 	void Set(int);
 	void Set(float);
 	void Set(const char*);
