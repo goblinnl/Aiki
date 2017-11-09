@@ -25,9 +25,6 @@
     <ClCompile Include="OperationCode.cpp">
       <Filter>Source Files\Compiler</Filter>
     </ClCompile>
-    <ClCompile Include="Compiler\Parser.cpp">
-      <Filter>Source Files\Compiler</Filter>
-    </ClCompile>
     <ClCompile Include="Compiler\Statement.cpp">
       <Filter>Source Files\Compiler</Filter>
     </ClCompile>
@@ -48,6 +45,33 @@
     </ClCompile>
     <ClCompile Include="Mixer\MCDictionary.cpp">
       <Filter>Source Files\Mixer</Filter>
+    </ClCompile>
+    <ClCompile Include="Parser\Table.cpp">
+      <Filter>Source Files\Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="Compiler\GarbageCollector.cpp">
+      <Filter>Source Files\Compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="Pool\Pool.cpp">
+      <Filter>Source Files\Pool</Filter>
+    </ClCompile>
+    <ClCompile Include="Pool\PReference.cpp">
+      <Filter>Source Files\Pool</Filter>
+    </ClCompile>
+    <ClCompile Include="Pool\PTyped.cpp">
+      <Filter>Source Files\Pool</Filter>
+    </ClCompile>
+    <ClCompile Include="Parser\List.cpp">
+      <Filter>Source Files\Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="Compiler\ArgParser.cpp">
+      <Filter>Source Files\Compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\Data.cpp">
+      <Filter>Source Files\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\DataInstance.cpp">
+      <Filter>Source Files\Data</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -84,9 +108,6 @@
     <ClInclude Include="Compiler\IntermediateOper.h">
       <Filter>Header Files\Compiler</Filter>
     </ClInclude>
-    <ClInclude Include="Compiler\Parser.h">
-      <Filter>Header Files\Compiler</Filter>
-    </ClInclude>
     <ClInclude Include="Compiler\Statement.h">
       <Filter>Header Files\Compiler</Filter>
     </ClInclude>
@@ -120,6 +141,42 @@
     <ClInclude Include="Mixer\MCDictionary.h">
       <Filter>Header Files\Mixer</Filter>
     </ClInclude>
+    <ClInclude Include="Parser\Table.h">
+      <Filter>Header Files\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="Global.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Compiler\GarbageCollector.h">
+      <Filter>Header Files\Compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="Pool\PLinker.h">
+      <Filter>Header Files\Pool</Filter>
+    </ClInclude>
+    <ClInclude Include="Pool\Pool.h">
+      <Filter>Header Files\Pool</Filter>
+    </ClInclude>
+    <ClInclude Include="Pool\PReference.h">
+      <Filter>Header Files\Pool</Filter>
+    </ClInclude>
+    <ClInclude Include="Pool\PTyped.h">
+      <Filter>Header Files\Pool</Filter>
+    </ClInclude>
+    <ClInclude Include="Parser\List.h">
+      <Filter>Header Files\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="Compiler\ArgParser.h">
+      <Filter>Header Files\Compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="Parser\ArgumentData.h">
+      <Filter>Header Files\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\DataInstance.h">
+      <Filter>Header Files\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\Data.h">
+      <Filter>Header Files\Data</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
@@ -148,6 +205,18 @@
     </Filter>
     <Filter Include="Header Files\Mixer">
       <UniqueIdentifier>{f661fe86-125d-4c81-a354-a7293ca29b76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Pool">
+      <UniqueIdentifier>{1dec0f57-80d6-4750-bfbd-26504bb3c2d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Pool">
+      <UniqueIdentifier>{6ed1c5cd-ede0-4756-9931-8879ca82533a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Data">
+      <UniqueIdentifier>{4428a274-bf67-4424-9102-443f3b9ca292}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Data">
+      <UniqueIdentifier>{ffb9d516-5e1a-4576-844f-de62c2f75a7e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

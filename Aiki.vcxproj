@@ -48,11 +48,10 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_MBCS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile />
       <DisableSpecificWarnings>
       </DisableSpecificWarnings>
@@ -83,10 +82,13 @@
     <ClCompile Include="compiler\Expression.cpp" />
     <ClCompile Include="Compiler\Fragment.cpp" />
     <ClCompile Include="Compiler\Function.cpp" />
+    <ClCompile Include="Compiler\GarbageCollector.cpp" />
     <ClCompile Include="Compiler\IntermediateOper.cpp" />
-    <ClCompile Include="Compiler\Parser.cpp" />
+    <ClCompile Include="Compiler\ArgParser.cpp" />
     <ClCompile Include="Compiler\Statement.cpp" />
     <ClCompile Include="Compiler\Tokens.cpp" />
+    <ClCompile Include="Data\Data.cpp" />
+    <ClCompile Include="Data\DataInstance.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Mixer\MCDictionary.cpp" />
     <ClCompile Include="Mixer\MCStream.cpp" />
@@ -94,18 +96,27 @@
     <ClCompile Include="OperationCode.cpp" />
     <ClCompile Include="OperationCodeText.cpp" />
     <ClCompile Include="Parser\Environment.cpp" />
+    <ClCompile Include="Parser\List.cpp" />
+    <ClCompile Include="Parser\Table.cpp" />
     <ClCompile Include="Parser\Variable.cpp" />
     <ClCompile Include="Functions.cpp" />
+    <ClCompile Include="Pool\Pool.cpp" />
+    <ClCompile Include="Pool\PReference.cpp" />
+    <ClCompile Include="Pool\PTyped.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Codes.h" />
     <ClInclude Include="compiler\Expression.h" />
     <ClInclude Include="Compiler\Fragment.h" />
     <ClInclude Include="Compiler\Function.h" />
+    <ClInclude Include="Compiler\GarbageCollector.h" />
     <ClInclude Include="Compiler\IntermediateOper.h" />
-    <ClInclude Include="Compiler\Parser.h" />
+    <ClInclude Include="Compiler\ArgParser.h" />
     <ClInclude Include="Compiler\Statement.h" />
     <ClInclude Include="Compiler\Tokens.h" />
+    <ClInclude Include="Data\Data.h" />
+    <ClInclude Include="Data\DataInstance.h" />
+    <ClInclude Include="Global.h" />
     <ClInclude Include="Mixer\MCArray.h" />
     <ClInclude Include="Mixer\MCDictionary.h" />
     <ClInclude Include="Mixer\MCommon.h" />
@@ -115,8 +126,15 @@
     <ClInclude Include="Mixer\MCString.h" />
     <ClInclude Include="OperationCode.h" />
     <ClInclude Include="OperationCodeText.h" />
+    <ClInclude Include="Parser\ArgumentData.h" />
     <ClInclude Include="Parser\Environment.h" />
+    <ClInclude Include="Parser\List.h" />
+    <ClInclude Include="Parser\Table.h" />
     <ClInclude Include="Parser\Variable.h" />
+    <ClInclude Include="Pool\PLinker.h" />
+    <ClInclude Include="Pool\Pool.h" />
+    <ClInclude Include="Pool\PReference.h" />
+    <ClInclude Include="Pool\PTyped.h" />
     <ClInclude Include="Scope.h" />
     <ClInclude Include="Exception.h" />
     <ClInclude Include="Stack.h" />
