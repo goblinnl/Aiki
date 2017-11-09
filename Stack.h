@@ -23,16 +23,27 @@ private:
 private:
 	int mMaxSize;
 	int mSize;
+	int mLineNumber;
 
+	MCString mFilename;
+	MCString mName;
+
+	//Function
 	Node *mFront;
 	Node *mBack;
+	Function* mFunction; // Replaces node system with function class
 
 public:
-	Stack(int rMaxSize = 2048) {
-		mMaxSize = rMaxSize;
-		mSize = 0;
-		mBack = 0;
-		mFront = 0;
+	Stack(int rMaxSize = 2048) : mMaxSize(rMaxSize), mSize(0), mBack(0),
+		mFront(0), mLineNumber(0), mFunction(NULL)
+	{
+
+	}
+
+	Stack() : mMaxSize(rMaxSize), mSize(0), mBack(0),
+		mFront(0), mLineNumber(0), mFunction(NULL)
+	{
+
 	}
 
 	~Stack() {
@@ -44,7 +55,13 @@ public:
 		}
 	}
 
-	void Push(T rVal) {
+	Function* GetFunction() const
+	{
+		return mFunction;
+	}
+
+	void Push(T rVal)
+	{
 		if(++mSize >= mMaxSize) {
 			throw StackOverflowException();
 		}
@@ -64,7 +81,8 @@ public:
 		}
 	}
 
-	T Pop() {
+	T Pop()
+	{
 		if(--mSize < 0) {
 			throw StackUnderflowException();
 		}
@@ -78,7 +96,8 @@ public:
 		return ret;
 	}
 
-	T Peek() {
+	T Peek()
+	{
 		if(mBack != NULL) {
 			return mBack->val;
 		}
@@ -86,7 +105,8 @@ public:
 		throw StackUnderflowException("Naked stack-peek is illegal");
 	}
 
-	T Peek(int rIndex) {
+	T Peek(int rIndex) 
+	{
 		Node *node = mFront;
 
 		for(int i = 0; i < rIndex && node; i++) {
