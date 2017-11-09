@@ -3,10 +3,12 @@
 
 // Internal
 #include "Variable.h"
+#include "Table.h"
 #include "../scope.h"
 #include "../stack.h"
 #include "../codes.h"
 #include "../OperationCode.h"
+#include "../Compiler/ArgParser.h"
 
 // External
 #include <map>
@@ -25,14 +27,20 @@ private:
 	Scope mScope;
 	Stack<Scope*> mSizeScope;
 	std::map<uint, uint> mFunctions;
+	int mRefCounter;
+
+private:
+	Environment* mParent;
+	Table mVariables;
 
 public:
 	Environment(OperationCode *rOpcode);
+	Environment(ArgParser* rParser);	
 	~Environment();
 	int Execute();
 
 private:
-	void  Operations();
+	void Operations();
 	void PopStackingVariable(Variable *&rVar);
 	void OperationPush();
 	void OperationPushData();

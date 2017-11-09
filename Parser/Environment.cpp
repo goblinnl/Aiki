@@ -21,6 +21,11 @@ Environment::Environment(OperationCode *rOpcode) {
 	mScope.AddItem(VAR_RETURN, new Variable(VAR_RETURN));
 }
 
+Environment::Environment(ArgParser* rParser) : mVariables(rParser), mRefCounter(0), mParent(nullptr)
+{
+
+}
+
 Environment::~Environment() {
 	delete[] mOperationcodes;
 }
