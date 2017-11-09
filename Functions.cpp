@@ -10,7 +10,7 @@ namespace AikiStd {
 
 	std::map<uint, StdFunc> stdFuncMap;
 
-	void registerFunction(Parser *rParser, void *rFunc, MCString rName, int rParamCount) {
+	void registerFunction(ArgParser *rParser, void *rFunc, MCString rName, int rParamCount) {
 		FunctionSignature funcSign(rName, rParamCount);
 
 		uint id = rParser->RegisterStdFunction(funcSign);
@@ -21,7 +21,7 @@ namespace AikiStd {
 		stdFuncMap[id] = f;
 	}
 
-	void RegisterFunctions(Parser *rParser) {
+	void RegisterFunctions(ArgParser *rParser) {
 		registerFunction(rParser, (void*)&Print, "print", 1);
 	}
 

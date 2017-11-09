@@ -2,8 +2,8 @@
 #define FUNCTIONS_H
 
 // Internal
-#include "./Parser/Variable.h"
-#include "./Compiler/Parser.h"
+#include "Parser/Variable.h"
+#include "Compiler/ArgParser.h"
 
 /***** Funbctions.h *****
 * Contains the mapping between opcode-functions and  libc/stdlibc++/custom functions.
@@ -15,7 +15,7 @@
 *****/
 
 namespace AikiStd {
-	void RegisterFunctions(Parser *rParser);
+	void RegisterFunctions(ArgParser *rParser);
 
 	int	GetParameterCount(uint rFuncID);
 
