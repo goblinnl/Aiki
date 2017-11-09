@@ -7,7 +7,7 @@
 // Internal
 #include "Parser/Environment.h"
 #include "OperationCode.h"
-#include "compiler/parser.h"
+#include "compiler/ArgParser.h"
 #include "OperationCodeText.h"
 
 int main(int argc, const char *argv[])
@@ -18,7 +18,7 @@ int main(int argc, const char *argv[])
 	}
 	else {
 		MCString file = argv[1];
-		Parser parser(file, true);
+		ArgParser parser(file, true);
 
 		if(parser.ParseFile()) {
 			try {
