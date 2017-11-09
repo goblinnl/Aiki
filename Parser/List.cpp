@@ -76,7 +76,7 @@ T& List<T>::Get(int rIndex)
 }
 
 template<class T>
-T List<T>::RemoveAdd(int rIndex)
+T List<T>::RemoveAt(int rIndex)
 {
 	T object = (*this)[rIndex];
 
@@ -84,4 +84,16 @@ T List<T>::RemoveAdd(int rIndex)
 	mCount--;
 
 	return object;
+}
+
+template<class T>
+int List<T>::GetCount() const
+{
+	return mCount;
+}
+
+template<class T>
+void List<T>::SetCount(const int& rCount)
+{
+	mCount = rCount;
 }

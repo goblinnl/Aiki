@@ -5,7 +5,7 @@
 
 template<class T>
 class List : public std::vector<T> {
-public:
+private:
 	int mCount;
 
 public:
@@ -24,6 +24,9 @@ public:
 
 	T& Buffer();
 	T& Get(int rIndex);
-	T RemoveAdd(int rIndex);
+	T RemoveAt(int rIndex);
+
+	int GetCount() const;
+	void SetCount(const int& rCount);
 };
 #endif // LIST_H
