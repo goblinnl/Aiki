@@ -65,6 +65,9 @@ EXCEPTION_END
 EXCEPTION_BEGIN(StackUnderflowException, "Stack underflow")
 EXCEPTION_END
 
+EXCEPTION_BEGIN(StackFunctionException, "Stack cannot call Function")
+EXCEPTION_END
+
 EXCEPTION_BEGIN(InvalidArgumentException, "Invalid argument passed to function")
 EXCEPTION_END
 
@@ -73,5 +76,9 @@ EXCEPTION_END
 
 EXCEPTION_BEGIN(NullPointerException, "Null-pointer exception")
 EXCEPTION_END
+
+EXCEPTION_BEGIN(ObjectTypeException, "Object type is unknown")
+EXCEPTION_END
+
 
 #endif // EXCEPTION
