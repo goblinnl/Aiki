@@ -1,7 +1,7 @@
 #include "Fragment.h"
 #include "IntermediateOper.h"
 #include "tokens.h"
-#include "parser.h"
+#include "ArgParser.h"
 
 #include "../OperationCode.h"
 
@@ -10,11 +10,11 @@ MCString Fragment::GettingString() {
 }
 
 
-uint Fragment::SetVariable(Parser *rParser, MCString rName) {
+uint Fragment::SetVariable(ArgParser *rParser, MCString rName) {
 	return rParser->RegisterVariable(rName);
 }
 
-uint Fragment::GetVariableID(Parser *rParser, MCString rName) {
+uint Fragment::GetVariableID(ArgParser *rParser, MCString rName) {
 	return rParser->GetVariableID(rName);
 }
 
