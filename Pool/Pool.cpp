@@ -3,8 +3,8 @@
 Pool::Pool(int rID)
 {
 	for(unsigned int i = 0; i < AK_POOL_SIZE; i++) {
-		mBuffer[i].mLinkerRef.mIndex = i;
-		mBuffer[i].mLinkerRef.mID = rID;
+		mBuffer[i].mPoolReference.mIndex = i;
+		mBuffer[i].mPoolReference.mID = rID;
 	}
 
 	// Linker
