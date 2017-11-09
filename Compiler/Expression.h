@@ -20,8 +20,8 @@ public:
 	~Expression();
 
 	MCString	GettingString();
-	void ParseFragment(Tokens *rTokens, Parser *rParser);
-	void ProvideIntermediates(OperationCode *rOpcode, Parser *rParser);
+	void ParseFragment(Tokens *rTokens, ArgParser *rParser);
+	void ProvideIntermediates(OperationCode *rOpcode, ArgParser *rParser);
 
 private:
 	struct ExpressionTerm {
@@ -43,10 +43,10 @@ private:
 	std::map<ExpressionTerm*, uint> mExpressionVars;
 
 private:
-	void BuildPostfix(Tokens *rTokens, Parser *rParser);
-	void AllocateVariables(OperationCode *rOpcode, Parser *rParser);
-	void HandleFunctionCalls(OperationCode *rOpcode, Parser *rParser);
-	void BuildBytecodePostfix(OperationCode *rOpcode, Parser *rParser);
+	void BuildPostfix(Tokens *rTokens, ArgParser *rParser);
+	void AllocateVariables(OperationCode *rOpcode, ArgParser *rParser);
+	void HandleFunctionCalls(OperationCode *rOpcode, ArgParser *rParser);
+	void BuildBytecodePostfix(OperationCode *rOpcode, ArgParser *rParser);
 	void AddOperator(OperationCode *rOpcode, Token *rToken);
 
 	int	OperatorPrecedence(Token *rToken);

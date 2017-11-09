@@ -33,7 +33,7 @@ MCString Expression::GettingString() {
 	return ret;
 }
 
-void Expression::ParseFragment(Tokens *rTokens, Parser *rParser) {
+void Expression::ParseFragment(Tokens *rTokens, ArgParser *rParser) {
 	mPostfix.clear();
 
 	BuildPostfix(rTokens, rParser);
@@ -43,7 +43,7 @@ void Expression::ParseFragment(Tokens *rTokens, Parser *rParser) {
 	}
 }
 
-void Expression::BuildPostfix(Tokens *rTokens, Parser *rParser) {
+void Expression::BuildPostfix(Tokens *rTokens, ArgParser *rParser) {
 	Stack<Token*> stack;
 
 	int paranthCnt = 0;
@@ -136,7 +136,7 @@ int Expression::OperatorPrecedence(Token *rToken) {
 }
 
 
-void Expression::ProvideIntermediates(OperationCode *rOpcode, Parser *rParser) {
+void Expression::ProvideIntermediates(OperationCode *rOpcode, ArgParser *rParser) {
 	AllocateVariables(rOpcode, rParser);
 	HandleFunctionCalls(rOpcode, rParser);
 
@@ -145,7 +145,7 @@ void Expression::ProvideIntermediates(OperationCode *rOpcode, Parser *rParser) {
 	}
 }
 
-void Expression::AllocateVariables(OperationCode *rOpcode, Parser* rParser) {
+void Expression::AllocateVariables(OperationCode *rOpcode, ArgParser* rParser) {
 	for(std::list<ExpressionTerm*>::iterator it = mPostfix.begin(); it != mPostfix.end(); it++) {
 			Token *token = (*it)->token;
 			if(token && (token->mType & Token::OPERATOR) == 0) {
@@ -193,7 +193,7 @@ void Expression::AllocateVariables(OperationCode *rOpcode, Parser* rParser) {
 	}
 }
 
-void Expression::HandleFunctionCalls(OperationCode *rOpcode, Parser *rParser) {
+void Expression::HandleFunctionCalls(OperationCode *rOpcode, ArgParser *rParser) {
 	for(std::list<ExpressionTerm*>::iterator it = mPostfix.begin(); it != mPostfix.end(); it++) {
 			FunctionCall *fcall = (*it)->func;
 			if (fcall) {
@@ -212,7 +212,7 @@ void Expression::HandleFunctionCalls(OperationCode *rOpcode, Parser *rParser) {
 	}
 }
 
-void Expression::BuildBytecodePostfix(OperationCode *rOpcode, Parser *rParser) {
+void Expression::BuildBytecodePostfix(OperationCode *rOpcode, ArgParser *rParser) {
 	for(std::list<ExpressionTerm*>::iterator it = mPostfix.begin(); it != mPostfix.end(); it++) {
 			ExpressionTerm *term = *it;
 
