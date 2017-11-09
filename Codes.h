@@ -108,6 +108,133 @@
 #define OP_DATA_FUNC			0xF2	// PARAM (**)
 #define OP_DATA_END 			0xFF
 
+
+/**** DATA FUNCTIONS *****
+*
+* Replace compiler functions with own data functions
+* this is to speed up the parsing processing
+*
+*/
+#define EF_END					0
+#define EF_SET_VAR				1
+#define EF_GET_VAR				2
+#define EF_EXC_FUNCTION			3
+#define EF_IF					4
+#define EF_MERGE_START			5
+#define EF_MERGE_END			6
+#define EF_STRING				7
+#define EF_NUMBER				8
+#define EF_TABLE				9
+#define EF_RETURN				14
+#define EF_L_SET_VAR			15
+#define EF_ELSE_IF				24
+#define EF_ELSE					25
+#define EF_WHILE				26
+#define EF_BOOL					27
+#define EF_TABLE_INDEX			28
+#define EF_TABLE_GET_INDEX		29
+#define EF_BREAK				30
+#define EF_FUNC					33
+#define EF_FOR_EACH				34
+#define EF_LOOP					35
+#define EF_CLASS				36
+#define EF_NEW					37
+#define EF_MCNEW				38
+#define EF_FOR					39
+#define EF_POST_INCREASE		40
+#define EF_POST_DECREASE		41
+#define EF_PRE_INCREASE			42
+#define EF_PRE_DECREASE			43
+#define EF_CONTINUE				200
+#define EF_ANON_FUNCTION		201
+#define EF_ENUM					202
+#define EF_GET_COUNT			203
+#define EF_GOTO					204
+#define EF_REWIND				205
+#define EF_DELETE				206
+#define EF_GLOBAL_LOCALS		207
+#define EF_STRING_TABLE			250
+#define EF_CURRENT_LINE			251
+#define EF_SKIP					252
+
+/*
+*	 Variables getting stored into a lookup-table in the Environment class.
+*	There may only be (2^28)-1 variables allocated
+*/
+#define OP_END_SCOPE			0
+#define OP_SET					1
+#define OP_SET_L				2
+#define OP_GET					3
+#define OP_GET_L				4
+#define OP_CALL					5
+#define OP_CALL_THIS			6
+#define OP_SET_INDEX			7
+#define OP_GET_INDEX			8
+#define OP_ADD_INDEX			9
+#define OP_ADD_NEW				10
+#define OP_GET_COUNTER			11
+
+/***** COMPARISON AND JUMPS *****
+*
+*
+*****/
+#define OP_JUMP					12
+#define OP_JUMP_NT				13
+#define OP_RETURN				14
+#define OP_DELETE				15
+#define OP_STACK_NUMBER			16
+#define OP_STACK_STRING			17
+#define OP_STACK_TABLE			18
+#define OP_STACK_BOOL			19
+#define OP_STACK_NULL			20
+#define OP_STACK_FUNCTION		21
+#define OP_POP					22
+#define OP_DUPLICATE			23
+#define OP_PRE_INCREASE			24
+#define OP_PRE_DECREASE			25
+#define OP_POST_INCREASE		26
+#define OP_POST_DECREASE		27
+
+// Arithmetic operations are performed:
+//		b = pop()
+// 		a = pop()
+// 		a = a (operator) b
+// 		push(a)
+#define AO_START				28
+#define AO_ADD					29
+#define	AO_SUBSTRACT			30
+#define AO_DIVIDE				31
+#define AO_MULTIPLY				32
+#define AO_AND					33
+#define AO_OR					34
+#define AO_GREATER_THAN 		35
+#define AO_LESS_THAN			36
+#define AO_GREATER_OR_EQUAL		37
+#define AO_LESS_OR_EQUAL		38
+#define AO_EQUAL				39
+#define AO_NOT_EQUAL			40
+#define AO_BITWISE_LEFT			41
+#define AO_BITWISE_RIGHT		42
+#define AO_BITWISE_OR			43
+#define AO_BITWISE_AND			44
+#define AO_BITWISE_MODULO		45
+#define AO_BITWISE_CALL			46
+#define AO_SET_INDEX			47
+#define AO_GET_INDEX			48
+#define AO_GET_COUNTER			49
+#define AO_TO_STRING			50
+#define AO_END					51
+
+/***** CUSTOM OPERATORS *****
+*
+*
+*/
+#define CO_GLOBAL_LOCALS		52
+#define CO_STRING_TABLE			53
+#define CO_CURRENT_LINE			54
+#define CO_SKIP					55
+
+
 /***** TYPE DEFINITIONS *****
 * Common type definitions.
 *****/
