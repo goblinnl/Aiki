@@ -4,10 +4,16 @@
 // Internal
 #include "tokens.h"
 #include "statement.h"
+#include "Stack.h"
+#include "GarbageCollector.h"
+#include "../Parser/List.h"
+#include "../Data/Data.h"
+#include "../Global.h"
+#include "../Scope.h"
+#include "../Exception.h"
+#include "../OperationCode.h"
 #include "../Mixer/MCommon.h"
 #include "../Mixer/MCString.h"
-#include "../OperationCode.h"
-#include "../scope.h"
 
 class Statement;
 class FunctionDefinition;
@@ -16,11 +22,13 @@ class FunctionSignature;
 
 typedef std::list<Fragment*>::iterator FragmentIter;
 
-class Parser {
+class ArgParser {
 private:
 	static uint	mFunctionID;
 	static uint	mStdFunctionID;
 	static uint	mVariableID;
+
+	int mStackIndex;
 
 	MCString mInputFile;
 	FILE* mFile;
@@ -36,11 +44,14 @@ private:
 	FragmentIter mFragmentFunctionDef;
 	InteropIter mHeaderEnd;
 	PositionInquirer *mHeaderStart;
+	List<Data*> mRegisteredDataTypes;
+	Stack mCurrentStack[AK_CALLSTACK_SIZE];
+	GarbageCollector mGarbageCollector;
 
 public:
-	Parser();
-	Parser(MCString rFile, bool rMainFile);
-	~Parser();
+	ArgParser();
+	ArgParser(MCString rFile, bool rMainFile);
+	~ArgParser();
 
 	bool ParseFile();
 	bool OpenFile(const char* rFilename, const char* rMode);
@@ -60,6 +71,8 @@ public:
 	void PopScope();
 	void PushNestedScope();
 	void PopNestedScope();
+	
+	int GetCurrentStackSize() const;
 
 	void Seek(unsigned long rPos, int rOrigin);
 
@@ -72,7 +85,13 @@ public:
 	FunctionSignature GetFunctionSignature(MCString rFunctionName);
 	FunctionSignature GetFunctionSignature(uint rFunctionID);
 
+	GarbageCollector GetGarbageCollector() const;
+
 	OperationCode*	GetOpcodes();
+
+	List<Data*> GetRegisteredDataTypes() const;
+
+	Function* GetCurrentFunction() const;
 
 private:
 	bool BuildFragments();

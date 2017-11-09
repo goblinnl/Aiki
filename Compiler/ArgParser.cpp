@@ -1,18 +1,18 @@
-#include "Parser.h"
+#include "ArgParser.h"
 #include "Expression.h"
 #include "Function.h"
 #include "IntermediateOper.h"
 #include "../Functions.h"
 
-uint Parser::mFunctionID = 0;
-uint Parser::mStdFunctionID = 0;
-uint Parser::mVariableID = 0;
+uint ArgParser::mFunctionID = 0;
+uint ArgParser::mStdFunctionID = 0;
+uint ArgParser::mVariableID = 0;
 
-Parser::Parser() : mFile(NULL), mInputFile(""), mIsMainFile(false) {
+ArgParser::ArgParser() : mFile(NULL), mInputFile(""), mIsMainFile(false), mStackIndex(0) {
 
 }
 
-Parser::Parser(MCString rFile, bool rMainFile) : mFile(NULL), mInputFile(""), mIsMainFile(false) {
+ArgParser::ArgParser(MCString rFile, bool rMainFile) : mFile(NULL), mInputFile(""), mIsMainFile(false), mStackIndex(0) {
 	mInputFile = rFile;
 	mIsMainFile = rMainFile;
 
@@ -20,13 +20,13 @@ Parser::Parser(MCString rFile, bool rMainFile) : mFile(NULL), mInputFile(""), mI
 	mInterMedOperCode = new OperationCode();
 }
 
-Parser::~Parser() {
+ArgParser::~ArgParser() {
 	delete mTokens;
 	delete mInterMedOperCode;
 	CloseFile();
 }
 
-bool Parser::ParseFile() {
+bool ArgParser::ParseFile() {
 	try {
 		mTokens->GenerateTokens(mInputFile);
 	}
@@ -39,7 +39,7 @@ bool Parser::ParseFile() {
 	return true;
 }
 
-bool Parser::CompileTokens() {
+bool ArgParser::CompileTokens() {
 	AikiStd::RegisterFunctions(this);
 
 	try {
@@ -78,23 +78,23 @@ bool Parser::CompileTokens() {
 	return true;
 }
 
-OperationCode* Parser::GetOpcodes() {
+OperationCode* ArgParser::GetOpcodes() {
 	return mInterMedOperCode;
 }
 
-void Parser::PushScope() {
+void ArgParser::PushScope() {
 	mStackScope.Push(new CompileScope);
 }
 
-void Parser::PopScope() {
+void ArgParser::PopScope() {
 	delete mStackScope.Pop();
 }
 
-bool Parser::IsInLocalScope() {
+bool ArgParser::IsInLocalScope() {
 	return mStackScope.Size() > 0;
 }
 
-void Parser::PushNestedScope() {
+void ArgParser::PushNestedScope() {
 	if(mStackScope.Size()) {
 		mStackScope.Peek()->PushNestedScope();
 	}
@@ -103,7 +103,7 @@ void Parser::PushNestedScope() {
 	}
 }
 
-void Parser::PopNestedScope() {
+void ArgParser::PopNestedScope() {
 	if(mStackScope.Size()) {
 		mStackScope.Peek()->PopNestedScope();
 	}
@@ -112,7 +112,7 @@ void Parser::PopNestedScope() {
 	}
 }
 
-uint Parser::RegisterVariable(MCString rName) {
+uint ArgParser::RegisterVariable(MCString rName) {
 	CompileScope *scope = NULL;
 	uint id = 0;
 
@@ -132,7 +132,7 @@ uint Parser::RegisterVariable(MCString rName) {
 	return id;
 }
 
-uint Parser::GetVariableID(MCString rName) {
+uint ArgParser::GetVariableID(MCString rName) {
 	if(!rName.Length()) {
 		throw std::runtime_error("No Variable ID");
 	}
@@ -155,7 +155,7 @@ uint Parser::GetVariableID(MCString rName) {
 	return id;
 }
 
-uint Parser::RegisterFunction(FunctionSignature rFuncSign) {
+uint ArgParser::RegisterFunction(FunctionSignature rFuncSign) {
 	std::list<FunctionSignature>::iterator it;
 	for(it = mFunctionSignatureList.begin(); it != mFunctionSignatureList.end(); it++) {
 		if(it->GetName() == rFuncSign.GetName()) {
@@ -169,7 +169,7 @@ uint Parser::RegisterFunction(FunctionSignature rFuncSign) {
 	return mFunctionID;
 }
 
-uint Parser::RegisterStdFunction(FunctionSignature rFuncSign) {
+uint ArgParser::RegisterStdFunction(FunctionSignature rFuncSign) {
 	std::list<FunctionSignature>::iterator it;
 	for(it = mFunctionSignatureList.begin(); it != mFunctionSignatureList.end(); it++) {
 		if(it->GetName() == rFuncSign.GetName()) {
@@ -183,7 +183,7 @@ uint Parser::RegisterStdFunction(FunctionSignature rFuncSign) {
 	return rFuncSign.GetID();
 }
 
-uint Parser::GetFunctionID(MCString rName) {
+uint ArgParser::GetFunctionID(MCString rName) {
 	std::list<FunctionSignature>::iterator it;
 	for(it = mFunctionSignatureList.begin(); it != mFunctionSignatureList.end(); it++) {
 		if(it->GetName() == rName) {
@@ -195,7 +195,7 @@ uint Parser::GetFunctionID(MCString rName) {
 	return 0;
 }
 
-FunctionSignature Parser::GetFunctionSignature(MCString rFuncName) {
+FunctionSignature ArgParser::GetFunctionSignature(MCString rFuncName) {
 	std::list<FunctionSignature>::iterator it;
 	for(it = mFunctionSignatureList.begin(); it != mFunctionSignatureList.end(); it++) {
 		if(it->GetName() == rFuncName) {
@@ -206,7 +206,7 @@ FunctionSignature Parser::GetFunctionSignature(MCString rFuncName) {
 	throw  FuncNotDefinedException("Function " + rFuncName + " not defined");
 }
 
-FunctionSignature Parser::GetFunctionSignature(uint rFuncID) {
+FunctionSignature ArgParser::GetFunctionSignature(uint rFuncID) {
 	std::list<FunctionSignature>::iterator it;
 	for(it = mFunctionSignatureList.begin(); it != mFunctionSignatureList.end(); it++) {
 		if(it->GetID() == rFuncID) {
@@ -221,7 +221,7 @@ FunctionSignature Parser::GetFunctionSignature(uint rFuncID) {
 	throw  FuncNotDefinedException(errorMsg);
 }
 
-bool Parser::BuildFragments() {
+bool ArgParser::BuildFragments() {
 	PushFragmentTail(mFragmentList.end());
 	AddHeader();
 	mFragmentFunctionDef = mFragmentList.insert(mFragmentList.end(), NULL);
@@ -290,7 +290,7 @@ bool Parser::BuildFragments() {
 	return true;
 }
 
-bool Parser::BuildIntermediates() {
+bool ArgParser::BuildIntermediates() {
 	std::list<Fragment*>::iterator it;
 	for(it = mFragmentList.begin(); it != mFragmentList.end(); it++) {
 		if(!*it) continue;
@@ -305,23 +305,23 @@ bool Parser::BuildIntermediates() {
 	return true;
 }
 
-bool Parser::BuildBytecode() {
+bool ArgParser::BuildBytecode() {
 	return mInterMedOperCode->BuildBytecodeFromIntermediates();
 }
 
-void Parser::AddFragment(Fragment *rFragment) {
+void ArgParser::AddFragment(Fragment *rFragment) {
 	mFragmentList.insert(mFragmentTailStack.Peek(), rFragment);
 }
 
-void Parser::PushFragmentTail(FragmentIter rIter) {
+void ArgParser::PushFragmentTail(FragmentIter rIter) {
 	mFragmentTailStack.Push(rIter);
 }
 
-void Parser::PopFragmentTail() {
+void ArgParser::PopFragmentTail() {
 	mFragmentTailStack.Pop();
 }
 
-void Parser::AddHeader() {
+void ArgParser::AddHeader() {
 	if(mInterMedOperCode->Length() != 0) {
 		throw InternalErrorException();
 	}
@@ -338,7 +338,7 @@ void Parser::AddHeader() {
 	mInterMedOperCode->AddInterop(posRef);
 }
 
-void Parser::AddFunctionData(FunctionDefinition *rFuncDef) {
+void ArgParser::AddFunctionData(FunctionDefinition *rFuncDef) {
 	mInterMedOperCode->PushTail(mHeaderEnd);
 
 	uint funcId = rFuncDef->GetID();
@@ -354,7 +354,7 @@ void Parser::AddFunctionData(FunctionDefinition *rFuncDef) {
 	mInterMedOperCode->PopTail();
 }
 
-bool Parser::OpenFile(const char* rFilename, const char* rMode)
+bool ArgParser::OpenFile(const char* rFilename, const char* rMode)
 {
 	if(mFile != NULL)  {
 		return false;
@@ -371,7 +371,7 @@ bool Parser::OpenFile(const char* rFilename, const char* rMode)
 	return true;
 }
 
-void Parser::CloseFile()
+void ArgParser::CloseFile()
 {
 	if(mFile != NULL) {
 		fclose(mFile);
@@ -379,12 +379,12 @@ void Parser::CloseFile()
 	}
 }
 
-void Parser::WriteFile(const void* rPointer, unsigned long rLenght)
+void ArgParser::WriteFile(const void* rPointer, unsigned long rLenght)
 {
 	fwrite(rPointer, 1, rLenght, mFile);
 }
 
-void* Parser::ReadFile(unsigned long rLenght)
+void* ArgParser::ReadFile(unsigned long rLenght)
 {
 	if(mFile == NULL) {
 		return 0;
@@ -395,7 +395,7 @@ void* Parser::ReadFile(unsigned long rLenght)
 	return buffer;
 }
 
-const void* Parser::ReadFileToEnd()
+const void* ArgParser::ReadFileToEnd()
 {
 	if(mFile == NULL) {
 		return 0;
@@ -403,7 +403,7 @@ const void* Parser::ReadFileToEnd()
 	return ReadFile(SizeFile() - LocationFile());
 }
 
-unsigned long Parser::SizeFile()
+unsigned long ArgParser::SizeFile()
 {
 	unsigned long pos = LocationFile();
 	Seek(0, SEEK_END);
@@ -412,12 +412,35 @@ unsigned long Parser::SizeFile()
 	return size;
 }
 
-unsigned long Parser::LocationFile()
+unsigned long ArgParser::LocationFile()
 {
 	return ftell(mFile);
 }
 
-void Parser::Seek(unsigned long rPos, int rOrigin)
+void ArgParser::Seek(unsigned long rPos, int rOrigin)
 {
 	fseek(mFile, rPos, rOrigin);
+}
+
+int ArgParser::GetCurrentStackSize() const
+{
+	return mStackIndex;
+}
+
+List<Data*> ArgParser::GetRegisteredDataTypes() const
+{
+	return mRegisteredDataTypes;
+}
+
+Function* ArgParser::GetCurrentFunction() const
+{
+	if(mStackIndex == 0) {
+		return nullptr;
+	}
+	return mCurrentStack[mStackIndex - 1].GetFunction();
+}
+
+GarbageCollector ArgParser::GetGarbageCollector() const
+{
+	return mGarbageCollector;
 }
