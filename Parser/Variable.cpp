@@ -10,6 +10,18 @@
 #include <sstream>
 #include <math.h>
 
+Variable::Variable(int rID) : mValueID(rID), mType(UNDEFINED), mValueInteger(0), mValueFloat(0.0f),
+mValueString(NULL), mValueBool(UNDEFINED), mDestroyOnDestructor(true), mUsed(0)
+{
+
+}
+
+Variable::~Variable() {
+	if(mValueString) {
+		delete[] mValueString;
+	}
+}
+
 Variable* Variable::CreateVariable(const char *rValue) {
 	assert(rValue != NULL && strlen(rValue) != 0);
 
@@ -47,20 +59,12 @@ Variable::Type Variable::GetType(MCString rString) {
 	}
 }
 
-Variable::Variable(int rID) : mValueID(rID), mType(UNDEFINED), mValueInteger(0), mValueFloat(0.0f), 
-mValueString(NULL), mValueBool(UNDEFINED)
-{
-
-}
-
-Variable::~Variable() {
-	if(mValueString) {
-		delete[] mValueString;
-	}
-}
-
 Variable::Type Variable::GetType() const {
 	return mType;
+}
+
+void Variable::SetType(Type rType) {
+	mType = rType;
 }
 
 int Variable::GetID() const {
@@ -489,4 +493,60 @@ Variable::commandPrompResults Variable::CompareWithString(const char *rValue) co
 	}
 
 	return NOTQUAL;
+}
+
+void Variable::SetData(void* rPointer) {
+	mData = rPointer;
+}
+
+void* Variable::GetData() const {
+	return mData;
+}
+
+void Variable::IncreaseReferenceCounter()
+{
+	mUsed++;
+}
+
+void Variable::DecreaseReferenceCounter()
+{
+	mUsed--;
+}
+
+int Variable::GetReferenceCounter() const
+{
+	return mUsed;
+}
+
+void Variable::SetUndefined()
+{
+	if(!mDestroyOnDestructor) {
+		mType = Variable::UNDEFINED;
+		SetData(NULL);
+		return;
+	}
+
+	switch(mType) {
+		case Variable::UNDEFINED: break;
+		case Variable::BOOL: break;
+		case Variable::CLASS:
+			delete (Function*)(mData);
+			break;
+		case Variable::FUNCTION:
+			delete (Function*)(mData);
+			break;
+		case Variable::STRING:
+			delete (MCString*)mData;
+			break;
+		case Variable::NUMBER:
+			delete (double*)(mData);
+			break;
+		case Variable::TABLE:
+			delete (Table*)(mData);
+			break;
+		case Variable::DATA: break;
+		default:
+			delete (DataIn)
+
+	}
 }
