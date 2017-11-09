@@ -1,7 +1,7 @@
 #include "Function.h"
 #include "Expression.h"
 #include "IntermediateOper.h"
-#include "parser.h"
+#include "ArgParser.h"
 
 #include "../stack.h"
 #include "../Exception.h"
@@ -13,7 +13,7 @@ FunctionCall::FunctionCall(Token *rFuncToken) {
 	mFunctionToken = rFuncToken;
 }
 
-void FunctionCall::ParseFragment(Tokens * rTokens, Parser * rParser) {
+void FunctionCall::ParseFragment(Tokens * rTokens, ArgParser * rParser) {
 	delete rTokens->PopExpected(Token::PARANTH_BEG);
 
 	if(rTokens->CheckNext()->mType == Token::PARANTH_END) {
@@ -61,7 +61,7 @@ MCString FunctionCall::GetString() {
 }
 
 
-void FunctionCall::ProvideIntermediates(OperationCode *rOpcode, Parser *rParser) {
+void FunctionCall::ProvideIntermediates(OperationCode *rOpcode, ArgParser *rParser) {
 	HandleParameters(rOpcode, rParser);
 
 	uint funcID = rParser->GetFunctionID(mFunctionToken->mToken);
@@ -70,7 +70,7 @@ void FunctionCall::ProvideIntermediates(OperationCode *rOpcode, Parser *rParser)
 	rOpcode->AddInterop(new DwordOperation(&funcID));
 }
 
-void FunctionCall::HandleParameters(OperationCode *rOpcode, Parser *rParser) {
+void FunctionCall::HandleParameters(OperationCode *rOpcode, ArgParser *rParser) {
 	std::list<Expression*>::reverse_iterator it;
 
 	for (it=mParameters.rbegin(); it != mParameters.rend(); it++) {
@@ -91,7 +91,7 @@ PositionReference* FunctionDefinition::GetPositionReference() {
 	return mPositionReference;
 }
 
-void FunctionDefinition::ParseFragment(Tokens *rTokens, Parser *rParser) {
+void FunctionDefinition::ParseFragment(Tokens *rTokens, ArgParser *rParser) {
 	// Ensure that this really is a function
 	Token *token = rTokens->PopExpected(Token::RESERVED);
 	if(token->mToken != "func") {
@@ -132,7 +132,7 @@ void FunctionDefinition::ParseFragment(Tokens *rTokens, Parser *rParser) {
 	mPositionReference = new PositionReference();
 }
 
-void FunctionDefinition::ProvideIntermediates(OperationCode *rOpcode, Parser *rParser) {
+void FunctionDefinition::ProvideIntermediates(OperationCode *rOpcode, ArgParser *rParser) {
 	rParser->PushScope();
 	rOpcode->AddInterop(mPositionReference);
 
@@ -154,11 +154,11 @@ FunctionTail::FunctionTail() {
 	mPosRef = new PositionReference();
 }
 
-void FunctionTail::ParseFragment(Tokens *rTokens, Parser *rParser) {
+void FunctionTail::ParseFragment(Tokens *rTokens, ArgParser *rParser) {
 
 }
 
-void FunctionTail::ProvideIntermediates(OperationCode *rOpcode, Parser *rParser) {
+void FunctionTail::ProvideIntermediates(OperationCode *rOpcode, ArgParser *rParser) {
 	rParser->PopScope();
 	uint zero = 0;
 
@@ -192,4 +192,168 @@ uint FunctionSignature::GetID() {
 
 void FunctionSignature::SetID(uint rID) {
 	mFunctionID = rID;
+}
+
+Function::Function(ArgParser* rParser) : mEnv(nullptr), mStringTableCount(0), mStringTableVars(NULL), 
+mFixedLocalTypes(NULL), mFixedLocalRef(NULL), mReferenceFunc(NULL), mSouceFileLine(-1), mCodeOffset(0),
+mFixedLocalCount(0), mCodeSize(0), mCode(NULL), mForceReturn(false), mFixedLocalVars(NULL), mFixedLocalKeys(NULL),
+mIsCpp(false), mParent(NULL), mParser(rParser), mCppFunc(NULL), mCurrentObject(NULL), mStringTable(NULL)
+{
+
+}
+
+Function::~Function()
+{
+	SetEnv(nullptr);
+
+	if(mReferenceFunc != NULL) {
+		for(int i = 0; i < mReferenceFunc->mRefChilds.mCount; i++) {
+			if(mReferenceFunc->mRefChilds[i] == this) {
+				mReferenceFunc->mRefChilds.RemoveAt(i);
+				break;
+			}
+		}
+
+		mCode = NULL;
+		mStringTable = NULL;
+		mStringTableVars = NULL;
+	}
+	else {
+		Function* reference = NULL;
+		for(int i = 0; i < mRefChilds.mCount; i++) {
+			Function* child = mRefChilds[i];
+
+			if(reference == NULL) {
+				reference = child;
+
+				reference->mReferenceFunc = NULL;
+				mCode = NULL;
+				mStringTable = NULL;
+				mStringTableVars = NULL;
+			}
+			else{
+				child->mReferenceFunc = reference;
+				reference->mRefChilds.Add(child);
+			}
+		}
+	}
+
+	if(mFixedLocalVars != NULL) {
+		for(int i = 0; i < mFixedLocalCount; i++) {
+			if(mFixedLocalVars[i] != NULL) {
+				AK_REFERENCE_DECREASE(mFixedLocalVars[i]);
+			}
+		}
+
+		delete[] mFixedLocalVars;
+	}
+
+	if(mFixedLocalKeys != NULL) {
+		delete[] mFixedLocalKeys;
+	}
+
+	if(mFixedLocalRef != NULL) {
+		delete[] mFixedLocalRef;
+	}
+
+	if(mFixedLocalTypes != NULL) {
+		delete[] mFixedLocalTypes;
+	}
+
+	if(mCode != NULL) {
+		delete[] mCode;
+	}
+
+
+}
+
+Variable* Function::Bind()
+{
+	ArgumentData data;
+	data.mParser = mParser;
+	data.mCaller = this;
+	data.mCount = 0;
+
+	Variable* temp = Bind(&data);
+	return temp;
+}
+
+Variable* Function::Bind(Variable* rObject)
+{
+	Variable* object = mCurrentObject;
+	mCurrentObject = rObject;
+
+	ArgumentData data;
+	data.mParser = mParser;
+	data.mCaller = this;
+
+	Variable* temp = Bind(&data);
+	mCurrentObject = object;
+	
+	return temp;
+}
+
+Variable* Function::Bind(ArgumentData* rArgs)
+{
+	if(mParser->GetCurrentStackSize() >= 1048576) {
+		throw StackFunctionException((MCString)mName.mBuffer);
+		// TODO: Turn this on when debugging
+		//return GetDefaultVarNull();
+	}
+
+	mForceReturn = false;
+
+	if(mCurrentObject != NULL) {
+		mParser->mGarbageCollector.RegisterVariable(mCurrentObject);
+	}
+}
+
+Variable* Function::Bind(ArgumentData* rArgs, Variable* rObject)
+{
+
+}
+
+Variable* Function::Bind(List<Variable*> *rArgs)
+{
+
+}
+
+Variable* Function::Bind(List<Variable*> *rArgs, Variable* rObject)
+{
+
+}
+
+Variable* Function::InternalBind(ExecuteData* rData)
+{
+
+}
+
+void Function::SetRef(Function* rFunc, int rEntryPoint)
+{
+
+}
+
+void Function::SetEnv(Environment* rEnv)
+{
+
+}
+
+void Function::SetVar(Variable* rVar, int rIndex)
+{
+
+}
+
+void Function::SetVar(MCString rKey, Variable* rVar, bool rIsGlobal)
+{
+
+}
+
+Function* Function::GetRev()
+{
+
+}
+
+Environment* Function::GetEnv()
+{
+
 }
