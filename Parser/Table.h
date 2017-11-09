@@ -1,6 +1,7 @@
 #ifndef TABLE_H
 #define TABLE_H
 
+#include "../Compiler/ArgParser.h"
 #include "Variable.h"
 
 class Table {
@@ -13,7 +14,7 @@ private:
 	int mBufferSize;
 
 public:
-	Table();
+	Table(ArgParser* rParser);
 	~Table();	
 
 	void SetIndex(int rIndex, Variable* rVariable);

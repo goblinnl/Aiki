@@ -1,6 +1,6 @@
 #include "Table.h"
 
-Table::Table() : mCount(0), mBufferSize(0), mKeys(NULL), mValues(NULL)
+Table::Table(ArgParser* rParser) : mCount(0), mBufferSize(0), mKeys(NULL), mValues(NULL)
 {
 	AllocateMoreMemory();
 }
@@ -14,7 +14,7 @@ Table::~Table()
 
 void Table::SetIndex(int rIndex, Variable* rVariable)
 {
-
+	
 }
 
 void Table::Set(const MCString& rKey, Variable* rVariable)
