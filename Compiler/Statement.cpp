@@ -2,7 +2,7 @@
 #include "IntermediateOper.h"
 #include "Expression.h"
 #include "tokens.h"
-#include "parser.h"
+#include "ArgParser.h"
 
 #include "../stack.h"
 #include "../Exception.h"
@@ -12,7 +12,7 @@ Statement::Statement() {
 
 }
 
-Statement* Statement::CreateStatement(Tokens *rTokens, Parser *rParser) {
+Statement* Statement::CreateStatement(Tokens *rTokens, ArgParser *rParser) {
 	Statement *stmt = NULL;
 
 	const Token *token = rTokens->CheckNext();
@@ -39,7 +39,7 @@ Statement* Statement::CreateStatement(Tokens *rTokens, Parser *rParser) {
 	return stmt;
 }
 
-void IfStatement::ParseFragment(Tokens *rTokens, Parser *rParser) {
+void IfStatement::ParseFragment(Tokens *rTokens, ArgParser *rParser) {
 	mOperators = NULL;
 	mExpression = NULL;
 	mAssignee = NULL;
@@ -62,11 +62,11 @@ void IfStatement::ParseFragment(Tokens *rTokens, Parser *rParser) {
 	throw NotImplementedException("If statements are not implemented");
 }
 
-void IfStatement::ProvideIntermediates(OperationCode *rOpcode, Parser *rParser) {
+void IfStatement::ProvideIntermediates(OperationCode *rOpcode, ArgParser *rParser) {
 	throw NotImplementedException("If statements are not implemented");
 }
 
-void AssignStatement::ParseFragment(Tokens *rTokens, Parser *rParser) {
+void AssignStatement::ParseFragment(Tokens *rTokens, ArgParser *rParser) {
 	mAlloc = false;
 	mOperators = NULL;
 	mExpression = NULL;
@@ -93,7 +93,7 @@ void AssignStatement::ParseFragment(Tokens *rTokens, Parser *rParser) {
 	mExpression->ParseFragment(rTokens, rParser);
 }
 
-void AssignStatement::ProvideIntermediates(OperationCode *rOpcode, Parser *rParser) {
+void AssignStatement::ProvideIntermediates(OperationCode *rOpcode, ArgParser *rParser) {
 	uint varID = 0;
 
 	if (mAlloc) {
@@ -140,7 +140,7 @@ void AssignStatement::HandleOperator(OperationCode *rOpcode, uint rVarID) {
 	rOpcode->AddInterop(new DwordOperation(&rVarID));
 }
 
-void ReturnStatement::ParseFragment(Tokens *rTokens, Parser *rParser) {
+void ReturnStatement::ParseFragment(Tokens *rTokens, ArgParser *rParser) {
 	delete rTokens->PopExpected(Token::RESERVED);
 
 	if(rTokens->CheckNext()->mType == Token::SEMICOLON) {
@@ -153,7 +153,7 @@ void ReturnStatement::ParseFragment(Tokens *rTokens, Parser *rParser) {
 	}
 }
 
-void ReturnStatement::ProvideIntermediates(OperationCode *rOpcode, Parser *rParser) {
+void ReturnStatement::ProvideIntermediates(OperationCode *rOpcode, ArgParser *rParser) {
 	if(!rParser->IsInLocalScope()) {
 		throw InvalidTokenException("Unexpected return");
 	}

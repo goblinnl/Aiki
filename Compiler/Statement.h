@@ -17,7 +17,7 @@ protected:
 	Statement();
 
 public:
-	static Statement* CreateStatement(Tokens *rTokens, Parser *rParser);
+	static Statement* CreateStatement(Tokens *rTokens, ArgParser *rParser);
 };
 
 class IfStatement : public Statement {
@@ -28,8 +28,8 @@ private:
 	Expression *mExpression;
 
 public:
-	void ParseFragment(Tokens *rTokens, Parser *rParser);
-	void ProvideIntermediates(OperationCode *rOpcode, Parser *rParser);
+	void ParseFragment(Tokens *rTokens, ArgParser *rParser);
+	void ProvideIntermediates(OperationCode *rOpcode, ArgParser *rParser);
 };
 
 class AssignStatement : public Statement {
@@ -40,8 +40,8 @@ private:
 	Expression *mExpression;
 
 public:
-	void ParseFragment(Tokens *rTokens, Parser *rParser);
-	void ProvideIntermediates(OperationCode *rOpcode, Parser *rParser);
+	void ParseFragment(Tokens *rTokens, ArgParser *rParser);
+	void ProvideIntermediates(OperationCode *rOpcode, ArgParser *rParser);
 
 private:
 	void HandleOperator(OperationCode *rOpcode, uint rVarID);
@@ -52,7 +52,7 @@ private:
 	Expression *mExpression;
 
 public:
-	void ParseFragment(Tokens *rTokens, Parser *rParser);
-	void ProvideIntermediates(OperationCode *rOpcode, Parser *rParser);
+	void ParseFragment(Tokens *rTokens, ArgParser *rParser);
+	void ProvideIntermediates(OperationCode *rOpcode, ArgParser *rParser);
 };
 #endif // STATEMENT_H
