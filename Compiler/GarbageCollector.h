@@ -19,22 +19,21 @@ private:
 	int mNull;
 
 public:
-
 	PTyped<double> mPoolNumber;
-	PTyped<ArgumentData> mPoolArgument;
+	PTyped<DataArgument> mPoolArgument;
 
 public:
 	GarbageCollector();
 	~GarbageCollector();
 
 	int Start();
-	int StepFrame();
+	void StepFrame();
 
-	static Variable* Function(ArgParser* rParser, ArgumentData* rArg);
+	static Variable* StaticVar(ArgParser* rParser, DataArgument* rArg);
 
 	void Destroy();
 
-	Variable* GetPooledVariable() const;
+	Variable* GetPooledVariable();
 	Variable* RegisterVariable(Variable* rVar);
 
 private:
