@@ -17,20 +17,19 @@
 //using namespace std;
 
 
-#define EXCEPTION_BEGIN(_NAME, _TXTDEFAULT)		\
-	class _NAME : public std::runtime_error {	\
-	public: 									\
-	_NAME(MCString txt = _TXTDEFAULT)			\
-			:std::runtime_error(txt){}			\
-	const char *what() {						\
-		MCString str = #_NAME;					\
-		str += ": ";							\
-		str += runtime_error::what();			\
-		return str;								\
+#define EXCEPTION_BEGIN(_NAME, _TXTDEFAULT)			\
+	class _NAME : public std::runtime_error {		\
+		public: 									\
+		_NAME(MCString txt = _TXTDEFAULT)			\
+				:std::runtime_error(txt){}			\
+		const char *what() {						\
+			MCString str = #_NAME;					\
+			str += ": ";							\
+			str += runtime_error::what();			\
+			return str;								\
 		}
-
-#define EXCEPTION_END	\
-		};
+#define EXCEPTION_END								\
+	};
 
 EXCEPTION_BEGIN(InternalErrorException, "Internal error")
 EXCEPTION_END
@@ -68,7 +67,16 @@ EXCEPTION_END
 EXCEPTION_BEGIN(StackFunctionException, "Stack cannot call Function")
 EXCEPTION_END
 
+EXCEPTION_BEGIN(InvalidIndexException, "Invalid Index for type")
+EXCEPTION_END
+
 EXCEPTION_BEGIN(InvalidArgumentException, "Invalid argument passed to function")
+EXCEPTION_END
+
+EXCEPTION_BEGIN(TooManyArgumentException, "Too many argument passed to function")
+EXCEPTION_END
+
+EXCEPTION_BEGIN(ArgumentExpectedException, "Missing argument! Expected an argument")
 EXCEPTION_END
 
 EXCEPTION_BEGIN(FileNotFoundException, "File does not exist")
@@ -79,6 +87,4 @@ EXCEPTION_END
 
 EXCEPTION_BEGIN(ObjectTypeException, "Object type is unknown")
 EXCEPTION_END
-
-
 #endif // EXCEPTION
