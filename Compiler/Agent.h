@@ -44,5 +44,33 @@ public:
 	void StringTable(Stack* rStack);
 	void CurrentLine(Stack* rStack);
 	void GlobalAndLocals(Stack* rStack);
+
+private:	
+	void AddNumber(Variable* rRet, const Variable* rVar0, const Variable* rVar1);
+	void AddString(Variable* rRet, const Variable* rVar0, const Variable* rVar1);
+	void AddNumberToString(Variable* rRet, const Variable* rVar0, const Variable* rVar1);
+	void AddStringToNumber(Variable* rRet, const Variable* rVar0, const Variable* rVar1);
+
+	// Arithmetic operators 
+	void Add(Variable& rRet, const Variable* rVar0, const Variable* rVar1);
+	void Substract(Variable& rRet, const Variable* rVar0, const Variable* rVar1);
+	void Divide(ArgParser* rParser, Variable& rRet, const Variable* rVar0, const Variable* rVar1);
+	void DivideString(ArgParser* rParser, Variable& rRet, const Variable* rVar0, const Variable* rVar1);
+	void Multiply(ArgParser* rParser, Variable& rRet, const Variable* rVar0, const Variable* rVar1);
+	void MultiplyString(ArgParser* rParser, Variable& rRet, const Variable* rNumber, const Variable* rStr);
+	void Equal(Variable& rRet, const Variable* rVar0, const Variable* rVar1);
+	void GreaterThan(Variable& rRet, const Variable* rVar0, const Variable* rVar1);
+	void GreaterOrEqual(Variable& rRet, const Variable* rVar0, const Variable* rVar1);
+	void LessThan(Variable& rRet, const Variable* rVar0, const Variable* rVar1);
+	void LessOrEqual(Variable& rRet, const Variable* rVar0, const Variable* rVar1);
+	void Modulo(Variable& rRet, const Variable* rVar0, const Variable* rVar1);
+	void And(Variable& rRet, Variable* rVar0, Variable* rVar1);
+	void Or(Variable& rRet, const Variable* rVar0, const Variable* rVar1);
+	void BitwiseLeft(Variable& rRet, const Variable* rVar0, const Variable* rVar1);
+	void BitwiseRight(Variable& rRet, const Variable* rVar0, const Variable* rVar1);
+	void BitwiseOr(Variable& rRet, const Variable* rVar0, const Variable* rVar1);
+	void BitwiseAnd(Variable& rRet, const Variable* rVar0, const Variable* rVar1);
+	void NotEqual(Variable& rRet, const Variable* rVar0, const Variable* rVar1);
+
 };
 #endif // AGENT_H

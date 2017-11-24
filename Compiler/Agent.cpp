@@ -75,10 +75,31 @@ Variable* Agent::GetAO(Stack* rStack, Variable* rVar0, Variable* rVar1, int rCod
 
 	temp = rStack->GetParser()->GetGarbageCollector().GetPooledVariable();
 
-
-
+	// Arithmetic operations
+	if(rCode == AO_ADD) { Add(*temp, rVar0, rVar1); }
+	if(rCode == AO_SUBTRACT) { Substract(*temp, rVar0, rVar1); }
+	if(rCode == AO_DIVIDE) { Divide(rStack->GetParser(),*temp, rVar0, rVar1); }
+	if(rCode == AO_MULTIPLY) { Multiply(rStack->GetParser(),*temp, rVar0, rVar1); }
+	if(rCode == AO_NOT_EQUAL) { NotEqual(*temp, rVar0, rVar1); }
+	if(rCode == AO_EQUAL) { Equal(*temp, rVar0, rVar1); }
+	if(rCode == AO_GREATER_THAN) { GreaterThan(*temp, rVar0, rVar1); }
+	if(rCode == AO_GREATER_OR_EQUAL) { GreaterOrEqual(*temp, rVar0, rVar1); }
+	if(rCode == AO_LESS_THAN) { LessThan(*temp, rVar0, rVar1); }
+	if(rCode == AO_LESS_OR_EQUAL) { LessOrEqual(*temp, rVar0, rVar1); }
+	if(rCode == AO_MODULO) { Modulo(*temp, rVar0, rVar1); }
+	if(rCode == AO_AND) { And(*temp, rVar0, rVar1); }
+	if(rCode == AO_OR) { Or(*temp, rVar0, rVar1); }
+	if(rCode == AO_BITWISE_LEFT) { BitwiseLeft(*temp, rVar0, rVar1); }
+	if(rCode == AO_BITWISE_RIGHT) { BitwiseRight(*temp, rVar0, rVar1); }
+	if(rCode == AO_BITWISE_OR) { BitwiseOr(*temp, rVar0, rVar1); }
+	if(rCode == AO_BITWISE_AND) { BitwiseAnd(*temp, rVar0, rVar1); }
 	
 
+	if(temp->GetType() == Variable::UNDEFINED) {
+		throw InvalidOpException(MCString::Format("Invalid arithmetic function: See %s(%s) %s %s(%s)", gParse::Instance()->ObjectToString(rVar0).mBuffer, gParse::Instance()->VarToString(rStack->GetParser(), rVar0).mBuffer, gParse::Instance()->OperatorToString(rCode).mBuffer, gParse::Instance()->ObjectToString(rVar1).mBuffer, gParse::Instance()->VarToString(rStack->GetParser(), rVar1).mBuffer));
+	}
+
+	return temp;
 }
 
 void Agent::Duplicate(Stack* rStack)
@@ -636,4 +657,302 @@ void Agent::GlobalAndLocals(Stack* rStack)
 	}
 
 	rStack->GetByteParser()->SetPosition(oldPos);
+}
+
+void Agent::AddNumber(Variable& rRet, const Variable* rVar0, const Variable* rVar1)
+{
+	rRet.SetType(Variable::NUMBER);
+	rRet.SetData(gParse::Instance()->NumberToPtr(*(double*)rVar0->GetData() + *(double*)rVar1->GetData()));
+}
+
+void Agent::AddString(Variable& rRet, const Variable* rVar0, const Variable* rVar1)
+{
+	rRet.SetType(Variable::STRING);
+	rRet.SetData(gParse::Instance()->StringToPtr(*(MCString*)rVar1->GetData() + *(MCString*)rVar0->GetData()));	
+}
+
+void Agent::AddNumberToString(Variable& rRet, const Variable* rVar0, const Variable* rVar1)
+{
+	rRet.SetType(Variable::STRING);
+	rRet.SetData(gParse::Instance()->StringToPtr(*(MCString*)rVar1->GetData() + MCString(*(double*)rVar0->GetData())));
+	
+}
+
+void Agent::AddStringToNumber(Variable& rRet, const Variable* rVar0, const Variable* rVar1)
+{
+	rRet.SetType(Variable::STRING);
+	rRet.SetData(gParse::Instance()->StringToPtr(MCString::Format("%f%s", *(double*)rVar0->GetData(), ((MCString*)rVar1->GetData())->mBuffer)));
+}
+
+void Agent::DivideString(ArgParser* rParser, Variable& rRet, const Variable* rVar0, const Variable* rVar1)
+{
+	MCString str = *(MCString*)rVar0->GetData();
+	Table* table = new Table(rParser);
+
+	int lenght = str.Length();
+	int strip = (int)(lenght / *(double*)rVar1->GetData());
+
+	rRet.SetType(Variable::TABLE);
+	rRet.SetData(table);
+
+	if(strip <= 0) {
+		return;
+	}
+
+	for(int i = 0; i < lenght; i += strip) {
+		table->Set(MCString((double)i), gParse::Instance()->ToVar(rParser, str.Substring(i, lenght - 1 < strip ? lenght - i : strip)));
+	}
+}
+
+void Agent::MultiplyString(ArgParser* rParser, Variable& rRet, const Variable* rNumber, const Variable* rStr)
+{
+	MCString strAdd(*(MCString*)rStr->GetData());
+	MCString* str = new MCString();
+	int lenght = (int)*(double*)rNumber->GetData();
+
+	if(lenght <= 0) {
+		rRet.SetType(Variable::STRING);
+		rRet.SetData(gParse::Instance()->StringToPtr(""));
+		return;
+	}
+
+	int size = strAdd.Length();
+	int max = lenght * size + (int)((*(double*)rNumber->GetData() - lenght) * size);
+	char* ptr = new char[max + 1];
+
+	str->mBuffer = ptr;
+
+	for(int i = 0; i < lenght; i++) {
+		memcpy(ptr + i * size, strAdd.mBuffer, size);
+	}
+
+	if(*(double*)rNumber->GetData() - lenght > 0) {
+		memcpy(ptr + lenght * size, strAdd.mBuffer, (int)((*(double*)rNumber->GetData() - lenght) * size));
+	}
+
+	ptr[max] = NULL;
+
+	rRet.SetType(Variable::NUMBER);
+	rRet.SetData(str);
+}
+
+// TODO: Make it 1 function instead of 2 separate functions
+void Agent::Add(Variable& rRet, const Variable* rVar0, const Variable* rVar1)
+{
+	if(rVar0->GetType() == Variable::NUMBER) {
+		if(rVar1->GetType() == Variable::NUMBER) { AddNumber(rRet, rVar0, rVar1); }
+		if(rVar1->GetType() == Variable::STRING) { AddStringToNumber(rRet, rVar0, rVar1); }
+	}
+
+	if(rVar0->GetType() == Variable::STRING) {
+		if(rVar1->GetType() == Variable::NUMBER) { AddString(rRet, rVar0, rVar1); }
+		if(rVar1->GetType() == Variable::STRING) { AddNumberToString(rRet, rVar1, rVar0); }
+	}
+}
+
+void Agent::Substract(Variable& rRet, const Variable* rVar0, const Variable* rVar1)
+{
+	if(rVar0->GetType() == Variable::NUMBER && rVar1->GetType() == Variable::NUMBER) {		
+		rRet.SetType(Variable::NUMBER);
+		rRet.SetData(gParse::Instance()->NumberToPtr(*(double*)rVar0->GetData() - *(double*)rVar1->GetData()));
+	}
+}
+
+void Agent::Divide(ArgParser* rParser, Variable& rRet, const Variable* rVar0, const Variable* rVar1)
+{
+	if(rVar0->GetType() == Variable::NUMBER && rVar1->GetType() == Variable::NUMBER) {		
+		rRet.SetType(Variable::NUMBER);
+		rRet.SetData(gParse::Instance()->NumberToPtr(*(double*)rVar0->GetData() / *(double*)rVar1->GetData()));
+	}
+
+	if(rVar0->GetType() == Variable::STRING && rVar1->GetType() == Variable::NUMBER) {
+		DivideString(rParser, rRet, rVar0, rVar1);
+	}
+}
+
+void Agent::Multiply(ArgParser* rParser, Variable& rRet, const Variable* rVar0, const Variable* rVar1)
+{
+	if(rVar0->GetType() == Variable::NUMBER) {
+		if(rVar1->GetType() == Variable::NUMBER) {
+			rRet.SetType(Variable::NUMBER);
+			rRet.SetData(gParse::Instance()->NumberToPtr(*(double*)rVar0->GetData() * *(double*)rVar1->GetData()));
+		}
+
+		if(rVar1->GetType() == Variable::STRING) {
+			MultiplyString(rParser, rRet, rVar0, rVar1);
+		}			
+	}
+
+	if(rVar0->GetType() == Variable::STRING && rVar1->GetType() == Variable::NUMBER) {
+		MultiplyString(rParser,rRet, rVar1, rVar0);
+	}	
+}
+
+void Agent::Equal(Variable& rRet, const Variable* rVar0, const Variable* rVar1)
+{
+	rRet.SetType(Variable::BOOL);
+
+	if(rVar0->GetType() == Variable::BOOL && rVar1->GetType() == Variable::UNDEFINED && rVar0->GetData() == NULL) {
+		rRet.SetData(gParse::Instance()->BoolToPtr(true));
+	}
+	else if(rVar1->GetType() == Variable::BOOL && rVar0->GetType() == Variable::UNDEFINED && rVar1->GetData() != NULL) {
+		rRet.SetData(gParse::Instance()->BoolToPtr(true));
+	}
+	else if(rVar0->GetType() != rVar1->GetType()){
+		rRet.SetData(gParse::Instance()->BoolToPtr(false));
+	}
+	else if(rVar0->GetType() == Variable::BOOL){
+		rRet.SetData(gParse::Instance()->BoolToPtr(rVar0->GetData() == rVar1->GetData()));
+	}
+	else if(rVar0->GetType() == Variable::NUMBER){
+		rRet.SetData(gParse::Instance()->BoolToPtr(*(double*)rVar0->GetData() == *(double*)rVar1->GetData()));
+	}
+	else if(rVar0->GetType() == Variable::STRING){
+		rRet.SetData(gParse::Instance()->BoolToPtr(*(MCString*)rVar0->GetData() == *(MCString*)rVar1->GetData()));
+	}
+	else {
+		rRet.SetData(gParse::Instance()->BoolToPtr(rVar0->GetData() == rVar1->GetData()));	
+	}
+}
+
+void Agent::GreaterThan(Variable& rRet, const Variable* rVar0, const Variable* rVar1)
+{
+	rRet.SetType(Variable::BOOL);
+	if(rVar0->GetType() != rVar1->GetType() || rVar0->GetType() != Variable::NUMBER) {
+		rRet.SetData(gParse::Instance()->BoolToPtr(false));
+	}
+	else {
+		rRet.SetData(gParse::Instance()->BoolToPtr(*(double*)rVar0->GetData() >= *(double*)rVar1->GetData));
+	}
+}
+
+void Agent::GreaterOrEqual(Variable& rRet, const Variable* rVar0, const Variable* rVar1)
+{
+	rRet.SetType(Variable::BOOL);
+	if(rVar0->GetType() != rVar1->GetType() || rVar0->GetType() != Variable::NUMBER) {
+		rRet.SetData(gParse::Instance()->BoolToPtr(false));
+	}
+	else {
+		rRet.SetData(gParse::Instance()->BoolToPtr(*(double*)rVar0->GetData() >= *(double*)rVar1->GetData()));
+	}
+}
+
+void Agent::LessThan(Variable& rRet, const Variable* rVar0, const Variable* rVar1)
+{
+	rRet.SetType(Variable::BOOL);
+	if(rVar0->GetType() != rVar1->GetType() || rVar0->GetType() != Variable::NUMBER) {
+		rRet.SetData(gParse::Instance()->BoolToPtr(false));
+	}
+	else {
+		rRet.SetData(gParse::Instance()->BoolToPtr(*(double*)rVar0->GetData() < *(double*)rVar1->GetData()));
+	}
+
+}
+
+void Agent::LessOrEqual(Variable& rRet, const Variable* rVar0, const Variable* rVar1)
+{
+	rRet.SetType(Variable::BOOL);
+	if(rVar0->GetType() != rVar1->GetType() || rVar0->GetType() != Variable::NUMBER) {
+		rRet.SetData(gParse::Instance()->BoolToPtr(false));
+	}
+	else {
+		rRet.SetData(gParse::Instance()->BoolToPtr(*(double*)rVar0->GetData() <= *(double*)rVar1->GetData()));
+	}
+}
+
+void Agent::Modulo(Variable& rRet, const Variable* rVar0, const Variable* rVar1)
+{
+	if(rVar0->GetType() != Variable::NUMBER && rVar1->GetType() == Variable::NUMBER) {
+		rRet.SetType(Variable::NUMBER);
+		rRet.SetData(gParse::Instance()->NumberToPtr(fmod((double)*(double*)rVar0->GetData(), *(double*)rVar1->GetData())));
+	}
+
+	if(rVar0->GetType() == Variable::STRING && rVar1->GetType() == Variable::TABLE) {
+		rRet.SetType(Variable::STRING);
+
+		Table* table = rVar1->GetTable();
+		MCString str;
+
+		char* offset = ((MCString*)rVar1->GetData())->mBuffer;
+		char* offsetOld = offset;
+
+		int pos = table->GetNextIndex(0);
+		do {
+			offset = strstr(offset, "%");
+
+			if(offset != NULL) {
+				if(offsetOld != offset && offset[-1] == '\\') {
+					offset++;
+				} 
+				else {
+					if(pos == -1) {
+						throw InvalidIndexException("Table contains not enough indexes to replace all % characters");
+					}
+
+					str.AppendToBuffer(offsetOld, offset - offsetOld);
+					str += table->GetByIndex(pos)->ToString();
+
+					offset++;
+					offsetOld = offset;
+
+					pos = table->GetNextIndex(++pos);
+				}
+			}
+			else {
+				str.AppendToBuffer(offsetOld, strlen(offsetOld));
+			}
+
+		} while(offset != NULL);
+
+		rRet.SetData(gParse::Instance()->StringToPtr(str.Replace("\\%", "%")));
+	}
+}
+
+void Agent::And(Variable& rRet, Variable* rVar0, Variable* rVar1)
+{
+	rRet.SetType(Variable::BOOL);
+	rRet.SetData(gParse::Instance()->BoolToPtr(rRet.GetVarIsTrue(*rVar0) && rRet.GetVarIsTrue(*rVar1)));
+}
+
+void Agent::Or(Variable& rRet, const Variable* rVar0, const Variable* rVar1)
+{
+	rRet.SetType(Variable::BOOL);
+	rRet.SetData(gParse::Instance()->BoolToPtr(rRet.GetVarIsTrue(*rVar0) || rRet.GetVarIsTrue(*rVar1)));
+}
+
+void Agent::BitwiseLeft(Variable& rRet, const Variable* rVar0, const Variable* rVar1)
+{
+	if(rVar0->GetType() == Variable::NUMBER && rVar1->GetType() == Variable::NUMBER) {
+		rRet.SetType(Variable::NUMBER);
+		rRet.SetData(gParse::Instance()->NumberToPtr((int)* (double*)rVar0->GetData() << (int)* (double*)rVar1->GetData));
+	}
+}
+
+void Agent::BitwiseRight(Variable& rRet, const Variable* rVar0, const Variable* rVar1)
+{
+	if(rVar0->GetType() == Variable::NUMBER && rVar1->GetType() == Variable::NUMBER) {
+		rRet.SetType(Variable::NUMBER);
+		rRet.SetData(gParse::Instance()->NumberToPtr((int)* (double*)rVar0->GetData() >> (int)* (double*)rVar1->GetData));
+	}
+}
+
+void Agent::BitwiseOr(Variable& rRet, const Variable* rVar0, const Variable* rVar1)
+{
+	if(rVar0->GetType() == Variable::NUMBER && rVar1->GetType() == Variable::NUMBER) {
+		rRet.SetType(Variable::NUMBER);
+		rRet.SetData(gParse::Instance()->NumberToPtr((int)* (double*)rVar0->GetData() | (int)* (double*)rVar1->GetData));
+	}
+}
+
+void Agent::BitwiseAnd(Variable& rRet, const Variable* rVar0, const Variable* rVar1)
+{
+	if(rVar0->GetType() == Variable::NUMBER && rVar1->GetType() == Variable::NUMBER) {
+		rRet.SetType(Variable::NUMBER);
+		rRet.SetData(gParse::Instance()->NumberToPtr((int)* (double*)rVar0->GetData() & (int)* (double*)rVar1->GetData));
+	}
+}
+
+void Agent::NotEqual(Variable& rRet, const Variable* rVar0, const Variable* rVar1)
+{
+	rRet.SetData(gParse::Instance()->BoolToPtr(rRet.GetData() == NULL));
 }
